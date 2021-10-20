@@ -1,7 +1,11 @@
-import './App.css';
+import Nav from './components/Nav';
+import Index from './pages/Index';
 
-function App() {
-  return <div className="App">Hello</div>;
+export default function App() {
+  return (
+    <>
+      <Nav />
+      <Index />
+    </>
+  );
 }
-
-export default App;
