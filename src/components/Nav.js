@@ -3,40 +3,10 @@ import logo from '../images/logo.png';
 import profilePic from '../images/baby.png';
 import { NotificationsNone, SearchOutlined } from '@material-ui/icons';
 
-const NavDiv = styled.div`
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 80px;
-  color: #fff;
-  z-index: 100;
-  background: #111;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  &:before {
-    content: '';
-    position: absolute;
-    top: 100%;
-    width: 100%;
-    left: 0;
-    height: 3px;
-    border-radius: 2px;
-    background: linear-gradient(
-      130deg,
-      transparent,
-      #75e799 20.07%,
-      #f8ff00 50.07%,
-      #319197 76.05%,
-      transparent
-    );
-  }
-`;
-
 const Logo = styled.img`
   margin-left: 30px;
-  width: 80px;
-  height: 60px;
+  width: 60px;
+  height: 48px;
 `;
 
 const FunctionDiv = styled.div`
@@ -46,31 +16,32 @@ const FunctionDiv = styled.div`
 
 const SearchBtn = styled.button`
   border: 0;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   font-size: 1.5rem;
   background: transparent;
   cursor: pointer;
   border-radius: 50%;
+  margin-right: 3px;
   margin-left: auto;
 `;
 
 const SearchIcon = styled(SearchOutlined)`
-  transform: scale(1.3);
+  transform: scale(1.2);
   color: #fff;
-  margin-top: 4px;
+  margin-top: 3px;
   cursor: pointer;
 `;
 
 const SearchBar = styled.input`
   flex-grow: 1;
-  height: 40px;
+  height: 30px;
   font-size: 1.2rem;
   padding: 0 0.5em;
   border: 0;
   color: #fff;
   position: absolute;
-  top: 0;
+  top: 3px;
   bottom: 0;
   left: 0;
   opacity: 0;
@@ -82,7 +53,7 @@ const SearchBar = styled.input`
   ::placeholder,
   ::-webkit-input-placeholder {
     font-size: 1.2rem;
-    color: #d3d3d3;
+    color: #a9a9a9;
   }
 `;
 
@@ -91,13 +62,13 @@ const SearchDiv = styled.div`
   height: 40px;
   display: flex;
   color: #fff;
-  background: #111;
+  background: transparent;
   box-sizing: border-box;
   background-clip: padding-box;
   border: 2px solid #75e799;
   z-index: 0;
   border-radius: 50px;
-  margin-right: 40px;
+  margin-right: 35px;
   padding: 3px;
   transition: width 500ms ease-in-out;
   position: relative;
@@ -118,8 +89,8 @@ const SearchDiv = styled.div`
 `;
 
 const BellIcon = styled(NotificationsNone)`
-  transform: scale(1.6);
-  margin-right: 30px;
+  transform: scale(1.4);
+  margin-right: 25px;
   cursor: pointer;
 `;
 
@@ -127,7 +98,7 @@ const InfoDiv = styled.div`
   position: absolute;
   font-weight: bold;
   right: 30px;
-  top: 100px;
+  top: 70px;
   width: 12rem;
   height: 10rem;
   display: none;
@@ -141,9 +112,10 @@ const InfoDiv = styled.div`
 `;
 
 const ProfilePic = styled.img`
-  width: 50px;
-  height: 55px;
+  width: 45px;
+  height: 50px;
   margin-right: 30px;
+  margin-top: 2px;
   cursor: pointer;
 `;
 
@@ -154,9 +126,37 @@ const ProfileDiv = styled.div`
   }
 `;
 
-export default function Nav() {
+const FooterDiv = styled.div`
+  background: #000;
+  bottom: 0;
+  left: 0;
+  display: block;
+  text-align: center;
+  font-size: 16px;
+  margin: 0;
+  height: 40px;
+  line-height: 40px;
+  &:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    left: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(
+      130deg,
+      transparent,
+      #75e799 20.07%,
+      #f8ff00 50.07%,
+      #319197 76.05%,
+      transparent
+    );
+  }
+`;
+
+export const Nav = () => {
   return (
-    <NavDiv>
+    <>
       <Logo src={logo} alt="logo" />
       <FunctionDiv>
         <SearchDiv>
@@ -176,6 +176,10 @@ export default function Nav() {
           </InfoDiv>
         </ProfileDiv>
       </FunctionDiv>
-    </NavDiv>
+    </>
   );
-}
+};
+
+export const Footer = () => {
+  return <FooterDiv>Copyright © 2021 LIMO</FooterDiv>;
+};
