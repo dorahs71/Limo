@@ -18,7 +18,7 @@ const VideoSec = styled.div`
     width: 100%;
     height: 100px;
     background: linear-gradient(to top, #111, transparent);
-    z-index: 1000;
+    z-index: 30;
   }
 `;
 
@@ -70,7 +70,7 @@ text-shadow:
 `;
 
 const Title = styled.div`
-  margin-top: 100px;
+  margin-top: 50px;
   width: 30rem;
   text-align: center;
   font-size: 4.2rem;
@@ -146,7 +146,7 @@ const InfoIcon = styled(InfoOutlined)`
 
 export default function Index() {
   useEffect(() => {
-    AOS.init({ duration: 800 });
+    AOS.init({ duration: 1200 });
   }, []);
 
   return (
@@ -168,11 +168,11 @@ export default function Index() {
         </TrailerDiv>
       </VideoSec>
       <MainDiv>
-        <Title>網友推薦</Title>
+        <Title data-aos="fade-up">網友推薦</Title>
         <ShowCoverflow />
-        <Title>精選片單</Title>
+        <Title data-aos="fade-up">精選片單</Title>
         <ThemeList />
-        <Title>近期上映</Title>
+        <Title data-aos="fade-up">近期上映</Title>
         <Showing />
       </MainDiv>
     </>

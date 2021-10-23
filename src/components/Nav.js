@@ -1,7 +1,9 @@
 import styled from 'styled-components';
+import { useState, useEffect } from 'react';
 import logo from '../images/logo.png';
-import profilePic from '../images/baby.png';
 import { NotificationsNone, SearchOutlined } from '@material-ui/icons';
+import Login from './Login';
+import firebase from '../utils/firebase';
 
 const Logo = styled.img`
   margin-left: 30px;
@@ -29,7 +31,7 @@ const SearchBtn = styled.button`
 const SearchIcon = styled(SearchOutlined)`
   transform: scale(1.2);
   color: #fff;
-  margin-top: 3px;
+  margin-top: 2px;
   cursor: pointer;
 `;
 
@@ -114,16 +116,24 @@ const InfoDiv = styled.div`
 const ProfilePic = styled.img`
   width: 45px;
   height: 50px;
-  margin-right: 30px;
+
   margin-top: 2px;
   cursor: pointer;
 `;
 
 const ProfileDiv = styled.div`
   display: block;
+  margin-right: 30px;
   &:hover ${InfoDiv} {
     display: flex;
   }
+`;
+
+const LoginDiv = styled.div`
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 30px;
 `;
 
 const FooterDiv = styled.div`
@@ -155,6 +165,15 @@ const FooterDiv = styled.div`
 `;
 
 export const Nav = () => {
+  const [showLogin, setShowLogin] = useState(false);
+  const [hasUser, setHasUser] = useState(null);
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      console.log(user);
+      setHasUser(user);
+    });
+  }, []);
+
   return (
     <>
       <Logo src={logo} alt="logo" />
@@ -165,17 +184,24 @@ export const Nav = () => {
             <SearchIcon />
           </SearchBtn>
         </SearchDiv>
-        <BellIcon />
-        <ProfileDiv>
-          <ProfilePic src={profilePic} />
-          <InfoDiv>
-            <div>暱稱：愛的小貝比</div>
-            <div>日誌：30</div>
-            <div>片單：30</div>
-            <div>收藏：30</div>
-          </InfoDiv>
-        </ProfileDiv>
+        {hasUser ? (
+          <>
+            <BellIcon />
+            <ProfileDiv onClick={() => firebase.auth().signOut()}>
+              <ProfilePic src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956" />
+              <InfoDiv>
+                <div>暱稱：愛的小貝比</div>
+                <div>日誌：30</div>
+                <div>片單：30</div>
+                <div>收藏：30</div>
+              </InfoDiv>
+            </ProfileDiv>
+          </>
+        ) : (
+          <LoginDiv onClick={() => setShowLogin(true)}>註冊/登入</LoginDiv>
+        )}
       </FunctionDiv>
+      <Login trigger={showLogin} setTrigger={setShowLogin} />
     </>
   );
 };

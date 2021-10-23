@@ -1,7 +1,8 @@
 import { Nav, Footer } from './components/Nav';
-import Index from './pages/Index';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Index from './pages/Index';
 
 const NavDiv = styled.div`
   position: fixed;
@@ -55,7 +56,7 @@ export default function App() {
   };
 
   return (
-    <>
+    <BrowserRouter>
       {isScrolled ? (
         <NavDiv>
           <Nav />
@@ -65,8 +66,15 @@ export default function App() {
           <Nav />
         </StartNav>
       )}
-      <Index />
+      <Switch>
+        <Route path="/" exact>
+          <Index />
+        </Route>
+        {/* <Route path="/login" exact>
+          <Login />
+        </Route> */}
+      </Switch>
       <Footer />
-    </>
+    </BrowserRouter>
   );
 }
