@@ -109,14 +109,13 @@ const InfoDiv = styled.div`
   text-align: center;
   font-size: 18px;
   background: linear-gradient(180deg, #444, #000);
-  box-shadow: 2px 2px 10px 2px #75e799;
+  box-shadow: 2px 2px 10px 2px #00bfa5;
   border-radius: 30px;
 `;
 
 const ProfilePic = styled.img`
   width: 45px;
   height: 50px;
-
   margin-top: 2px;
   cursor: pointer;
 `;

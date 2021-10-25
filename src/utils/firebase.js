@@ -1,13 +1,6 @@
 import firebase from 'firebase/app';
-
-// const firebaseConfig = {
-//   apiKey: 'AIzaSyAQRmXU0UXeE0xSvzCQPUy14YkigXX1B5Y',
-//   authDomain: 'limo-movie.firebaseapp.com',
-//   projectId: 'limo-movie',
-//   storageBucket: 'limo-movie.appspot.com',
-//   messagingSenderId: '153859985483',
-//   appId: '1:153859985483:web:21d3bc8b9d23362a80fdce',
-// };
+import 'firebase/auth';
+import 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -21,3 +14,31 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 export default firebase;
+
+export const auth = firebase.auth();
+
+export const firestore = firebase.firestore();
+export const createUserDoc = async (user, userName) => {
+  if (!user) return;
+
+  const userRef = firestore.doc(`Users/${user.uid}`);
+  const { email, uid } = user;
+  const snapshot = await userRef.get();
+  if (!snapshot.exists) {
+    try {
+      userRef.set({
+        email,
+        uid,
+        birthday: new Date().toLocaleString().slice(0, 10),
+        profileImg:
+          'https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956',
+        userName,
+        score: 0,
+        likeList: [],
+        follow: [],
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};

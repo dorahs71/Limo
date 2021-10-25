@@ -4,12 +4,14 @@ import trailer from '../videos/trailer.mp4';
 import { InfoOutlined } from '@material-ui/icons';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import ShowCoverflow from '../components/Coverflow';
+import Coverflow from '../components/Coverflow';
 import ThemeList from '../components/List';
 import Showing from '../components/Showing';
 
 const VideoSec = styled.div`
   width: 100%;
+  top: 0;
+  position: inherit;
   &:after {
     content: '';
     position: absolute;
@@ -169,7 +171,7 @@ export default function Index() {
       </VideoSec>
       <MainDiv>
         <Title data-aos="fade-up">網友推薦</Title>
-        <ShowCoverflow />
+        <Coverflow />
         <Title data-aos="fade-up">精選片單</Title>
         <ThemeList />
         <Title data-aos="fade-up">近期上映</Title>

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import firebase from '../utils/firebase';
-import 'firebase/auth';
+import { auth, createUserDoc } from '../utils/firebase';
 import googleLogo from '../images/google.png';
 import fbLogo from '../images/fb.png';
 import { Cancel } from '@material-ui/icons';
@@ -259,8 +259,7 @@ export default function Login({ trigger, setTrigger }) {
 
   const googleProvider = new firebase.auth.GoogleAuthProvider();
   const googleLogin = () => {
-    firebase
-      .auth()
+    auth
       .signInWithPopup(googleProvider)
       .then((result) => {
         console.log(result);
@@ -272,8 +271,7 @@ export default function Login({ trigger, setTrigger }) {
 
   var fbProvider = new firebase.auth.FacebookAuthProvider();
   const fbLogin = () => {
-    firebase
-      .auth()
+    auth
       .signInWithPopup(fbProvider)
       .then((result) => {
         console.log(result);
@@ -286,13 +284,12 @@ export default function Login({ trigger, setTrigger }) {
   const onSubmit = () => {
     if (activeItem === 'register') {
       setShowError('');
-      firebase
-        .auth()
+      auth
         .createUserWithEmailAndPassword(email, password)
-        .then((data) => {
-          console.log(data);
-          // history.push('/');
-          window.location = '/';
+        .then(({ user }) => {
+          // console.log('123' + user.uid);
+          createUserDoc(user, userName);
+          // window.location = '/';
         })
         .catch((error) => {
           switch (error.code) {
@@ -310,8 +307,7 @@ export default function Login({ trigger, setTrigger }) {
         });
     } else if (activeItem === 'login') {
       setShowError('');
-      firebase
-        .auth()
+      auth
         .signInWithEmailAndPassword(email, password)
         .then((data) => {
           console.log(data);
@@ -418,7 +414,7 @@ export default function Login({ trigger, setTrigger }) {
                 value={password}
                 type="password"
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder=" 請輸入密碼"
+                placeholder=" 請輸入 6 位數密碼"
               />
             </InputDiv>
             <InputDiv>
