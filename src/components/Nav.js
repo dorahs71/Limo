@@ -168,7 +168,6 @@ export const Nav = () => {
   const [hasUser, setHasUser] = useState(null);
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
-      console.log(user);
       setHasUser(user);
     });
   }, []);

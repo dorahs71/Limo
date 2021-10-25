@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { firestore } from '../utils/firebase';
 
 const Star = styled(StarRounded)`
-  transform: scale(1.15);
+  transform: scale(1.3);
   color: gold;
   margin-right: 3px;
 `;
@@ -80,7 +80,7 @@ const Carousel = ({ activeIndex, setActiveIndex, children }) => {
   const [carouselTranslate, setCarouselTranslate] = useState(null);
 
   useEffect(() => {
-    const initialTranslateVal = carouselRef.current.offsetWidth / 10;
+    const initialTranslateVal = carouselRef.current.offsetWidth / 8;
     const diffAmount = initialTranslateVal * 2;
     const translate =
       activeIndex === 0

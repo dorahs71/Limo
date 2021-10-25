@@ -3,6 +3,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Index from './pages/Index';
+import Movie from './pages/Movie';
 
 const NavDiv = styled.div`
   position: fixed;
@@ -70,9 +71,9 @@ export default function App() {
         <Route path="/" exact>
           <Index />
         </Route>
-        {/* <Route path="/login" exact>
-          <Login />
-        </Route> */}
+        <Route path="/movie" exact>
+          <Movie />
+        </Route>
       </Switch>
       <Footer />
     </BrowserRouter>

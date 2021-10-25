@@ -1,5 +1,5 @@
 import styled, { keyframes } from 'styled-components';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import trailer from '../videos/trailer.mp4';
 import { InfoOutlined } from '@material-ui/icons';
 import AOS from 'aos';
@@ -7,20 +7,30 @@ import 'aos/dist/aos.css';
 import Coverflow from '../components/Coverflow';
 import ThemeList from '../components/List';
 import Showing from '../components/Showing';
+import { firestore } from '../utils/firebase';
 
 const VideoSec = styled.div`
   width: 100%;
   top: 0;
   position: inherit;
+  object-fit: contain;
+  height: 100vh;
   &:after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 100px;
+    height: 10vmin;
     background: linear-gradient(to top, #111, transparent);
     z-index: 30;
+  }
+
+  @media (max-width: 1280px) {
+    height: 0;
+    &:after {
+      height: 100px;
+    }
   }
 `;
 
@@ -72,7 +82,7 @@ text-shadow:
 `;
 
 const Title = styled.div`
-  margin-top: 50px;
+  margin-top: 10vmin;
   width: 30rem;
   text-align: center;
   font-size: 4.2rem;
@@ -147,8 +157,29 @@ const InfoIcon = styled(InfoOutlined)`
 `;
 
 export default function Index() {
+  const [showParallax, setShowParallax] = useState([]);
   useEffect(() => {
     AOS.init({ duration: 1200 });
+  }, []);
+
+  function getParallax() {
+    firestore
+      .collection('Movies')
+      .where('date', '>', '2021/11/5')
+      .orderBy('date')
+      .limit(8)
+      .get()
+      .then((item) => {
+        const parallaxList = item.docs.map((doc) => doc.data());
+        setShowParallax(parallaxList);
+      })
+      .catch((error) => {
+        console.log('Error getting documents: ', error);
+      });
+  }
+
+  useEffect(() => {
+    getParallax();
   }, []);
 
   return (
@@ -175,7 +206,18 @@ export default function Index() {
         <Title data-aos="fade-up">精選片單</Title>
         <ThemeList />
         <Title data-aos="fade-up">近期上映</Title>
-        <Showing />
+        {showParallax.map((movie) => {
+          return (
+            <Showing
+              key={movie.movieId}
+              chTitle={movie.chTitle}
+              enTitle={movie.enTitle}
+              story={movie.story}
+              poster={movie.poster}
+              bgImg={movie.gallery[0]}
+            />
+          );
+        })}
       </MainDiv>
     </>
   );

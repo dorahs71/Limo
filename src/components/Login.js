@@ -6,10 +6,11 @@ import googleLogo from '../images/google.png';
 import fbLogo from '../images/fb.png';
 import { Cancel } from '@material-ui/icons';
 import poster from '../images/loginPoster.jpeg';
+import { useHistory } from 'react-router-dom';
 
 const PopupDiv = styled.div`
   width: 100%;
-  height: 800px;
+  height: 100vh;
   top: 0;
   position: absolute;
   background-color: rgba(22, 22, 22, 0.8);
@@ -20,8 +21,8 @@ const LoginDiv = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 25px;
-  width: 35rem;
-  height: 800px;
+  width: 50vmin;
+  height: 80vmin;
   background: #333;
   border: 1px solid #75e799;
   padding: 20px 20px;
@@ -45,7 +46,7 @@ const Poster = styled.img`
 `;
 
 const InputDiv = styled.div`
-  margin-top: 40px;
+  margin-top: 3vmin;
   font-size: 20px;
   display: flex;
   align-items: center;
@@ -62,9 +63,9 @@ const InputName = styled.div`
 
 const Input = styled.input`
   font-size: 20px;
-  width: 20rem;
-  height: 2rem;
-  margin-left: 20px;
+  width: 36vmin;
+  height: 5vmin;
+  margin-left: 2vmin;
   background: transparent;
   border-radius: 5px;
   color: #fff8dc;
@@ -85,7 +86,7 @@ const Button = styled.div`
   border: 5px double #7fffd4;
   background: transparent;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 24px;
   text-align: center;
   line-height: 3rem;
   &:hover {
@@ -128,6 +129,9 @@ const GoogleText = styled.div`
 
 const GoogleLogo = styled.img`
   display: block;
+  width: 5vmin;
+  height: 5vmin;
+  margin-left: 9.5vmin;
   @media (max-width: 1280px) {
     width: 36px;
     height: 40px;
@@ -141,6 +145,9 @@ const FbText = styled.div`
 
 const FbLogo = styled.img`
   display: block;
+  width: 4.5vmin;
+  height: 4vmin;
+  margin-left: 10vmin;
   @media (max-width: 1280px) {
     width: 35px;
     height: 30px;
@@ -256,13 +263,15 @@ export default function Login({ trigger, setTrigger }) {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [showError, setShowError] = useState('');
+  const history = useHistory();
 
   const googleProvider = new firebase.auth.GoogleAuthProvider();
   const googleLogin = () => {
     auth
       .signInWithPopup(googleProvider)
-      .then((result) => {
-        console.log(result);
+      .then((user) => {
+        console.log(user);
+        // createUserDoc(user, userName);
       })
       .catch((error) => {
         console.log(error);
@@ -273,8 +282,9 @@ export default function Login({ trigger, setTrigger }) {
   const fbLogin = () => {
     auth
       .signInWithPopup(fbProvider)
-      .then((result) => {
-        console.log(result);
+      .then((user) => {
+        console.log(user);
+        // createUserDoc(user, userName);
       })
       .catch((error) => {
         console.log(error);
@@ -287,10 +297,12 @@ export default function Login({ trigger, setTrigger }) {
       auth
         .createUserWithEmailAndPassword(email, password)
         .then(({ user }) => {
-          // console.log('123' + user.uid);
           createUserDoc(user, userName);
-          // window.location = '/';
+          history.push('/');
         })
+        // .then(() => {
+        //   window.location = '/';
+        // })
         .catch((error) => {
           switch (error.code) {
             case 'auth/email-already-in-use':
@@ -311,7 +323,6 @@ export default function Login({ trigger, setTrigger }) {
         .signInWithEmailAndPassword(email, password)
         .then((data) => {
           console.log(data);
-          // <Redirect to="/" />;
           window.location = '/';
         })
         .catch((error) => {
