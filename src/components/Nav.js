@@ -3,7 +3,12 @@ import { useState, useEffect } from 'react';
 import logo from '../images/logo.png';
 import { NotificationsNone, SearchOutlined } from '@material-ui/icons';
 import Login from './Login';
-import firebase from '../utils/firebase';
+import { Link } from 'react-router-dom';
+import { auth } from '../utils/firebase';
+
+const MyLink = styled(Link)`
+  text-decoration: none;
+`;
 
 const Logo = styled.img`
   margin-left: 30px;
@@ -114,10 +119,14 @@ const InfoDiv = styled.div`
 `;
 
 const ProfilePic = styled.img`
-  width: 45px;
-  height: 50px;
+  width: 6vmin;
+  height: 4.5vmin;
   margin-top: 2px;
   cursor: pointer;
+  @media (max-width: 1280px) {
+    width: 8vmin;
+    height: 6vmin;
+  }
 `;
 
 const ProfileDiv = styled.div`
@@ -166,15 +175,18 @@ const FooterDiv = styled.div`
 export const Nav = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [hasUser, setHasUser] = useState(null);
+
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
+    auth.onAuthStateChanged((user) => {
       setHasUser(user);
     });
   }, []);
 
   return (
     <>
-      <Logo src={logo} alt="logo" />
+      <MyLink to="/">
+        <Logo src={logo} alt="logo" />
+      </MyLink>
       <FunctionDiv>
         <SearchDiv>
           <SearchBar type="text" placeholder="今天想看什麼電影？" />
@@ -185,8 +197,10 @@ export const Nav = () => {
         {hasUser ? (
           <>
             <BellIcon />
-            <ProfileDiv onClick={() => firebase.auth().signOut()}>
-              <ProfilePic src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956" />
+            <ProfileDiv>
+              <MyLink to="/profile">
+                <ProfilePic src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=7e617ed2-9a96-4192-8847-c07d8f642228" />
+              </MyLink>
               <InfoDiv>
                 <div>暱稱：愛的小貝比</div>
                 <div>日誌：30</div>

@@ -20,7 +20,11 @@ export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 export const createUserDoc = async (user, userName) => {
   if (!user) return;
-
+  auth.currentUser.updateProfile({
+    displayName: userName,
+    photoURL:
+      'https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956',
+  });
   const userRef = firestore.doc(`Users/${user.uid}`);
   const { email, uid } = user;
   const snapshot = await userRef.get();
@@ -29,7 +33,7 @@ export const createUserDoc = async (user, userName) => {
       userRef.set({
         email,
         uid,
-        birthday: new Date().toLocaleString().slice(0, 10),
+        birthday: new Date(),
         profileImg:
           'https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956',
         userName,

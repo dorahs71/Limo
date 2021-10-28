@@ -3,11 +3,17 @@ import './Coverflow.css';
 import { FastForward, FastRewind, StarRounded } from '@material-ui/icons';
 import styled from 'styled-components';
 import { firestore } from '../utils/firebase';
+import { Link } from 'react-router-dom';
 
 const Star = styled(StarRounded)`
   transform: scale(1.3);
   color: gold;
   margin-right: 3px;
+`;
+
+const MovieLink = styled(Link)`
+  text-decoration: none;
+  width: 100%;
 `;
 
 export default function Coverflow() {
@@ -40,17 +46,19 @@ export default function Coverflow() {
         {movies.map((movie, i) => {
           return (
             <CarouselCard key={movie.movieId} active={activeIndex === i}>
-              <div
-                className="carousel-card-content"
-                style={{ backgroundImage: `url("${movie.poster}")` }}
-              >
-                <div className="carousel-card-title">
-                  {movie.chTitle}
-                  <br />
-                  <Star />
-                  {movie.rate}
+              <MovieLink to={`/movie/${movie.movieId}`}>
+                <div
+                  className="carousel-card-content"
+                  style={{ backgroundImage: `url("${movie.poster}")` }}
+                >
+                  <div className="carousel-card-title">
+                    {movie.chTitle}
+                    <br />
+                    <Star />
+                    {movie.rate}
+                  </div>
                 </div>
-              </div>
+              </MovieLink>
             </CarouselCard>
           );
         })}

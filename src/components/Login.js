@@ -12,7 +12,7 @@ const PopupDiv = styled.div`
   width: 100%;
   height: 100vh;
   top: 0;
-  position: absolute;
+  position: fixed;
   background-color: rgba(22, 22, 22, 0.8);
   z-index: 100;
 `;
@@ -271,6 +271,7 @@ export default function Login({ trigger, setTrigger }) {
       .signInWithPopup(googleProvider)
       .then((user) => {
         console.log(user);
+        setTrigger(false);
         // createUserDoc(user, userName);
       })
       .catch((error) => {
@@ -284,6 +285,7 @@ export default function Login({ trigger, setTrigger }) {
       .signInWithPopup(fbProvider)
       .then((user) => {
         console.log(user);
+        setTrigger(false);
         // createUserDoc(user, userName);
       })
       .catch((error) => {
@@ -299,6 +301,7 @@ export default function Login({ trigger, setTrigger }) {
         .then(({ user }) => {
           createUserDoc(user, userName);
           history.push('/');
+          setTrigger(false);
         })
         // .then(() => {
         //   window.location = '/';
@@ -323,7 +326,8 @@ export default function Login({ trigger, setTrigger }) {
         .signInWithEmailAndPassword(email, password)
         .then((data) => {
           console.log(data);
-          window.location = '/';
+          history.push('/');
+          setTrigger(false);
         })
         .catch((error) => {
           switch (error.code) {

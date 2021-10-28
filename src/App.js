@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Index from './pages/Index';
 import Movie from './pages/Movie';
+import Profile from './pages/Profile';
 
 const NavDiv = styled.div`
   position: fixed;
@@ -71,8 +72,11 @@ export default function App() {
         <Route path="/" exact>
           <Index />
         </Route>
-        <Route path="/movie" exact>
+        <Route path="/movie/:movieId" exact>
           <Movie />
+        </Route>
+        <Route path="/profile" exact>
+          <Profile />
         </Route>
       </Switch>
       <Footer />
