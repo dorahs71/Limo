@@ -1,0 +1,112 @@
+#carouseldiv {
+  display: flex;
+  flex-direction: column;
+  padding: 80px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.carousel {
+  width: 100%;
+  margin-left: 30vmin;
+  display: flex;
+  transition: all 0.35s ease 0s;
+}
+
+.carousel-card {
+  /* min-width: 30%; */
+  width: 60%;
+  height: 50vmin;
+}
+
+.carousel-card-content {
+  cursor: pointer;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.carousel-card:not(.active) .carousel-card-content {
+  transform: scale(0.7);
+  filter: blur(5px);
+}
+
+.carousel-card.active .carousel-card-title {
+  opacity: 1;
+  transform: translateY(-50%);
+}
+
+.carousel-card:not(.active) .carousel-card-title {
+  opacity: 0;
+  transform: translateY(-30%);
+}
+
+.carousel-card-title {
+  left: 100%;
+  position: relative;
+  color: #e5e5e5;
+  width: 35vmin;
+  top: 20px;
+  margin-left: 8px;
+  font-size: 1.8rem;
+  font-weight: 500;
+  transition: all 0.8s ease 0.3s;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.button-group > * {
+  height: 32px;
+  width: 77px;
+  border: none;
+}
+
+.button-group button {
+  background-color: #060606;
+  color: #e5e5e5;
+}
+
+.button-group button:hover {
+  cursor: pointer;
+}
+
+.button-group button:disabled {
+  opacity: 0.5;
+}
+
+.button-group button:is(:first-child) {
+  margin-right: 20px;
+}
+
+/*************
+Media Queries
+**************/
+
+@media screen and (max-width: 1280px) {
+  #carouseldiv {
+    padding: 50px;
+  }
+
+  .carousel {
+    width: 100%;
+    margin-left: 48vmin;
+  }
+
+  .carousel-card {
+    height: 400px;
+  }
+  .carousel-card-title {
+    width: 287px;
+    top: 20px;
+    margin-left: 8px;
+    font-size: 1.3rem;
+    font-weight: 500;
+    transition: all 0.8s ease 0.3s;
+  }
+}
