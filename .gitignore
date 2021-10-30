@@ -5,7 +5,7 @@
 /.pnp
 .pnp.js
 /.firebase
-/videos
+/src/videos
 
 # testing
 /coverage

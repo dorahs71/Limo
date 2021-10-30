@@ -1,11 +1,11 @@
 import styled from 'styled-components';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Cancel, StarRounded } from '@material-ui/icons';
 import { auth, firestore } from '../utils/firebase';
 import { useParams } from 'react-router-dom';
 
 const PopupDiv = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   top: 0;
   position: fixed;
@@ -18,7 +18,7 @@ const NewCommentDiv = styled.div`
   flex-direction: column;
   font-size: 25px;
   width: 60vmin;
-  height: 50vmin;
+  height: 55vmin;
   background: #333;
   border: 1px solid #75e799;
   padding: 20px 20px;
@@ -31,6 +31,7 @@ const NewCommentDiv = styled.div`
     width: 70vmin;
     height: 55vmin;
     top: 25vmin;
+    font-size: 25px;
   }
 `;
 
@@ -52,7 +53,6 @@ const CancelIcon = styled(Cancel)`
 `;
 
 const InputDiv = styled.div`
-  font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -69,7 +69,7 @@ const InputName = styled.div`
 `;
 
 const Input = styled.textarea`
-  font-size: 20px;
+  font-size: 25px;
   width: 40vmin;
   height: 15vmin;
   margin-left: 2vmin;
@@ -121,14 +121,12 @@ const Star = styled(StarRounded)`
   margin-left: 4vmin;
   margin-top: 5vmin;
   transform: scale(3);
-  /* color: ${(props) =>
-    props.rate <= props.selected ? 'gold' : '#292f3d'}; */
   color: ${(props) => (props.select ? '#FFD700' : '#374048')};
   margin-right: 1vmin;
   cursor: pointer;
   transition: color 0.5s;
   &:hover {
-    color: ${(props) => (props.hover ? 'rgba(255, 215, 0, .6)' : '#374048')};
+    color: ${(props) => (props.isHover ? 'rgba(255, 215, 0, .6)' : '#374048')};
   }
 
   @media (max-width: 1280px) {
@@ -143,12 +141,15 @@ const SendBtn = styled.div`
   height: 5vmin;
   border: 4px solid #7fffd4;
   border-radius: 5px;
-  font-size: 20px;
+  font-size: 25px;
   margin: 5vmin 0px;
   cursor: pointer;
   &:hover {
     background: linear-gradient(to left, #87cefa, #66cdaa);
     color: #191970;
+  }
+  @media (max-width: 1280px) {
+    font-size: 20px;
   }
 `;
 
@@ -160,35 +161,27 @@ export default function NewComment({ trigger, setTrigger }) {
   const possibleRate = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   const { movieId } = useParams();
+
   const onSubmit = () => {
-    console.log(auth.currentUser);
     const docRef = firestore
       .collection('Movies')
       .doc(movieId)
       .collection('Comments')
       .doc();
-    docRef
-      .set({
-        commentId: docRef.id,
-        movieId,
-        rate: selectedStar,
-        date: new Date(),
-        authorName: auth.currentUser.displayName || '',
-        authorId: auth.currentUser.uid,
-        authorImg: auth.currentUser.photoURL || '',
-        comment,
-      })
-      .then(() => {
-        setTrigger(false);
-        setComment('');
-        setSelectedStar('5');
-      });
-  };
-
-  useEffect(() => {
+    docRef.set({
+      commentId: docRef.id,
+      movieId,
+      rate: selectedStar,
+      date: new Date(),
+      authorName: auth.currentUser.displayName || '',
+      authorId: auth.currentUser.uid,
+      authorImg: auth.currentUser.photoURL || '',
+      comment,
+    });
+    setTrigger(false);
     setComment('');
     setSelectedStar('5');
-  }, []);
+  };
 
   return trigger ? (
     <PopupDiv>
@@ -211,7 +204,7 @@ export default function NewComment({ trigger, setTrigger }) {
                 onMouseEnter={() => setHoverStar(rate)}
                 onMouseLeave={() => setHoverStar(null)}
                 select={rate <= selectedStar}
-                hover={rate <= hoverStar}
+                isHover={rate <= hoverStar}
               />
             ))}
           </StarDiv>

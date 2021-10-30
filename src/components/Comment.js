@@ -3,11 +3,12 @@ import { firestore, auth } from '../utils/firebase';
 import firebase from '../utils/firebase';
 import { useParams } from 'react-router-dom';
 import { StarRounded, Forum, EmojiEmotions } from '@material-ui/icons';
+import Review from '../components/Review';
+import { useState } from 'react';
 
 const CommentContainer = styled.div`
   width: 80%;
   height: 18vmin;
-  border-radius: 5px;
   font-size: 25px;
   background: linear-gradient(#555, #111);
   display: flex;
@@ -55,19 +56,20 @@ const ContentDiv = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 5vmin;
+  width: 100%;
 `;
 
 const CommentContent = styled.div`
-  display: block;
+  margin-top: 1vmin;
 `;
 
 const UserRate = styled.div`
-  display: block;
+  display: flex;
+  align-items: center;
 `;
 
 const CommentDate = styled.div`
   margin-left: auto;
-  order: -1;
 `;
 
 const FunctionDiv = styled.div`
@@ -98,6 +100,7 @@ const RecommentDiv = styled.div`
 const Smile = styled(EmojiEmotions)`
   transform: scale(1.5);
   margin-right: 1vmin;
+
   @media (max-width: 1280px) {
     transform: scale(1.2);
   }
@@ -119,9 +122,10 @@ const Star = styled(StarRounded)`
   transform: scale(1.3);
   color: gold;
   margin-right: 1vmin;
-  @media (max-width: 1280px) {
-    transform: scale(1.1);
-  }
+`;
+
+const Rate = styled.div`
+  font-size: 22px;
 `;
 
 export default function Comment({
@@ -131,48 +135,76 @@ export default function Comment({
   date,
   rate,
   comment,
+  reviews,
   smileBy,
 }) {
   const { movieId } = useParams();
   const uid = auth.currentUser.uid;
+  const isSmiled = smileBy?.includes(uid);
+  const [showReview, setShowReview] = useState(false);
+
   const toggleSmile = () => {
-    firestore
-      .collection('Movies')
-      .doc(movieId)
-      .collection('Comments')
-      .doc(commentId)
-      .update({
-        smileBy: firebase.firestore.FieldValue.arrayUnion(uid),
-      });
+    if (isSmiled) {
+      firestore
+        .collection('Movies')
+        .doc(movieId)
+        .collection('Comments')
+        .doc(commentId)
+        .update({
+          smileBy: firebase.firestore.FieldValue.arrayRemove(uid),
+        });
+    } else {
+      firestore
+        .collection('Movies')
+        .doc(movieId)
+        .collection('Comments')
+        .doc(commentId)
+        .update({
+          smileBy: firebase.firestore.FieldValue.arrayUnion(uid),
+        });
+    }
   };
 
-  //   const isSmiled = smileBy.includes(uid);
+  const toggleShowReview = () => {
+    if (showReview) {
+      setShowReview(false);
+    } else if (!showReview) {
+      setShowReview(true);
+    }
+  };
 
   return (
-    <CommentContainer>
-      <UserDiv>
-        <User src={authorImg} />
-        <UserName>{authorName}</UserName>
-      </UserDiv>
-      <ContentDiv>
-        <CommentDate>{date.toDate().toLocaleString().slice(0, 10)}</CommentDate>
-        <UserRate>
-          <Star />
-          {rate}
-        </UserRate>
-        <CommentContent>{comment}</CommentContent>
-        <FunctionDiv>
-          <RecommentDiv>
-            <Recomment />
-            334
-          </RecommentDiv>
-          {/* <SmileDiv onClick={toggleSmile} smile={isSmiled}> */}
-          <SmileDiv onClick={toggleSmile}>
-            <Smile />
-            {/* {smileBy.length} */}
-          </SmileDiv>
-        </FunctionDiv>
-      </ContentDiv>
-    </CommentContainer>
+    <>
+      <CommentContainer>
+        <UserDiv>
+          <User src={authorImg} />
+          <UserName>{authorName}</UserName>
+        </UserDiv>
+        <ContentDiv>
+          <CommentDate>{date.toDate().toLocaleString()}</CommentDate>
+          <UserRate>
+            <Star />
+            <Rate> {rate}</Rate>
+          </UserRate>
+          <CommentContent>{comment}</CommentContent>
+          <FunctionDiv>
+            <RecommentDiv>
+              <Recomment onClick={toggleShowReview} />
+              {reviews?.length || 0}
+            </RecommentDiv>
+
+            <SmileDiv onClick={toggleSmile} smile={isSmiled}>
+              <Smile />
+              {smileBy?.length || 0}
+            </SmileDiv>
+          </FunctionDiv>
+        </ContentDiv>
+      </CommentContainer>
+      <Review
+        trigger={showReview}
+        commentId={commentId}
+        reviews={reviews || ''}
+      />
+    </>
   );
 }

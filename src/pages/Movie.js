@@ -16,6 +16,7 @@ import vote from '../images/vote.png';
 import comment from '../images/comment.png';
 import NewComment from '../components/NewComment';
 import Comment from '../components/Comment';
+import AddToList from '../components/AddToList';
 
 const MovieDiv = styled.div`
   width: 100%;
@@ -124,7 +125,7 @@ const EnTitle = styled.div`
   }
 `;
 
-const Date = styled.div`
+const ReleaseDate = styled.div`
   margin-top: 5vmin;
   @media (max-width: 1280px) {
   }
@@ -208,7 +209,7 @@ const StoryDiv = styled.div`
   display: flex;
   flex-direction: column;
   background: linear-gradient(#fffaf0, #fffaf0, #fffaf0, #fffaf0, #111);
-  padding: 30px 30px;
+  padding: 20px 20px;
   color: #333;
   text-align: center;
   align-items: center;
@@ -272,20 +273,24 @@ const AddButton = styled.img`
 const CastDiv = styled.div`
   background: #111;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Cast = styled.div`
-  height: 50vmin;
-  margin-top: 6vmin;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 4vmin;
-  justify-content: space-evenly;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 50px 0px;
+  padding: 30px 0px;
+  width: 100%;
+  max-width: 1140px;
 `;
 
 const ActorDiv = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const ActorImg = styled.img`
@@ -297,11 +302,11 @@ const ActorImg = styled.img`
 `;
 
 const ActorName = styled.div`
-  margin-top: 5vmin;
+  margin-top: 3vmin;
   font-size: 25px;
   font-weight: 700;
   @media (max-width: 1280px) {
-    font-size: 23px;
+    font-size: 20px;
     font-weight: 500;
   }
 `;
@@ -319,43 +324,39 @@ const Shake = keyframes`
  
 `;
 
-const VoteBtn = styled.img`
-  width: 9vmin;
-  height: 9vmin;
-  position: absolute;
-  right: 20vmin;
-  cursor: pointer;
-  animation: ${Shake} 2s;
-  bottom: -197vmin;
-  animation-iteration-count: infinite;
-  border-radius: 50%;
-  border: 4px outset #daffcc;
-  @media (max-width: 1280px) {
-    bottom: -193vmin;
-  }
-`;
-
 const CommentBtn = styled.div`
+  margin-left: 5vmin;
   width: 8vmin;
   height: 8vmin;
   background: url(${comment}) no-repeat;
   background-size: 8vmin 8vmin;
   margin-bottom: 0;
-  /* position: absolute; */
-  /* margin-left: auto; */
-
   cursor: pointer;
   animation: ${Shake} 2s;
   animation-iteration-count: infinite;
   border-radius: 50%;
   border: 4px outset #daffcc;
-  /* @media (max-width: 1280px) {
-    bottom: -305vmin;
-  } */
+`;
+
+const VoteBtn = styled.div`
+  margin-left: 5vmin;
+  background: url(${vote}) no-repeat;
+  background-size: 10vmin 10vmin;
+  background-position: -14px -2px;
+  margin-bottom: 0;
+  width: 8vmin;
+  height: 8vmin;
+  cursor: pointer;
+  animation: ${Shake} 2s;
+  animation-iteration-count: infinite;
+  border-radius: 50%;
+  border: 4px outset #daffcc;
+  @media (max-width: 1280px) {
+    background-position: -4px -2px;
+  }
 `;
 
 const QuoteContainer = styled.div`
-  margin-top: 6vmin;
   display: flex;
   flex-direction: column;
   padding: 20px 20px;
@@ -401,8 +402,6 @@ const CommentSection = styled.div`
 
 const CommentDiv = styled.div`
   width: 100%;
-  height: 50vmin;
-  /* margin-top: 6vmin; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -411,7 +410,13 @@ const CommentDiv = styled.div`
 const CommentHead = styled.div`
   display: flex;
   align-items: flex-end;
-  justify-content: space-around;
+  justify-content: center;
+`;
+
+const QuoteHead = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 `;
 
 const ReadMore = styled.div`
@@ -424,6 +429,7 @@ const ReadMore = styled.div`
   border-radius: 10px;
   padding: 15px;
   color: #fff;
+  line-height: 5vmin;
   background: linear-gradient(to right, #75e799, #66cdaa);
   cursor: pointer;
   &:hover {
@@ -575,9 +581,6 @@ const ListProfileName = styled.div`
   }
 `;
 
-const actor =
-  'https://image.agentm.tw/images/artist/cde67e4f-8133-423e-8970-bac2bf8a4680.jpg';
-
 export default function Movie() {
   useEffect(() => {
     AOS.init({ duration: 1200 });
@@ -586,7 +589,24 @@ export default function Movie() {
   const { movieId } = useParams();
   const [eachMovie, setEachMovie] = useState('');
   const [showNewComment, setShowNewComment] = useState(false);
+  const [showAddToList, setShowAddToList] = useState(false);
   const [comment, setComment] = useState([]);
+
+  const addDiary = () => {
+    const uid = auth.currentUser.uid;
+    const docRef = firestore
+      .collection('Users')
+      .doc(uid)
+      .collection('Diaries')
+      .doc();
+    docRef.set({
+      diaryId: docRef.id,
+      movieId,
+      poster: eachMovie.poster,
+      chTitle: eachMovie.chTitle,
+      date: new Date(),
+    });
+  };
 
   useEffect(() => {
     firestore
@@ -595,7 +615,6 @@ export default function Movie() {
       .get()
       .then((docSnapshot) => {
         const data = docSnapshot.data();
-        console.log(data.gallery[0]);
         setEachMovie(data);
       });
   }, []);
@@ -605,10 +624,10 @@ export default function Movie() {
       .collection('Movies')
       .doc(movieId)
       .collection('Comments')
-      .get()
-      .then((collectionSnapshot) => {
-        const data = collectionSnapshot.docs.map((docSnapshot) => {
-          return docSnapshot.data();
+      .orderBy('date', 'desc')
+      .onSnapshot((collectionSnapshot) => {
+        const data = collectionSnapshot.docs.map((doc) => {
+          return doc.data();
         });
         setComment(data);
       });
@@ -616,10 +635,10 @@ export default function Movie() {
 
   return (
     <MovieDiv>
+      {window.scrollTo(0, 0)}
       <BackgroundDiv>
         <HeadPic>
           {eachMovie !== '' && <Zoom src={eachMovie.gallery[0]} alt="" />}
-          {/* <Zoom src={eachMovie?.gallery[0]} alt=''/>  */}
         </HeadPic>
       </BackgroundDiv>
       <MovieIntro>
@@ -635,7 +654,7 @@ export default function Movie() {
             <Star />
             {eachMovie.rate}/ {eachMovie.rateNum}人
           </Rate>
-          <Date>上映日期：{eachMovie.date}</Date>
+          <ReleaseDate>上映日期：{eachMovie.date}</ReleaseDate>
           <Length>片長：{eachMovie.length}</Length>
           <Director>導演：{eachMovie.director}</Director>
           <TrailerButton>
@@ -643,13 +662,18 @@ export default function Movie() {
             <Trailer> 我想看預告片</Trailer>
           </TrailerButton>
           <AddButtonDiv>
-            <AddButton src={diary} alt="" />
+            <AddButton src={diary} alt="" onClick={addDiary} />
             <AddButton src={smile} alt="" />
-            <AddButton src={list} alt="" />
+            <AddButton
+              src={list}
+              alt=""
+              onClick={() => setShowAddToList(true)}
+            />
           </AddButtonDiv>
         </IntroDiv>
       </MovieIntro>
       <TopDiv />
+      <AddToList trigger={showAddToList} setTrigger={setShowAddToList} />
       <StoryDiv>
         <StoryTitle data-aos="fade-up">劇情簡介</StoryTitle>
         <Story data-aos="fade-up">{eachMovie.story}</Story>
@@ -657,25 +681,22 @@ export default function Movie() {
       <CastDiv>
         <Title>演員列表</Title>
         <Cast>
-          <ActorDiv>
-            <ActorImg src={actor} alt="" />
-            <ActorName>
-              蘿拉伯恩 <br />
-              Laura Birn
-            </ActorName>
-          </ActorDiv>
-          <ActorDiv>
-            <ActorImg src={actor} alt="" />
-            <ActorName>
-              蘿拉伯恩 <br />
-              Laura Birn
-            </ActorName>
-          </ActorDiv>
+          {eachMovie.cast?.map((item) => (
+            <ActorDiv key={item.chActor}>
+              <ActorImg src={item.actorImg} alt="" />
+              <ActorName>
+                {item.chActor} <br />
+                {item.enActor || ''}
+              </ActorName>
+            </ActorDiv>
+          ))}
         </Cast>
       </CastDiv>
       <QuoteSection>
-        <Title>經典對白</Title>
-        <VoteBtn src={vote} alt="" />
+        <QuoteHead>
+          <Title>經典對白</Title>
+          <VoteBtn src={vote} alt="" />
+        </QuoteHead>
         <QuoteContainer>
           <QuoteDiv>
             <Ranking src={rank1} alt="" />
@@ -704,7 +725,6 @@ export default function Movie() {
           <Title>網友評論</Title>
           <CommentBtn onClick={() => setShowNewComment(true)} />
         </CommentHead>
-        <NewComment trigger={showNewComment} setTrigger={setShowNewComment} />
         <CommentDiv>
           {comment.map((item) => (
             <Comment
@@ -715,12 +735,14 @@ export default function Movie() {
               date={item.date}
               rate={item.rate}
               comment={item.comment}
+              reviews={item.reviews}
               smileBy={item.smileBy}
             />
           ))}
           <ReadMore>點我看更多</ReadMore>
         </CommentDiv>
       </CommentSection>
+      <NewComment trigger={showNewComment} setTrigger={setShowNewComment} />
       <ListSection>
         <Title>相關片單</Title>
         <ListDiv>

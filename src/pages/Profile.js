@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { useState } from 'react';
-import { auth } from '../utils/firebase';
-import { useHistory } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { firestore, auth } from '../utils/firebase';
+import { useHistory, Link } from 'react-router-dom';
 
 const MainProfile = styled.div`
   display: flex;
@@ -119,18 +119,17 @@ const Tag = styled.div`
   font-weight: 500;
   height: 8vmin;
   opacity: 0.8;
-  color: ${(props) => (props.active ? '#333' : '#fff')};
-  background: ${(props) =>
-    props.active ? 'linear-gradient(#daffcc,#75e799 )' : 'transparent'};
+  color: ${(props) => (props.active ? '#fff' : '#666')};
+  background: transparent;
   border-radius: 5px;
-  border-bottom: 5px solid #75e799;
+  border-bottom: 5px solid ${(props) => (props.active ? '#7fffd4' : '#222')};
   line-height: 8vmin;
   text-align: center;
   margin-left: 5vmin;
   cursor: pointer;
   &:hover {
-    background: linear-gradient(#daffcc, #75e799);
-    color: #333;
+    border-bottom: 5px solid #7fffd4;
+    color: #fff;
   }
   @media (max-width: 1280px) {
     width: 15vmin;
@@ -138,11 +137,9 @@ const Tag = styled.div`
     font-weight: 500;
     height: 8vmin;
     opacity: 0.8;
-    color: ${(props) => (props.active ? '#333' : '#fff')};
-    background: ${(props) =>
-      props.active ? 'linear-gradient(#daffcc,#75e799 )' : 'transparent'};
+    color: ${(props) => (props.active ? '#fff' : '#666')};
     border-radius: 5px;
-    border-bottom: 5px solid #75e799;
+    border-bottom: 5px solid ${(props) => (props.active ? '#7fffd4' : '#222')};
     line-height: 8vmin;
     text-align: center;
     margin-left: 5vmin;
@@ -150,11 +147,20 @@ const Tag = styled.div`
   }
 `;
 
-const Showcase = styled.div`
-  padding: 50px 50px;
-  display: flex;
-  flex-wrap: wrap;
+const ShowBackground = styled.div`
   background: linear-gradient(#111, #2f4f4f, #2f4f4f, #111);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
+const Showcase = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px 3px;
+  padding: 15px 0px;
+  width: 100%;
+  max-width: 1140px;
 `;
 
 const DiaryDiv = styled.div`
@@ -172,12 +178,40 @@ const DiaryPoster = styled.img`
 `;
 
 const DiaryTitle = styled.div`
+  margin-top: 2vmin;
   font-size: 25px;
+  color: #fff;
+  @media (max-width: 1280px) {
+    font-size: 20px;
+  }
+`;
+
+const DiaryLink = styled(Link)`
+  text-decoration: none;
+  width: 100%;
 `;
 
 export default function Profile() {
   const [activeitem, setActiveitem] = useState('diary');
   const history = useHistory();
+  const [showDiary, setShowDiary] = useState('');
+  const uid = auth.currentUser?.uid;
+
+  useEffect(() => {
+    firestore
+      .collection('Users')
+      .doc(uid)
+      .collection('Diaries')
+      .orderBy('date')
+      .get()
+      .then((item) => {
+        const diaryList = item.docs.map((doc) => doc.data());
+        setShowDiary(diaryList);
+      })
+      .catch((error) => {
+        console.log('Error getting documents: ', error);
+      });
+  }, [uid]);
 
   return (
     <MainProfile>
@@ -245,64 +279,21 @@ export default function Profile() {
           評論
         </Tag>
       </TagDiv>
-      <Showcase>
-        <DiaryDiv>
-          <DiaryPoster
-            src="https://image.agentm.tw/images/movie/ebfc946c403e8e261944a75719e40323372d039593b89d1ab809fd515821d441/poster/image/px_0006.jpg"
-            alt=""
-          />
-          <DiaryTitle>幸福(1965)</DiaryTitle>
-        </DiaryDiv>
-        <DiaryDiv>
-          <DiaryPoster
-            src="https://image.agentm.tw/images/movie/ebfc946c403e8e261944a75719e40323372d039593b89d1ab809fd515821d441/poster/image/px_0006.jpg"
-            alt=""
-          />
-          <DiaryTitle>幸福(1965)</DiaryTitle>
-        </DiaryDiv>
-        <DiaryDiv>
-          <DiaryPoster
-            src="https://image.agentm.tw/images/movie/ebfc946c403e8e261944a75719e40323372d039593b89d1ab809fd515821d441/poster/image/px_0006.jpg"
-            alt=""
-          />
-          <DiaryTitle>幸福(1965)</DiaryTitle>
-        </DiaryDiv>
-        <DiaryDiv>
-          <DiaryPoster
-            src="https://image.agentm.tw/images/movie/ebfc946c403e8e261944a75719e40323372d039593b89d1ab809fd515821d441/poster/image/px_0006.jpg"
-            alt=""
-          />
-          <DiaryTitle>幸福(1965)</DiaryTitle>
-        </DiaryDiv>
-        <DiaryDiv>
-          <DiaryPoster
-            src="https://image.agentm.tw/images/movie/ebfc946c403e8e261944a75719e40323372d039593b89d1ab809fd515821d441/poster/image/px_0006.jpg"
-            alt=""
-          />
-          <DiaryTitle>幸福(1965)</DiaryTitle>
-        </DiaryDiv>
-        <DiaryDiv>
-          <DiaryPoster
-            src="https://image.agentm.tw/images/movie/ebfc946c403e8e261944a75719e40323372d039593b89d1ab809fd515821d441/poster/image/px_0006.jpg"
-            alt=""
-          />
-          <DiaryTitle>幸福(1965)</DiaryTitle>
-        </DiaryDiv>
-        <DiaryDiv>
-          <DiaryPoster
-            src="https://image.agentm.tw/images/movie/ebfc946c403e8e261944a75719e40323372d039593b89d1ab809fd515821d441/poster/image/px_0006.jpg"
-            alt=""
-          />
-          <DiaryTitle>幸福(1965)</DiaryTitle>
-        </DiaryDiv>
-        <DiaryDiv>
-          <DiaryPoster
-            src="https://image.agentm.tw/images/movie/ebfc946c403e8e261944a75719e40323372d039593b89d1ab809fd515821d441/poster/image/px_0006.jpg"
-            alt=""
-          />
-          <DiaryTitle>幸福(1965)</DiaryTitle>
-        </DiaryDiv>
-      </Showcase>
+      <ShowBackground>
+        <Showcase>
+          {showDiary !== '' &&
+            showDiary.map((item) => {
+              return (
+                <DiaryLink to={`/diary/${item.diaryId}`}>
+                  <DiaryDiv>
+                    <DiaryPoster src={item.poster} alt="" />
+                    <DiaryTitle>{item.chTitle}</DiaryTitle>
+                  </DiaryDiv>
+                </DiaryLink>
+              );
+            })}
+        </Showcase>
+      </ShowBackground>
     </MainProfile>
   );
 }
