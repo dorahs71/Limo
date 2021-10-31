@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Parallax } from 'react-parallax';
+import { Link } from 'react-router-dom';
 
 const ImgDiv = styled.div`
   width: 1800px;
@@ -24,7 +25,7 @@ const PosterImg = styled.img`
   }
 `;
 
-const Effect1 = styled.div`
+const Effect = styled.div`
   background: #fff;
   color: #333;
   font-size: 40px;
@@ -46,24 +47,41 @@ const TopDiv = styled.div`
   height: 7vmin;
 `;
 
-const Effect1Div = styled.div`
+const EffectDiv = styled.div`
   position: relative;
 `;
 
-export default function Showing({ chTitle, enTitle, story, poster, bgImg }) {
+const MyLink = styled(Link)`
+  text-decoration: none;
+  width: 100%;
+  color: #fff;
+`;
+
+export default function Showing({
+  chTitle,
+  enTitle,
+  story,
+  poster,
+  bgImg,
+  movieId,
+}) {
   return (
     <>
       <TopDiv />
-      <Effect1Div>
-        <Parallax bgImage={bgImg} strength={500} blur={{ min: -5, max: 8 }}>
-          <ImgDiv />
-          <Effect1>
-            {chTitle} <br /> {enTitle}
-          </Effect1>
-          <Intro>{story}</Intro>
-        </Parallax>
-        <PosterImg src={poster} alt="" />
-      </Effect1Div>
+
+      <EffectDiv>
+        <MyLink to={`/movie/${movieId}`}>
+          <Parallax bgImage={bgImg} strength={500} blur={{ min: -5, max: 8 }}>
+            <ImgDiv />
+            <Effect>
+              {chTitle} <br /> {enTitle}
+            </Effect>
+            <Intro>{story}</Intro>
+          </Parallax>
+          <PosterImg src={poster} alt="" />
+        </MyLink>
+      </EffectDiv>
+
       <TopDiv />
     </>
   );

@@ -11,7 +11,7 @@ const Star = styled(StarRounded)`
   margin-right: 3px;
 `;
 
-const MovieLink = styled(Link)`
+const MyLink = styled(Link)`
   text-decoration: none;
   width: 100%;
 `;
@@ -46,7 +46,7 @@ export default function Coverflow() {
         {movies.map((movie, i) => {
           return (
             <CarouselCard key={movie.movieId} active={activeIndex === i}>
-              <MovieLink to={`/movie/${movie.movieId}`}>
+              <MyLink to={`/movie/${movie.movieId}`}>
                 <div
                   className="carousel-card-content"
                   style={{ backgroundImage: `url("${movie.poster}")` }}
@@ -58,7 +58,7 @@ export default function Coverflow() {
                     {movie.rate}
                   </div>
                 </div>
-              </MovieLink>
+              </MyLink>
             </CarouselCard>
           );
         })}

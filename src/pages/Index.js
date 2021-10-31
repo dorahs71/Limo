@@ -5,7 +5,7 @@ import { InfoOutlined } from '@material-ui/icons';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Coverflow from '../components/Coverflow';
-import ThemeList from '../components/List';
+import List from '../components/IndexList';
 import Showing from '../components/Showing';
 import { firestore } from '../utils/firebase';
 
@@ -25,12 +25,11 @@ const VideoSec = styled.div`
     background: linear-gradient(to top, #111, transparent);
     z-index: 30;
   }
-
   @media (max-width: 1280px) {
     height: 0;
-    &:after {
-      height: 100px;
-    }
+    /* &:after {
+      height: 10vmin;
+    } */
   }
 `;
 
@@ -39,7 +38,7 @@ const Video = styled.video`
   top: 0;
   overflow: hidden;
   width: 100%;
-  height: auto;
+  height: 100vh;
 `;
 
 const MainDiv = styled.div`
@@ -162,7 +161,8 @@ export default function Index() {
     AOS.init({ duration: 1200 });
   }, []);
 
-  function getParallax() {
+  useEffect(() => {
+    let isMounted = true;
     firestore
       .collection('Movies')
       .where('date', '>', '2021/11/5')
@@ -171,15 +171,14 @@ export default function Index() {
       .get()
       .then((item) => {
         const parallaxList = item.docs.map((doc) => doc.data());
-        setShowParallax(parallaxList);
+        if (isMounted) setShowParallax(parallaxList);
       })
       .catch((error) => {
         console.log('Error getting documents: ', error);
       });
-  }
-
-  useEffect(() => {
-    getParallax();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -204,7 +203,7 @@ export default function Index() {
         <Title data-aos="fade-up">網友推薦</Title>
         <Coverflow />
         <Title data-aos="fade-up">精選片單</Title>
-        <ThemeList />
+        <List />
         <Title data-aos="fade-up">近期上映</Title>
         {showParallax.map((movie) => {
           return (
@@ -215,6 +214,7 @@ export default function Index() {
               story={movie.story}
               poster={movie.poster}
               bgImg={movie.gallery[0]}
+              movieId={movie.movieId}
             />
           );
         })}

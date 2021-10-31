@@ -6,6 +6,7 @@ import Index from './pages/Index';
 import Movie from './pages/Movie';
 import Profile from './pages/Profile';
 import Diary from './pages/Diary';
+import List from './pages/List';
 
 const NavDiv = styled.div`
   position: fixed;
@@ -78,6 +79,9 @@ export default function App() {
         </Route>
         <Route path="/diary/:diaryId" exact>
           <Diary />
+        </Route>
+        <Route path="/list/:listId" exact>
+          <List />
         </Route>
         <Route path="/profile" exact>
           <Profile />

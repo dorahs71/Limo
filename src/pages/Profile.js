@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { firestore, auth } from '../utils/firebase';
 import { useHistory, Link } from 'react-router-dom';
+import ProfileList from '../components/ProfileList';
+import ToggleBtn from '../components/Toggle';
 
 const MainProfile = styled.div`
   display: flex;
@@ -30,8 +32,6 @@ const ProfileImg = styled.img`
   width: 20vmin;
   height: 15vmin;
   @media (max-width: 1280px) {
-    width: 12vmin;
-    height: 12vmin;
   }
 `;
 
@@ -53,11 +53,11 @@ const ChangeProfileBtn = styled.div`
   border-radius: 10px;
   cursor: pointer;
   position: absolute;
-
   @media (max-width: 1280px) {
     width: 15vmin;
+    padding: 10px;
     font-size: 20px;
-    top: 30vmin;
+    top: 33vmin;
   }
 `;
 
@@ -154,7 +154,7 @@ const ShowBackground = styled.div`
   justify-content: center;
 `;
 
-const Showcase = styled.div`
+const DiaryShowcase = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 10px 3px;
@@ -186,18 +186,31 @@ const DiaryTitle = styled.div`
   }
 `;
 
-const DiaryLink = styled(Link)`
+const MyLink = styled(Link)`
   text-decoration: none;
   width: 100%;
 `;
 
+const ListShowcase = styled.div`
+  display: grid;
+  height: auto;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px 3px;
+  padding: 15px 0px;
+  width: 100%;
+  max-width: 1140px;
+`;
+
 export default function Profile() {
   const [activeitem, setActiveitem] = useState('diary');
-  const history = useHistory();
   const [showDiary, setShowDiary] = useState('');
+  const [showList, setShowList] = useState('');
+  const history = useHistory();
+
   const uid = auth.currentUser?.uid;
 
   useEffect(() => {
+    let isMounted = true;
     firestore
       .collection('Users')
       .doc(uid)
@@ -206,11 +219,33 @@ export default function Profile() {
       .get()
       .then((item) => {
         const diaryList = item.docs.map((doc) => doc.data());
-        setShowDiary(diaryList);
+        if (isMounted) setShowDiary(diaryList);
       })
       .catch((error) => {
         console.log('Error getting documents: ', error);
       });
+    return () => {
+      isMounted = false;
+    };
+  }, [uid]);
+
+  useEffect(() => {
+    let isMounted = true;
+    firestore
+      .collection('Users')
+      .doc(uid)
+      .collection('Lists')
+      .get()
+      .then((item) => {
+        const listData = item.docs.map((doc) => doc.data());
+        if (isMounted) setShowList(listData);
+      })
+      .catch((error) => {
+        console.log('Error getting documents: ', error);
+      });
+    return () => {
+      isMounted = false;
+    };
   }, [uid]);
 
   return (
@@ -243,7 +278,7 @@ export default function Profile() {
           </IntroLine>
           <IntroLine>
             <IntroTitle>即時通知</IntroTitle>
-            <IntroValue>Toggle</IntroValue>
+            <ToggleBtn />
           </IntroLine>
         </ProfileIntroDiv>
       </ProfileSection>
@@ -280,19 +315,33 @@ export default function Profile() {
         </Tag>
       </TagDiv>
       <ShowBackground>
-        <Showcase>
-          {showDiary !== '' &&
-            showDiary.map((item) => {
-              return (
-                <DiaryLink to={`/diary/${item.diaryId}`}>
-                  <DiaryDiv>
-                    <DiaryPoster src={item.poster} alt="" />
-                    <DiaryTitle>{item.chTitle}</DiaryTitle>
-                  </DiaryDiv>
-                </DiaryLink>
-              );
-            })}
-        </Showcase>
+        {activeitem === 'diary' && (
+          <DiaryShowcase>
+            {showDiary !== '' &&
+              showDiary.map((item) => {
+                return (
+                  <MyLink key={item.diaryId} to={`/diary/${item.diaryId}`}>
+                    <DiaryDiv>
+                      <DiaryPoster src={item.poster} alt="" />
+                      <DiaryTitle>{item.chTitle}</DiaryTitle>
+                    </DiaryDiv>
+                  </MyLink>
+                );
+              })}
+          </DiaryShowcase>
+        )}
+        {activeitem === 'list' && (
+          <ListShowcase>
+            {showList.map((item) => (
+              <ProfileList
+                key={item.listId}
+                title={item.listTitle}
+                posters={item.listPosters}
+                listId={item.listId}
+              />
+            ))}
+          </ListShowcase>
+        )}
       </ShowBackground>
     </MainProfile>
   );

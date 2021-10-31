@@ -159,7 +159,7 @@ const ListSection = styled.div`
   margin-top: 2vmin;
 `;
 
-export default function AddToList({ trigger, setTrigger }) {
+export default function AddToList({ trigger, setTrigger, movie }) {
   const [newList, setNewList] = useState('');
   const [showList, setShowList] = useState('');
   const [selectListId, setSelectListId] = useState('');
@@ -204,15 +204,25 @@ export default function AddToList({ trigger, setTrigger }) {
       .collection('Lists')
       .doc(selectListId)
       .update({
-        list: firebase.firestore.FieldValue.arrayUnion({
-          movieId,
-          note: '',
-        }),
+        listPosters: firebase.firestore.FieldValue.arrayUnion(movie.poster),
       });
+
+    const docRef = firestore
+      .collection('Users')
+      .doc(uid)
+      .collection('Lists')
+      .doc(selectListId)
+      .collection('ListData')
+      .doc();
+    docRef.set({
+      listDataId: docRef.id,
+      movieId,
+      poster: movie.poster,
+      chTitle: movie.chTitle,
+      date: new Date(),
+    });
     setTrigger(false);
   };
-
-  useEffect(() => {}, []);
 
   return trigger ? (
     <PopupDiv>

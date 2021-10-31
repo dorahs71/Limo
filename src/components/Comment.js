@@ -168,7 +168,7 @@ export default function Comment({
   const toggleShowReview = () => {
     if (showReview) {
       setShowReview(false);
-    } else if (!showReview) {
+    } else {
       setShowReview(true);
     }
   };

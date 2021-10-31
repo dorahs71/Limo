@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { NearMe } from '@material-ui/icons';
+import { Telegram } from '@material-ui/icons';
 import { auth, firestore } from '../utils/firebase';
 import firebase from '../utils/firebase';
 import { useParams } from 'react-router-dom';
@@ -15,17 +15,18 @@ const ReviewSection = styled.div`
   align-items: center;
 `;
 
-const SendIcon = styled(NearMe)`
+const SendIcon = styled(Telegram)`
   transform: scale(2);
   color: #75e799;
   cursor: pointer;
+  margin-left: 2vmin;
 `;
 
 const InputDiv = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   @media (max-width: 1280px) {
     font-size: 18px;
   }

@@ -177,9 +177,13 @@ export const Nav = () => {
   const [hasUser, setHasUser] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
     auth.onAuthStateChanged((user) => {
-      setHasUser(user);
+      if (isMounted) setHasUser(user);
     });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

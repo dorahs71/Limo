@@ -609,17 +609,22 @@ export default function Movie() {
   };
 
   useEffect(() => {
+    let isMounted = true;
     firestore
       .collection('Movies')
       .doc(movieId)
       .get()
       .then((docSnapshot) => {
         const data = docSnapshot.data();
-        setEachMovie(data);
+        if (isMounted) setEachMovie(data);
       });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
     firestore
       .collection('Movies')
       .doc(movieId)
@@ -629,8 +634,11 @@ export default function Movie() {
         const data = collectionSnapshot.docs.map((doc) => {
           return doc.data();
         });
-        setComment(data);
+        if (isMounted) setComment(data);
       });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -673,7 +681,11 @@ export default function Movie() {
         </IntroDiv>
       </MovieIntro>
       <TopDiv />
-      <AddToList trigger={showAddToList} setTrigger={setShowAddToList} />
+      <AddToList
+        trigger={showAddToList}
+        setTrigger={setShowAddToList}
+        movie={eachMovie}
+      />
       <StoryDiv>
         <StoryTitle data-aos="fade-up">劇情簡介</StoryTitle>
         <Story data-aos="fade-up">{eachMovie.story}</Story>
