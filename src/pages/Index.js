@@ -165,7 +165,7 @@ export default function Index() {
     let isMounted = true;
     firestore
       .collection('Movies')
-      .where('date', '>', '2021/11/5')
+      .where('date', '>', '2021/11/1')
       .orderBy('date')
       .limit(8)
       .get()

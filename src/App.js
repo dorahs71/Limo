@@ -7,6 +7,7 @@ import Movie from './pages/Movie';
 import Profile from './pages/Profile';
 import Diary from './pages/Diary';
 import List from './pages/List';
+import ScrollToTop from './components/ScrollToTop';
 
 const NavDiv = styled.div`
   position: fixed;
@@ -70,6 +71,7 @@ export default function App() {
           <Nav />
         </StartNav>
       )}
+      <ScrollToTop />
       <Switch>
         <Route path="/" exact>
           <Index />

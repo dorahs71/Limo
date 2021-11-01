@@ -206,7 +206,7 @@ export const Nav = () => {
                 <ProfilePic src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=7e617ed2-9a96-4192-8847-c07d8f642228" />
               </MyLink>
               <InfoDiv>
-                <div>暱稱：愛的小貝比</div>
+                <div>暱稱：甜茶好帥</div>
                 <div>日誌：30</div>
                 <div>片單：30</div>
                 <div>收藏：30</div>

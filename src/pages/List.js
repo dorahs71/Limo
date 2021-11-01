@@ -11,6 +11,7 @@ import { firestore, auth } from '../utils/firebase';
 import firebase from '../utils/firebase';
 import { useParams } from 'react-router-dom';
 import ListBlock from '../components/ListBlock';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 const ListSection = styled.div`
   display: flex;
@@ -271,8 +272,11 @@ export default function List() {
   const [listData, setListData] = useState('');
   const [updateTitle, setUpdateTitle] = useState('');
   const [updateIntro, setUpdateIntro] = useState('');
+  // const [listOrder, setListOrder] = useState({ initialOrder });
 
   const uid = auth.currentUser?.uid;
+
+  // const initialOrder = listData;
 
   useEffect(() => {
     let isMounted = true;
@@ -354,6 +358,30 @@ export default function List() {
       });
   };
 
+  // const reorder = (list, startIndex, endIndex) => {
+  //   const result = Array.from(list);
+  //   const [removed] = result.splice(startIndex, 1);
+  //   result.splice(endIndex, 0, removed);
+
+  //   return result;
+  // };
+
+  // const onDragEnd = (result) => {
+  //   if (!result.destination) {
+  //     return;
+  //   }
+  //   if (result.destination.index === result.source.index) {
+  //     return;
+  //   }
+  //   const newOrder = reorder(
+  //     listOrder,
+  //     result.source.index,
+  //     result.destination.index
+  //   );
+
+  //   setListOrder({ newOrder });
+  // };
+
   return (
     <ListSection>
       <ListContainer>
@@ -424,19 +452,31 @@ export default function List() {
               })}
             </HashtagContainer>
           </HashtagSection>
-          <ArrangeListDiv>
-            {listData !== '' &&
-              listData.map((item) => (
-                <ListBlock
-                  key={item.listDataId}
-                  listDataId={item.listDataId}
-                  movieId={item.movieId}
-                  chTitle={item.chTitle}
-                  listNote={item.listNote}
-                  poster={item.poster}
-                />
-              ))}
-          </ArrangeListDiv>
+          {/* <DragDropContext onDragEnd={onDragEnd}> */}
+          <DragDropContext>
+            <Droppable droppableId="list">
+              {(provided) => (
+                <ArrangeListDiv
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  {listData !== '' &&
+                    listData.map((item, index) => (
+                      <ListBlock
+                        key={item.listDataId}
+                        index={index}
+                        listDataId={item.listDataId}
+                        movieId={item.movieId}
+                        chTitle={item.chTitle}
+                        listNote={item.listNote}
+                        poster={item.poster}
+                      />
+                    ))}
+                  {provided.placeholder}
+                </ArrangeListDiv>
+              )}
+            </Droppable>
+          </DragDropContext>
         </ThemeListDiv>
       </ListContainer>
     </ListSection>

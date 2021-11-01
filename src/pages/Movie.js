@@ -17,6 +17,7 @@ import comment from '../images/comment.png';
 import NewComment from '../components/NewComment';
 import Comment from '../components/Comment';
 import AddToList from '../components/AddToList';
+import TrailerPopup from '../components/TrailerPopup';
 
 const MovieDiv = styled.div`
   width: 100%;
@@ -284,7 +285,10 @@ const Cast = styled.div`
   grid-gap: 50px 0px;
   padding: 30px 0px;
   width: 100%;
-  max-width: 1140px;
+  max-width: 1440px;
+  @media (max-width: 1280px) {
+    max-width: 1140px;
+  }
 `;
 
 const ActorDiv = styled.div`
@@ -294,10 +298,12 @@ const ActorDiv = styled.div`
 `;
 
 const ActorImg = styled.img`
-  width: 20vmin;
-  height: 22vmin;
+  width: 18vmin;
+  height: 20vmin;
   border-radius: 50% 30px;
   @media (max-width: 1280px) {
+    width: 20vmin;
+    height: 22vmin;
   }
 `;
 
@@ -591,6 +597,7 @@ export default function Movie() {
   const [showNewComment, setShowNewComment] = useState(false);
   const [showAddToList, setShowAddToList] = useState(false);
   const [comment, setComment] = useState([]);
+  const [showTrailer, setShowTrailer] = useState(false);
 
   const addDiary = () => {
     const uid = auth.currentUser.uid;
@@ -643,7 +650,6 @@ export default function Movie() {
 
   return (
     <MovieDiv>
-      {window.scrollTo(0, 0)}
       <BackgroundDiv>
         <HeadPic>
           {eachMovie !== '' && <Zoom src={eachMovie.gallery[0]} alt="" />}
@@ -665,10 +671,11 @@ export default function Movie() {
           <ReleaseDate>上映日期：{eachMovie.date}</ReleaseDate>
           <Length>片長：{eachMovie.length}</Length>
           <Director>導演：{eachMovie.director}</Director>
-          <TrailerButton>
+          <TrailerButton onClick={() => setShowTrailer(true)}>
             <TrailerIcon />
             <Trailer> 我想看預告片</Trailer>
           </TrailerButton>
+
           <AddButtonDiv>
             <AddButton src={diary} alt="" onClick={addDiary} />
             <AddButton src={smile} alt="" />
@@ -792,6 +799,11 @@ export default function Movie() {
           <List></List>
         </ListDiv>
       </ListSection>
+      <TrailerPopup
+        trailerKey={eachMovie.trailerKey}
+        trigger={showTrailer}
+        setTrigger={setShowTrailer}
+      />
     </MovieDiv>
   );
 }

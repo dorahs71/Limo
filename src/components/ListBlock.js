@@ -2,7 +2,9 @@ import styled from 'styled-components';
 import { Save, Delete } from '@material-ui/icons';
 import { useState } from 'react';
 import { firestore, auth } from '../utils/firebase';
+import firebase from '../utils/firebase';
 import { useParams, Link } from 'react-router-dom';
+import { Draggable } from 'react-beautiful-dnd';
 
 const ListBlockDiv = styled.div`
   display: flex;
@@ -95,6 +97,7 @@ const MyLink = styled(Link)`
 
 export default function ListBlock({
   listDataId,
+  index,
   movieId,
   chTitle,
   listNote,
@@ -129,30 +132,46 @@ export default function ListBlock({
       .catch((error) => {
         console.error('Error removing document: ', error);
       });
+
+    firestore
+      .collection('Users')
+      .doc(uid)
+      .collection('Lists')
+      .doc(listId)
+      .update({
+        listPosters: firebase.firestore.FieldValue.arrayRemove(poster),
+      });
   };
 
   return (
-    <ListBlockDiv>
-      <MovieDiv>
-        <MyLink to={`/movie/${movieId}`}>
-          <MoviePoster src={poster} alt="" />
-          <MovieTitle>{chTitle}</MovieTitle>
-        </MyLink>
-      </MovieDiv>
-
-      <EditListContent>
-        <ListContent
-          placeholder="我想談談這部電影..."
-          defaultValue={listNote || ''}
-          onChange={(e) => {
-            setUpdateNote(e.target.value);
-          }}
-        />
-        <FunctionDiv>
-          <SaveNote onClick={handleUpdateListNote} />
-          <DeleteIcon onClick={handleDeleteMovie} />
-        </FunctionDiv>
-      </EditListContent>
-    </ListBlockDiv>
+    <Draggable draggableId={listDataId} index={index}>
+      {(provided) => (
+        <ListBlockDiv
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          <MovieDiv>
+            <MyLink to={`/movie/${movieId}`}>
+              <MoviePoster src={poster} alt="" />
+              <MovieTitle>{chTitle}</MovieTitle>
+            </MyLink>
+          </MovieDiv>
+          <EditListContent>
+            <ListContent
+              placeholder="我想談談這部電影..."
+              defaultValue={listNote || ''}
+              onChange={(e) => {
+                setUpdateNote(e.target.value);
+              }}
+            />
+            <FunctionDiv>
+              <SaveNote onClick={handleUpdateListNote} />
+              <DeleteIcon onClick={handleDeleteMovie} />
+            </FunctionDiv>
+          </EditListContent>
+        </ListBlockDiv>
+      )}
+    </Draggable>
   );
 }

@@ -168,6 +168,7 @@ export default function AddToList({ trigger, setTrigger, movie }) {
   const uid = auth.currentUser?.uid;
 
   useEffect(() => {
+    let isMounted = true;
     firestore
       .collection('Users')
       .doc(uid)
@@ -177,8 +178,11 @@ export default function AddToList({ trigger, setTrigger, movie }) {
         const data = collectionSnapshot.docs.map((doc) => {
           return doc.data();
         });
-        setShowList(data);
+        if (isMounted) setShowList(data);
       });
+    return () => {
+      isMounted = false;
+    };
   }, [uid]);
 
   const addList = () => {
@@ -189,6 +193,7 @@ export default function AddToList({ trigger, setTrigger, movie }) {
       .doc();
     docRef
       .set({
+        authorId: uid,
         listId: docRef.id,
         listTitle: newList,
         date: new Date(),

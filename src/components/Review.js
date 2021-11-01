@@ -4,6 +4,7 @@ import { Telegram } from '@material-ui/icons';
 import { auth, firestore } from '../utils/firebase';
 import firebase from '../utils/firebase';
 import { useParams } from 'react-router-dom';
+import moment from 'moment';
 
 const ReviewSection = styled.div`
   display: flex;
@@ -160,7 +161,9 @@ export default function Review({ trigger, commentId, reviews }) {
               </ReviewerDiv>
               <ReviewContentDiv>
                 <ReviewDate>
-                  {item.reviewDate.toDate().toLocaleString()}
+                  {moment(item.reviewDate.toDate())
+                    .format('YYYY-MM-DD HH:mm:ss')
+                    .substr(0, 16)}
                 </ReviewDate>
                 <ReviewContent>{item.reviewContent}</ReviewContent>
               </ReviewContentDiv>

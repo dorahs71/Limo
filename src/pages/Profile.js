@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { firestore, auth } from '../utils/firebase';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import ProfileList from '../components/ProfileList';
 import ToggleBtn from '../components/Toggle';
+import ProfileDiary from '../components/ProfileDiary';
 
 const MainProfile = styled.div`
   display: flex;
@@ -117,7 +118,7 @@ const Tag = styled.div`
   width: 15vmin;
   font-size: 25px;
   font-weight: 500;
-  height: 8vmin;
+  height: 6vmin;
   opacity: 0.8;
   color: ${(props) => (props.active ? '#fff' : '#666')};
   background: transparent;
@@ -158,37 +159,13 @@ const DiaryShowcase = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 10px 3px;
-  padding: 15px 0px;
+  padding: 10vmin 0px 10vmin 0px;
   width: 100%;
-  max-width: 1140px;
-`;
-
-const DiaryDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 5vmin;
-  margin-top: 5vmin;
-  justify-content: center;
-  align-items: center;
-`;
-
-const DiaryPoster = styled.img`
-  width: 25vmin;
-  height: 35vmin;
-`;
-
-const DiaryTitle = styled.div`
-  margin-top: 2vmin;
-  font-size: 25px;
-  color: #fff;
+  max-width: 1440px;
   @media (max-width: 1280px) {
-    font-size: 20px;
+    max-width: 1140px;
+    padding: 10vmin 0px 10vmin 0px;
   }
-`;
-
-const MyLink = styled(Link)`
-  text-decoration: none;
-  width: 100%;
 `;
 
 const ListShowcase = styled.div`
@@ -196,9 +173,52 @@ const ListShowcase = styled.div`
   height: auto;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 10px 3px;
-  padding: 15px 0px;
+  padding: 10vmin 0px 10vmin 0px;
   width: 100%;
-  max-width: 1140px;
+  max-width: 1440px;
+  @media (max-width: 1280px) {
+    max-width: 1000px;
+    padding: 8vmin 0px 10vmin 0px;
+  }
+`;
+
+const CommentShowcase = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px 3px;
+  padding: 10vmin 0px 10vmin 0px;
+  width: 100%;
+  max-width: 1440px;
+  @media (max-width: 1280px) {
+    max-width: 1140px;
+    padding: 10px 0px 10vmin 0px;
+  }
+`;
+
+const FollowShowcase = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px 3px;
+  padding: 10vmin 0px 10vmin 0px;
+  width: 100%;
+  max-width: 1440px;
+  @media (max-width: 1280px) {
+    max-width: 1140px;
+    padding: 10px 0px 10vmin 0px;
+  }
+`;
+
+const CollectShowcase = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px 3px;
+  padding: 10vmin 0px 10vmin 0px;
+  width: 100%;
+  max-width: 1440px;
+  @media (max-width: 1280px) {
+    max-width: 1140px;
+    padding: 10px 0px 10vmin 0px;
+  }
 `;
 
 export default function Profile() {
@@ -216,13 +236,11 @@ export default function Profile() {
       .doc(uid)
       .collection('Diaries')
       .orderBy('date')
-      .get()
-      .then((item) => {
-        const diaryList = item.docs.map((doc) => doc.data());
-        if (isMounted) setShowDiary(diaryList);
-      })
-      .catch((error) => {
-        console.log('Error getting documents: ', error);
+      .onSnapshot((collectionSnapshot) => {
+        const data = collectionSnapshot.docs.map((doc) => {
+          return doc.data();
+        });
+        if (isMounted) setShowDiary(data);
       });
     return () => {
       isMounted = false;
@@ -235,18 +253,24 @@ export default function Profile() {
       .collection('Users')
       .doc(uid)
       .collection('Lists')
-      .get()
-      .then((item) => {
-        const listData = item.docs.map((doc) => doc.data());
-        if (isMounted) setShowList(listData);
-      })
-      .catch((error) => {
-        console.log('Error getting documents: ', error);
+      .onSnapshot((collectionSnapshot) => {
+        const data = collectionSnapshot.docs.map((doc) => {
+          return doc.data();
+        });
+        if (isMounted) setShowList(data);
       });
     return () => {
       isMounted = false;
     };
   }, [uid]);
+
+  // const toggleEditQuote = () => {
+  //   if (editQuote) {
+  //     setEditQuote(false);
+  //   } else {
+  //     setEditQuote(true);
+  //   }
+  // };
 
   return (
     <MainProfile>
@@ -264,9 +288,20 @@ export default function Profile() {
           </LogoutBtn>
         </ProfileContainer>
         <ProfileIntroDiv>
+          {/* <EditQuote>
+              <Quote contentEditable={editQuote} edit={editQuote === true}>
+                偉大的人不追求成為領導者，而是時勢造就
+              </Quote>
+              <EditDiv>
+                <EditIcon onClick={toggleEditQuote} edit={editQuote === true} />
+              </EditDiv>
+            </EditQuote> 
+             border-bottom: 3px solid
+    ${(props) => (props.edit ? '#00e6ac' : 'transparent')};
+            */}
           <IntroLine>
             <IntroTitle>暱稱</IntroTitle>
-            <IntroValue>愛的小貝比</IntroValue>
+            <IntroValue>甜茶好帥</IntroValue>
           </IntroLine>
           <IntroLine>
             <IntroTitle>誕生日</IntroTitle>
@@ -308,8 +343,8 @@ export default function Profile() {
           收藏
         </Tag>
         <Tag
-          active={activeitem === 'review'}
-          onClick={() => setActiveitem('review')}
+          active={activeitem === 'comment'}
+          onClick={() => setActiveitem('comment')}
         >
           評論
         </Tag>
@@ -318,16 +353,14 @@ export default function Profile() {
         {activeitem === 'diary' && (
           <DiaryShowcase>
             {showDiary !== '' &&
-              showDiary.map((item) => {
-                return (
-                  <MyLink key={item.diaryId} to={`/diary/${item.diaryId}`}>
-                    <DiaryDiv>
-                      <DiaryPoster src={item.poster} alt="" />
-                      <DiaryTitle>{item.chTitle}</DiaryTitle>
-                    </DiaryDiv>
-                  </MyLink>
-                );
-              })}
+              showDiary.map((item) => (
+                <ProfileDiary
+                  key={item.diaryId}
+                  diaryId={item.diaryId}
+                  poster={item.poster}
+                  chTitle={item.chTitle}
+                />
+              ))}
           </DiaryShowcase>
         )}
         {activeitem === 'list' && (
@@ -342,6 +375,9 @@ export default function Profile() {
             ))}
           </ListShowcase>
         )}
+        {activeitem === 'follow' && <FollowShowcase></FollowShowcase>}
+        {activeitem === 'collect' && <CollectShowcase></CollectShowcase>}
+        {activeitem === 'comment' && <CommentShowcase></CommentShowcase>}
       </ShowBackground>
     </MainProfile>
   );

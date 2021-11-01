@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { StarRounded, Forum, EmojiEmotions } from '@material-ui/icons';
 import Review from '../components/Review';
 import { useState } from 'react';
+import moment from 'moment';
 
 const CommentContainer = styled.div`
   width: 80%;
@@ -181,7 +182,9 @@ export default function Comment({
           <UserName>{authorName}</UserName>
         </UserDiv>
         <ContentDiv>
-          <CommentDate>{date.toDate().toLocaleString()}</CommentDate>
+          <CommentDate>
+            {moment(date.toDate()).format('YYYY-MM-DD HH:mm:ss').substr(0, 16)}
+          </CommentDate>
           <UserRate>
             <Star />
             <Rate> {rate}</Rate>
