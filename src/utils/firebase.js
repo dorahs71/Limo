@@ -38,8 +38,6 @@ export const createUserDoc = async (user, userName) => {
           'https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956',
         userName,
         score: 0,
-        likeList: [],
-        follow: [],
       });
     } catch (error) {
       console.log(error);

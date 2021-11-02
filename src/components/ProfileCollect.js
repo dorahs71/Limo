@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Cancel } from '@material-ui/icons';
 import { firestore, auth } from '../utils/firebase';
+import firebase from '../utils/firebase';
 
 const Close = styled.div`
   cursor: pointer;
@@ -96,15 +97,14 @@ const MyLink = styled(Link)`
   color: #fff;
 `;
 
-export default function ProfileList({ title, posters, listId }) {
-  const handleDeleteList = () => {
-    const uid = auth.currentUser.uid;
+export default function ProfileCollect({ title, posters, listId }) {
+  const handleDeleteCollect = () => {
+    const currentUserId = auth.currentUser.uid;
     firestore
       .collection('Lists')
       .doc(listId)
-      .delete()
-      .catch((error) => {
-        console.error('Error removing document: ', error);
+      .update({
+        collect: firebase.firestore.FieldValue.arrayRemove(currentUserId),
       });
   };
 
@@ -118,7 +118,7 @@ export default function ProfileList({ title, posters, listId }) {
         </ThemeList>
         <ListTitle>{title}</ListTitle>
       </MyLink>
-      <Close onClick={handleDeleteList}>
+      <Close onClick={handleDeleteCollect}>
         <CancelIcon />
       </Close>
     </ListDiv>

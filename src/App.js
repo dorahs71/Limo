@@ -7,6 +7,7 @@ import Movie from './pages/Movie';
 import Profile from './pages/Profile';
 import Diary from './pages/Diary';
 import List from './pages/List';
+import Search from './pages/Search';
 import ScrollToTop from './components/ScrollToTop';
 
 const NavDiv = styled.div`
@@ -85,8 +86,11 @@ export default function App() {
         <Route path="/list/:listId" exact>
           <List />
         </Route>
-        <Route path="/profile" exact>
+        <Route path="/profile/:userId" exact>
           <Profile />
+        </Route>
+        <Route path="/search" exact>
+          <Search />
         </Route>
       </Switch>
       <Footer />

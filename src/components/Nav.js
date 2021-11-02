@@ -3,8 +3,10 @@ import { useState, useEffect } from 'react';
 import logo from '../images/logo.png';
 import { NotificationsNone, SearchOutlined } from '@material-ui/icons';
 import Login from './Login';
-import { Link } from 'react-router-dom';
-import { auth } from '../utils/firebase';
+import { useHistory, Link } from 'react-router-dom';
+import { firestore, auth } from '../utils/firebase';
+import { useDispatch } from 'react-redux';
+import algolia from '../utils/algolia';
 
 const MyLink = styled(Link)`
   text-decoration: none;
@@ -175,6 +177,13 @@ const FooterDiv = styled.div`
 export const Nav = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [hasUser, setHasUser] = useState(null);
+  const [userData, setUserData] = useState(null);
+  const [keyword, setKeyword] = useState('');
+  const history = useHistory();
+
+  const dispatch = useDispatch();
+
+  const currentUserId = auth.currentUser?.uid;
 
   useEffect(() => {
     let isMounted = true;
@@ -186,6 +195,32 @@ export const Nav = () => {
     };
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+    firestore
+      .collection('Users')
+      .doc(currentUserId)
+      .get()
+      .then((doc) => {
+        const data = doc.data();
+        if (isMounted) setUserData(data);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [currentUserId]);
+
+  const getSearchData = (e) => {
+    algolia.search(keyword).then((result) => {
+      const searchResult = result.hits.map((hit) => {
+        return hit;
+      });
+      console.log(searchResult);
+      dispatch({ type: 'getSearch', todo: searchResult });
+      history.push('/search');
+    });
+  };
+
   return (
     <>
       <MyLink to="/">
@@ -193,8 +228,13 @@ export const Nav = () => {
       </MyLink>
       <FunctionDiv>
         <SearchDiv>
-          <SearchBar type="text" placeholder="今天想看什麼電影？" />
-          <SearchBtn>
+          <SearchBar
+            type="text"
+            placeholder="今天想看什麼電影？"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+          />
+          <SearchBtn onClick={getSearchData}>
             <SearchIcon />
           </SearchBtn>
         </SearchDiv>
@@ -202,14 +242,14 @@ export const Nav = () => {
           <>
             <BellIcon />
             <ProfileDiv>
-              <MyLink to="/profile">
-                <ProfilePic src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=7e617ed2-9a96-4192-8847-c07d8f642228" />
+              <MyLink to={`/profile/${currentUserId}`}>
+                <ProfilePic src={userData?.profileImg} />
               </MyLink>
               <InfoDiv>
-                <div>暱稱：甜茶好帥</div>
+                <div>暱稱：{userData?.userName}</div>
                 <div>日誌：30</div>
                 <div>片單：30</div>
-                <div>收藏：30</div>
+                <div>評論：30</div>
               </InfoDiv>
             </ProfileDiv>
           </>

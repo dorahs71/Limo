@@ -153,7 +153,7 @@ const SendBtn = styled.div`
   }
 `;
 
-export default function NewComment({ trigger, setTrigger }) {
+export default function NewComment({ trigger, setTrigger, poster, chTitle }) {
   const [comment, setComment] = useState('');
   const [selectedStar, setSelectedStar] = useState('5');
   const [hoverStar, setHoverStar] = useState(null);
@@ -163,14 +163,12 @@ export default function NewComment({ trigger, setTrigger }) {
   const { movieId } = useParams();
 
   const onSubmit = () => {
-    const docRef = firestore
-      .collection('Movies')
-      .doc(movieId)
-      .collection('Comments')
-      .doc();
+    const docRef = firestore.collection('Comments').doc();
     docRef.set({
       commentId: docRef.id,
       movieId,
+      poster,
+      chTitle,
       rate: selectedStar,
       date: new Date(),
       authorName: auth.currentUser.displayName || '',

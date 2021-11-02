@@ -1,16 +1,15 @@
 import styled from 'styled-components';
-import { firestore, auth } from '../utils/firebase';
-import firebase from '../utils/firebase';
-import { useParams, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { StarRounded, Forum, EmojiEmotions } from '@material-ui/icons';
 import Review from '../components/Review';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import moment from 'moment';
 
 const CommentContainer = styled.div`
   width: 80%;
-  height: 18vmin;
+  height: 20vmin;
   font-size: 25px;
+  border: #75e799 solid 2px;
   background: linear-gradient(#555, #111);
   display: flex;
   align-items: center;
@@ -23,31 +22,35 @@ const CommentContainer = styled.div`
   }
 `;
 
-const UserDiv = styled.div`
+const MovieDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
+
   @media (max-width: 1280px) {
     width: 13%;
   }
 `;
 
-const User = styled.img`
+const Poster = styled.img`
   width: 10vmin;
-  height: 8vmin;
+  height: 13vmin;
   @media (max-width: 1280px) {
     width: 15vmin;
     height: 10vmin;
   }
 `;
 
-const UserName = styled.div`
+const MovieName = styled.div`
   font-size: 20px;
   font-weight: 500;
+  margin-top: 2px;
   text-align: center;
-  color: #75e799;
-  text-decoration: underline;
+  color: #fff;
+  &:hover {
+    color: #75e799;
+  }
+
   @media (max-width: 1280px) {
     font-size: 18px;
     font-weight: 500;
@@ -111,7 +114,6 @@ const Smile = styled(EmojiEmotions)`
 const SmileDiv = styled.div`
   font-size: 20px;
   cursor: pointer;
-  color: ${(props) => (props.smile ? '#75e799' : '')};
   &:hover {
     color: #75e799;
   }
@@ -132,44 +134,21 @@ const Rate = styled.div`
 
 const MyLink = styled(Link)`
   text-decoration: none;
+  color: #fff;
 `;
 
-export default function Comment({
+export default function ProfileComment({
   commentId,
-  authorId,
+  poster,
+  movieId,
+  chTitle,
   date,
   rate,
   comment,
   reviews,
   smileBy,
 }) {
-  const { movieId } = useParams();
-  const uid = auth.currentUser.uid;
-  const isSmiled = smileBy?.includes(uid);
   const [showReview, setShowReview] = useState(false);
-  const [getAuthor, setGetAuthor] = useState('');
-
-  const toggleSmile = () => {
-    if (isSmiled) {
-      firestore
-        .collection('Movies')
-        .doc(movieId)
-        .collection('Comments')
-        .doc(commentId)
-        .update({
-          smileBy: firebase.firestore.FieldValue.arrayRemove(uid),
-        });
-    } else {
-      firestore
-        .collection('Movies')
-        .doc(movieId)
-        .collection('Comments')
-        .doc(commentId)
-        .update({
-          smileBy: firebase.firestore.FieldValue.arrayUnion(uid),
-        });
-    }
-  };
 
   const toggleShowReview = () => {
     if (showReview) {
@@ -179,33 +158,18 @@ export default function Comment({
     }
   };
 
-  useEffect(() => {
-    let isMounted = true;
-    firestore
-      .collection('Users')
-      .doc(authorId)
-      .get()
-      .then((doc) => {
-        const data = doc.data();
-        if (isMounted) setGetAuthor(data);
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, [authorId]);
-
   return (
     <>
       <CommentContainer>
-        <UserDiv>
-          <MyLink to={`/profile/${authorId}`}>
-            <User src={getAuthor.profileImg} />
-            <UserName>{getAuthor.userName}</UserName>
+        <MovieDiv>
+          <MyLink to={`/movie/${movieId}`}>
+            <Poster src={poster} />
+            <MovieName>{chTitle}</MovieName>
           </MyLink>
-        </UserDiv>
+        </MovieDiv>
         <ContentDiv>
           <CommentDate>
-            {moment(date.toDate()).format('YYYY-MM-DD HH:mm:ss').substr(0, 16)}
+            {moment(date.toDate()).format('YYYY-MM-DD HH:mm:ss')}
           </CommentDate>
           <UserRate>
             <Star />
@@ -218,7 +182,7 @@ export default function Comment({
               {reviews?.length || 0}
             </RecommentDiv>
 
-            <SmileDiv onClick={toggleSmile} smile={isSmiled}>
+            <SmileDiv>
               <Smile />
               {smileBy?.length || 0}
             </SmileDiv>

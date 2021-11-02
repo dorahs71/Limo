@@ -303,9 +303,6 @@ export default function Login({ trigger, setTrigger }) {
           history.push('/');
           setTrigger(false);
         })
-        // .then(() => {
-        //   window.location = '/';
-        // })
         .catch((error) => {
           switch (error.code) {
             case 'auth/email-already-in-use':

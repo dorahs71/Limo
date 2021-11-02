@@ -170,9 +170,8 @@ export default function AddToList({ trigger, setTrigger, movie }) {
   useEffect(() => {
     let isMounted = true;
     firestore
-      .collection('Users')
-      .doc(uid)
       .collection('Lists')
+      .where('authorId', '==', uid)
       .orderBy('date', 'desc')
       .onSnapshot((collectionSnapshot) => {
         const data = collectionSnapshot.docs.map((doc) => {
@@ -186,26 +185,20 @@ export default function AddToList({ trigger, setTrigger, movie }) {
   }, [uid]);
 
   const addList = () => {
-    const docRef = firestore
-      .collection('Users')
-      .doc(uid)
-      .collection('Lists')
-      .doc();
+    const docRef = firestore.collection('Lists').doc();
     docRef
       .set({
         authorId: uid,
         listId: docRef.id,
         listTitle: newList,
         date: new Date(),
-        type: 'public',
+        type: 'private',
       })
       .then(setNewList(''));
   };
 
   const onSubmit = () => {
     firestore
-      .collection('Users')
-      .doc(uid)
       .collection('Lists')
       .doc(selectListId)
       .update({
@@ -213,8 +206,6 @@ export default function AddToList({ trigger, setTrigger, movie }) {
       });
 
     const docRef = firestore
-      .collection('Users')
-      .doc(uid)
       .collection('Lists')
       .doc(selectListId)
       .collection('ListData')
@@ -251,15 +242,16 @@ export default function AddToList({ trigger, setTrigger, movie }) {
           <AddBtn onClick={addList} />
         </InputDiv>
         <ListSection>
-          {showList?.map((item) => (
-            <ListDiv
-              key={item.listTitle}
-              onClick={() => setSelectListId(item.listId)}
-              select={selectListId === item.listId}
-            >
-              {item.listTitle}
-            </ListDiv>
-          ))}
+          {showList !== '' &&
+            showList?.map((item) => (
+              <ListDiv
+                key={item.listTitle}
+                onClick={() => setSelectListId(item.listId)}
+                select={selectListId === item.listId}
+              >
+                {item.listTitle}
+              </ListDiv>
+            ))}
         </ListSection>
         <SendBtn onClick={onSubmit}>加入片單</SendBtn>
       </AddToListDiv>

@@ -27,7 +27,7 @@ const MovieDiv = styled.div`
 
 const BackgroundDiv = styled.div`
   width: 100%;
-  height: auto;
+  height: 95vmin;
   opacity: 0.5;
   overflow: visible;
   position: relative;
@@ -37,7 +37,7 @@ const BackgroundDiv = styled.div`
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 20vmin;
+    height: 30vmin;
     background: linear-gradient(to top, #111, transparent);
     z-index: 3;
   }
@@ -46,6 +46,7 @@ const BackgroundDiv = styled.div`
 const Zoom = styled.img`
   display: inline-block;
   width: 100%;
+  height: 94vmin;
   top: 0;
   left: 0;
   transform: scale(1);
@@ -633,9 +634,8 @@ export default function Movie() {
   useEffect(() => {
     let isMounted = true;
     firestore
-      .collection('Movies')
-      .doc(movieId)
       .collection('Comments')
+      .where('movieId', '==', movieId)
       .orderBy('date', 'desc')
       .onSnapshot((collectionSnapshot) => {
         const data = collectionSnapshot.docs.map((doc) => {
@@ -671,10 +671,12 @@ export default function Movie() {
           <ReleaseDate>上映日期：{eachMovie.date}</ReleaseDate>
           <Length>片長：{eachMovie.length}</Length>
           <Director>導演：{eachMovie.director}</Director>
-          <TrailerButton onClick={() => setShowTrailer(true)}>
-            <TrailerIcon />
-            <Trailer> 我想看預告片</Trailer>
-          </TrailerButton>
+          {eachMovie.trailerKey !== '' && (
+            <TrailerButton onClick={() => setShowTrailer(true)}>
+              <TrailerIcon />
+              <Trailer> 我想看預告片</Trailer>
+            </TrailerButton>
+          )}
 
           <AddButtonDiv>
             <AddButton src={diary} alt="" onClick={addDiary} />
@@ -749,8 +751,7 @@ export default function Movie() {
             <Comment
               key={item.commentId}
               commentId={item.commentId}
-              authorImg={item.authorImg}
-              authorName={item.authorName}
+              authorId={item.authorId}
               date={item.date}
               rate={item.rate}
               comment={item.comment}
@@ -761,7 +762,12 @@ export default function Movie() {
           <ReadMore>點我看更多</ReadMore>
         </CommentDiv>
       </CommentSection>
-      <NewComment trigger={showNewComment} setTrigger={setShowNewComment} />
+      <NewComment
+        trigger={showNewComment}
+        setTrigger={setShowNewComment}
+        poster={eachMovie.poster}
+        chTitle={eachMovie.chTitle}
+      />
       <ListSection>
         <Title>相關片單</Title>
         <ListDiv>

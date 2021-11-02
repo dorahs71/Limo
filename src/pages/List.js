@@ -5,6 +5,7 @@ import {
   CancelOutlined,
   LocalOffer,
   AddCircle,
+  Favorite,
 } from '@material-ui/icons';
 import { useState, useEffect } from 'react';
 import { firestore, auth } from '../utils/firebase';
@@ -166,6 +167,25 @@ const ToggleStatusDiv = styled.div`
   border-radius: 20px;
 `;
 
+const CollectBtn = styled.div`
+  margin-top: 3vmin;
+  font-size: 25px;
+  text-align: center;
+  width: 15vmin;
+  display: flex;
+  padding: 10px;
+  background: gold;
+  color: #333;
+  border-radius: 20px;
+  cursor: pointer;
+`;
+
+const CollectIcon = styled(Favorite)`
+  transform: scale(1.5);
+  color: ${(props) => (props.collect ? '#ea4848' : '#444')};
+  margin-left: 2vmin;
+`;
+
 const Status = styled.div`
   font-size: 20px;
 `;
@@ -268,21 +288,23 @@ const ArrangeListDiv = styled.div`
 export default function List() {
   const [addTag, setAddTag] = useState('');
   const [updateList, setUpdateList] = useState('');
+  const [getAuthor, setGetAuthor] = useState('');
   const { listId } = useParams();
   const [listData, setListData] = useState('');
   const [updateTitle, setUpdateTitle] = useState('');
   const [updateIntro, setUpdateIntro] = useState('');
   // const [listOrder, setListOrder] = useState({ initialOrder });
 
-  const uid = auth.currentUser?.uid;
+  const currentUserId = auth.currentUser?.uid;
+  const authorId = updateList?.authorId;
+
+  const isAuthor = authorId === currentUserId;
 
   // const initialOrder = listData;
 
   useEffect(() => {
     let isMounted = true;
     firestore
-      .collection('Users')
-      .doc(uid)
       .collection('Lists')
       .doc(listId)
       .onSnapshot((snapshot) => {
@@ -292,13 +314,11 @@ export default function List() {
     return () => {
       isMounted = false;
     };
-  }, [uid]);
+  }, [listId]);
 
   useEffect(() => {
     let isMounted = true;
     firestore
-      .collection('Users')
-      .doc(uid)
       .collection('Lists')
       .doc(listId)
       .collection('ListData')
@@ -311,34 +331,37 @@ export default function List() {
     return () => {
       isMounted = false;
     };
-  }, [uid, listId]);
+  }, [listId]);
 
-  const handleUpdateListTitle = () => {
+  useEffect(() => {
+    let isMounted = true;
     firestore
       .collection('Users')
-      .doc(uid)
-      .collection('Lists')
-      .doc(listId)
-      .update({
-        listTitle: updateTitle,
+      .doc(authorId)
+      .get()
+      .then((doc) => {
+        const data = doc.data();
+        if (isMounted) setGetAuthor(data);
       });
+    return () => {
+      isMounted = false;
+    };
+  }, [authorId]);
+
+  const handleUpdateListTitle = () => {
+    firestore.collection('Lists').doc(listId).update({
+      listTitle: updateTitle,
+    });
   };
 
   const handleUpdateListIntro = () => {
-    firestore
-      .collection('Users')
-      .doc(uid)
-      .collection('Lists')
-      .doc(listId)
-      .update({
-        listIntro: updateIntro,
-      });
+    firestore.collection('Lists').doc(listId).update({
+      listIntro: updateIntro,
+    });
   };
 
   const handleAddTag = () => {
     firestore
-      .collection('Users')
-      .doc(uid)
       .collection('Lists')
       .doc(listId)
       .update({
@@ -349,13 +372,31 @@ export default function List() {
 
   const removeTag = (tag) => {
     firestore
-      .collection('Users')
-      .doc(uid)
       .collection('Lists')
       .doc(listId)
       .update({
         hashtag: firebase.firestore.FieldValue.arrayRemove(tag),
       });
+  };
+
+  const isCollected = updateList.collect?.includes(currentUserId);
+
+  const toggleCollect = () => {
+    if (isCollected) {
+      firestore
+        .collection('Lists')
+        .doc(listId)
+        .update({
+          collect: firebase.firestore.FieldValue.arrayRemove(currentUserId),
+        });
+    } else {
+      firestore
+        .collection('Lists')
+        .doc(listId)
+        .update({
+          collect: firebase.firestore.FieldValue.arrayUnion(currentUserId),
+        });
+    }
   };
 
   // const reorder = (list, startIndex, endIndex) => {
@@ -388,19 +429,22 @@ export default function List() {
         <ListHead>
           <ProfileContainer>
             <ProfileImgDiv>
-              <ProfileImg
-                src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=7e617ed2-9a96-4192-8847-c07d8f642228"
-                alt=""
-              />
+              <ProfileImg src={getAuthor.profileImg} alt="" />
             </ProfileImgDiv>
-            <ProfileName>愛的小貝比</ProfileName>
-            <ToggleStatusDiv>
-              <Status>私人</Status>
-              <ToggleBtn />
-              <Status>分享</Status>
-            </ToggleStatusDiv>
+            <ProfileName>{getAuthor.userName}</ProfileName>
+            {isAuthor ? (
+              <ToggleStatusDiv>
+                <Status>私人</Status>
+                <ToggleBtn />
+                <Status>分享</Status>
+              </ToggleStatusDiv>
+            ) : (
+              <CollectBtn collect={isCollected} onClick={toggleCollect}>
+                {isCollected ? '已收藏' : '收藏片單'}
+                <CollectIcon collect={isCollected} />
+              </CollectBtn>
+            )}
           </ProfileContainer>
-
           <ListIntroDiv>
             <EditTitle>
               <ListTitle
@@ -416,6 +460,7 @@ export default function List() {
             </EditTitle>
             <EditIntro>
               <ListIntro
+                readOnly={isAuthor ? false : true}
                 placeholder="這個片單是關於..."
                 defaultValue={updateList?.listIntro || ''}
                 onChange={(e) => {
@@ -428,11 +473,12 @@ export default function List() {
             </EditIntro>
           </ListIntroDiv>
         </ListHead>
+
         <ThemeListDiv>
           <HashtagSection>
             <HashtagHead>
               <AddHashtag
-                placeholder="寫下我的電影標籤"
+                placeholder="寫下我的片單標籤"
                 value={addTag}
                 onChange={(e) => setAddTag(e.target.value)}
               />

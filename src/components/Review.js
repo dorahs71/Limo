@@ -119,12 +119,9 @@ const ReviewContent = styled.div`
 export default function Review({ trigger, commentId, reviews }) {
   const [newReview, setNewReview] = useState('');
 
-  const { movieId } = useParams();
   const onSubmit = () => {
     setNewReview('');
     firestore
-      .collection('Movies')
-      .doc(movieId)
       .collection('Comments')
       .doc(commentId)
       .update({
@@ -143,6 +140,7 @@ export default function Review({ trigger, commentId, reviews }) {
       <InputDiv>
         <Input
           contentEditable
+          suppressContentEditableWarning={true}
           label="留言內容"
           value={newReview}
           onChange={(e) => setNewReview(e.target.value)}
@@ -152,18 +150,18 @@ export default function Review({ trigger, commentId, reviews }) {
         <SendIcon onClick={onSubmit} />
       </InputDiv>
       {reviews !== '' &&
-        reviews.map((item) => {
+        reviews.map((item, index) => {
           return (
-            <ReviewDiv>
+            <ReviewDiv key={index}>
               <ReviewerDiv>
                 <ReviewerImg src={item.reviewerImg} alt="" />
                 <ReviewerName>{item.reviewerName}</ReviewerName>
               </ReviewerDiv>
               <ReviewContentDiv>
                 <ReviewDate>
-                  {moment(item.reviewDate.toDate())
-                    .format('YYYY-MM-DD HH:mm:ss')
-                    .substr(0, 16)}
+                  {moment(item.reviewDate.toDate()).format(
+                    'YYYY-MM-DD HH:mm:ss'
+                  )}
                 </ReviewDate>
                 <ReviewContent>{item.reviewContent}</ReviewContent>
               </ReviewContentDiv>
