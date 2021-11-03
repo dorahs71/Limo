@@ -562,6 +562,12 @@ export default function Diary() {
 
   const handleAddTag = () => {
     firestore
+      .collection('Movies')
+      .doc(movieIntro.movieId)
+      .update({
+        movieTag: firebase.firestore.FieldValue.arrayUnion(addTag),
+      });
+    firestore
       .collection('Users')
       .doc(uid)
       .collection('Diaries')
@@ -573,6 +579,12 @@ export default function Diary() {
   };
 
   const removeTag = (tag) => {
+    firestore
+      .collection('Movies')
+      .doc(movieIntro.movieId)
+      .update({
+        movieTag: firebase.firestore.FieldValue.arrayRemove(tag),
+      });
     firestore
       .collection('Users')
       .doc(uid)

@@ -109,8 +109,6 @@ export default function ListBlock({
 
   const handleUpdateListNote = () => {
     firestore
-      .collection('Users')
-      .doc(uid)
       .collection('Lists')
       .doc(listId)
       .collection('ListData')
@@ -122,8 +120,6 @@ export default function ListBlock({
 
   const handleDeleteMovie = () => {
     firestore
-      .collection('Users')
-      .doc(uid)
       .collection('Lists')
       .doc(listId)
       .collection('ListData')

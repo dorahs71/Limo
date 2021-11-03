@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useState, useEffect } from 'react';
 
 const SearchSection = styled.div`
   width: 100%;
@@ -64,7 +63,7 @@ export default function Search() {
       <Title>搜尋結果：</Title>
       <ResultDiv>
         {search.map((item) => (
-          <MovieDiv>
+          <MovieDiv key={item.objectID}>
             <MyLink to={`/movie/${item.objectID}`}>
               <MoviePoster src={item.poster} alt="" />
               <MovieTitle>{item.chTitle}</MovieTitle>

@@ -171,14 +171,14 @@ const Header = styled.div`
   padding: 5px;
   border-radius: 5px;
   text-shadow: 2px 2px #778899;
-  background: linear-gradient(to top, #7fffd4, #90ee90, transparent);
+  background: #75e799;
   @media (max-width: 1280px) {
     font-size: 32px;
   }
 `;
 
 const RegisterHeader = styled(Header)`
-  background: linear-gradient(to top, #7fffd4, #b0e0e6, transparent);
+  background: #7fffd4;
 `;
 
 const Content = styled.div`
@@ -196,7 +196,6 @@ const Seperator = styled.hr`
   background-image: linear-gradient(
     to right,
     transparent,
-    #fffacd,
     #75e799,
     transparent
   );

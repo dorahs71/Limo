@@ -159,32 +159,31 @@ const ListSection = styled.div`
   margin-top: 2vmin;
 `;
 
-export default function AddToList({ trigger, setTrigger, movie }) {
+export default function AddToList({ trigger, setTrigger, movie, listName }) {
   const [newList, setNewList] = useState('');
-  const [showList, setShowList] = useState('');
   const [selectListId, setSelectListId] = useState('');
 
   const { movieId } = useParams();
-  const uid = auth.currentUser?.uid;
 
-  useEffect(() => {
-    let isMounted = true;
-    firestore
-      .collection('Lists')
-      .where('authorId', '==', uid)
-      .orderBy('date', 'desc')
-      .onSnapshot((collectionSnapshot) => {
-        const data = collectionSnapshot.docs.map((doc) => {
-          return doc.data();
-        });
-        if (isMounted) setShowList(data);
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, [uid]);
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   firestore
+  //     .collection('Lists')
+  //     .where('authorId', '==', uid)
+  //     .orderBy('date', 'desc')
+  //     .onSnapshot((collectionSnapshot) => {
+  //       const data = collectionSnapshot.docs.map((doc) => {
+  //         return doc.data();
+  //       });
+  //       if (isMounted) setShowList(data);
+  //     });
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, [uid, authorId]);
 
   const addList = () => {
+    const uid = auth.currentUser.uid;
     const docRef = firestore.collection('Lists').doc();
     docRef
       .set({
@@ -242,8 +241,8 @@ export default function AddToList({ trigger, setTrigger, movie }) {
           <AddBtn onClick={addList} />
         </InputDiv>
         <ListSection>
-          {showList !== '' &&
-            showList?.map((item) => (
+          {listName !== '' &&
+            listName?.map((item) => (
               <ListDiv
                 key={item.listTitle}
                 onClick={() => setSelectListId(item.listId)}

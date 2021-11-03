@@ -144,7 +144,7 @@ export default function Comment({
   smileBy,
 }) {
   const { movieId } = useParams();
-  const uid = auth.currentUser.uid;
+  const uid = auth.currentUser?.uid;
   const isSmiled = smileBy?.includes(uid);
   const [showReview, setShowReview] = useState(false);
   const [getAuthor, setGetAuthor] = useState('');

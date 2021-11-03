@@ -18,6 +18,7 @@ import NewComment from '../components/NewComment';
 import Comment from '../components/Comment';
 import AddToList from '../components/AddToList';
 import TrailerPopup from '../components/TrailerPopup';
+import Poll from '../components/Poll';
 
 const MovieDiv = styled.div`
   width: 100%;
@@ -597,11 +598,15 @@ export default function Movie() {
   const [eachMovie, setEachMovie] = useState('');
   const [showNewComment, setShowNewComment] = useState(false);
   const [showAddToList, setShowAddToList] = useState(false);
+  const [listName, setListName] = useState('');
   const [comment, setComment] = useState([]);
   const [showTrailer, setShowTrailer] = useState(false);
+  const [showVote, setShowVote] = useState(false);
+  const [voteResult, setVoteResult] = useState('');
+
+  const uid = auth.currentUser?.uid;
 
   const addDiary = () => {
-    const uid = auth.currentUser.uid;
     const docRef = firestore
       .collection('Users')
       .doc(uid)
@@ -614,6 +619,24 @@ export default function Movie() {
       chTitle: eachMovie.chTitle,
       date: new Date(),
     });
+  };
+
+  const addListName = () => {
+    setShowAddToList(true);
+    let isMounted = true;
+    firestore
+      .collection('Lists')
+      .where('authorId', '==', uid)
+      .orderBy('date', 'desc')
+      .onSnapshot((collectionSnapshot) => {
+        const data = collectionSnapshot.docs.map((doc) => {
+          return doc.data();
+        });
+        if (isMounted) setListName(data);
+      });
+    return () => {
+      isMounted = false;
+    };
   };
 
   useEffect(() => {
@@ -648,168 +671,186 @@ export default function Movie() {
     };
   }, []);
 
-  return (
-    <MovieDiv>
-      <BackgroundDiv>
-        <HeadPic>
-          {eachMovie !== '' && <Zoom src={eachMovie.gallery[0]} alt="" />}
-        </HeadPic>
-      </BackgroundDiv>
-      <MovieIntro>
-        <PosterDiv>
-          <PosterImg src={eachMovie.poster} alt="" data-aos="fade-right" />
-          <PosterSquare data-aos="fade-right" />
-        </PosterDiv>
-        <IntroDiv data-aos="fade-up">
-          <ChTitle>{eachMovie.chTitle}</ChTitle>
-          <EnTitle>{eachMovie.enTitle}</EnTitle>
-          <Rate>
-            評分：
-            <Star />
-            {eachMovie.rate}/ {eachMovie.rateNum}人
-          </Rate>
-          <ReleaseDate>上映日期：{eachMovie.date}</ReleaseDate>
-          <Length>片長：{eachMovie.length}</Length>
-          <Director>導演：{eachMovie.director}</Director>
-          {eachMovie.trailerKey !== '' && (
-            <TrailerButton onClick={() => setShowTrailer(true)}>
-              <TrailerIcon />
-              <Trailer> 我想看預告片</Trailer>
-            </TrailerButton>
-          )}
+  useEffect(() => {
+    let isMounted = true;
+    firestore
+      .collection('Movies')
+      .doc(movieId)
+      .collection('Quotes')
+      .orderBy('votes', 'desc')
+      .onSnapshot((collectionSnapshot) => {
+        const data = collectionSnapshot.docs.map((doc) => {
+          return doc.data();
+        });
+        if (isMounted) setVoteResult(data);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
-          <AddButtonDiv>
-            <AddButton src={diary} alt="" onClick={addDiary} />
-            <AddButton src={smile} alt="" />
-            <AddButton
-              src={list}
-              alt=""
-              onClick={() => setShowAddToList(true)}
-            />
-          </AddButtonDiv>
-        </IntroDiv>
-      </MovieIntro>
-      <TopDiv />
-      <AddToList
-        trigger={showAddToList}
-        setTrigger={setShowAddToList}
-        movie={eachMovie}
-      />
-      <StoryDiv>
-        <StoryTitle data-aos="fade-up">劇情簡介</StoryTitle>
-        <Story data-aos="fade-up">{eachMovie.story}</Story>
-      </StoryDiv>
-      <CastDiv>
-        <Title>演員列表</Title>
-        <Cast>
-          {eachMovie.cast?.map((item) => (
-            <ActorDiv key={item.chActor}>
-              <ActorImg src={item.actorImg} alt="" />
-              <ActorName>
-                {item.chActor} <br />
-                {item.enActor || ''}
-              </ActorName>
-            </ActorDiv>
-          ))}
-        </Cast>
-      </CastDiv>
-      <QuoteSection>
-        <QuoteHead>
-          <Title>經典對白</Title>
-          <VoteBtn src={vote} alt="" />
-        </QuoteHead>
-        <QuoteContainer>
-          <QuoteDiv>
-            <Ranking src={rank1} alt="" />
-            <Quote>偉大的人不追求成為領導者，而是時勢造就</Quote>
-          </QuoteDiv>
-          <QuoteDiv>
-            <Ranking src={rank2} alt="" />
-            <Quote>偉大的人不追求成為領導者，而是時勢造就</Quote>
-          </QuoteDiv>
-          <QuoteDiv>
-            <Ranking src={rank3} alt="" />
-            <Quote>偉大的人不追求成為領導者，而是時勢造就</Quote>
-          </QuoteDiv>
-          <QuoteDiv>
-            <RankingSmall src={rank4} alt="" />
-            <Quote>偉大的人不追求成為領導者，而是時勢造就</Quote>
-          </QuoteDiv>
-          <QuoteDiv>
-            <RankingSmall src={rank5} alt="" />
-            <Quote>偉大的人不追求成為領導者，而是時勢造就</Quote>
-          </QuoteDiv>
-        </QuoteContainer>
-      </QuoteSection>
-      <CommentSection>
-        <CommentHead>
-          <Title>網友評論</Title>
-          <CommentBtn onClick={() => setShowNewComment(true)} />
-        </CommentHead>
-        <CommentDiv>
-          {comment.map((item) => (
-            <Comment
-              key={item.commentId}
-              commentId={item.commentId}
-              authorId={item.authorId}
-              date={item.date}
-              rate={item.rate}
-              comment={item.comment}
-              reviews={item.reviews}
-              smileBy={item.smileBy}
-            />
-          ))}
-          <ReadMore>點我看更多</ReadMore>
-        </CommentDiv>
-      </CommentSection>
-      <NewComment
-        trigger={showNewComment}
-        setTrigger={setShowNewComment}
-        poster={eachMovie.poster}
-        chTitle={eachMovie.chTitle}
-      />
-      <ListSection>
-        <Title>相關片單</Title>
-        <ListDiv>
-          <List>
-            <OneList>
-              <ThemeList>
-                <ListCh1
-                  src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/PSMRVeKvNsmfh8g5tUTB-756x1080.jpg"
-                  alt=""
-                ></ListCh1>
-                <ListCh2
-                  src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/vZUOqQeQSvy1ryr9fxjw-729x1080.jpg"
-                  alt=""
-                ></ListCh2>
-                <ListCh3
-                  src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/FdF8AKC2OMVSotuOHVuN-756x1080.jpg"
-                  alt=""
-                ></ListCh3>
-              </ThemeList>
-              <ListTitle>好想好想出國玩片單</ListTitle>
-            </OneList>
-            <CollectNum>
-              430
-              <Love />
-            </CollectNum>
-            <ListProfileDiv>
-              <ListProfileImg
-                src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=7e617ed2-9a96-4192-8847-c07d8f642228"
-                alt=""
+  return (
+    <>
+      <MovieDiv>
+        <BackgroundDiv>
+          <HeadPic>
+            {eachMovie !== '' && <Zoom src={eachMovie.gallery[0]} alt="" />}
+          </HeadPic>
+        </BackgroundDiv>
+        <MovieIntro>
+          <PosterDiv>
+            <PosterImg src={eachMovie.poster} alt="" data-aos="fade-right" />
+            <PosterSquare data-aos="fade-right" />
+          </PosterDiv>
+          <IntroDiv data-aos="fade-up">
+            <ChTitle>{eachMovie.chTitle}</ChTitle>
+            <EnTitle>{eachMovie.enTitle}</EnTitle>
+            <Rate>
+              評分：
+              <Star />
+              {eachMovie.rate}/ {eachMovie.rateNum}人
+            </Rate>
+            <ReleaseDate>上映日期：{eachMovie.date}</ReleaseDate>
+            <Length>片長：{eachMovie.length}</Length>
+            <Director>導演：{eachMovie.director}</Director>
+            {eachMovie.trailerKey !== '' && (
+              <TrailerButton onClick={() => setShowTrailer(true)}>
+                <TrailerIcon />
+                <Trailer> 我想看預告片</Trailer>
+              </TrailerButton>
+            )}
+
+            <AddButtonDiv>
+              <AddButton src={diary} alt="" onClick={addDiary} />
+              <AddButton src={smile} alt="" />
+              <AddButton src={list} alt="" onClick={addListName} />
+            </AddButtonDiv>
+          </IntroDiv>
+        </MovieIntro>
+        <TopDiv />
+        <AddToList
+          trigger={showAddToList}
+          setTrigger={setShowAddToList}
+          movie={eachMovie}
+          listName={listName}
+        />
+        <StoryDiv>
+          <StoryTitle data-aos="fade-up">劇情簡介</StoryTitle>
+          <Story data-aos="fade-up">{eachMovie.story}</Story>
+        </StoryDiv>
+        <CastDiv>
+          <Title>演員列表</Title>
+          <Cast>
+            {eachMovie.cast?.map((item) => (
+              <ActorDiv key={item.chActor}>
+                <ActorImg src={item.actorImg} alt="" />
+                <ActorName>
+                  {item.chActor} <br />
+                  {item.enActor || ''}
+                </ActorName>
+              </ActorDiv>
+            ))}
+          </Cast>
+        </CastDiv>
+        <QuoteSection>
+          <QuoteHead>
+            <Title>經典對白</Title>
+            <VoteBtn src={vote} alt="" onClick={() => setShowVote(true)} />
+          </QuoteHead>
+          <QuoteContainer>
+            <QuoteDiv>
+              <Ranking src={rank1} alt="" />
+              {voteResult[0] ? <Quote>{voteResult[0].option}</Quote> : ''}
+            </QuoteDiv>
+            <QuoteDiv>
+              <Ranking src={rank2} alt="" />
+              {voteResult[1] ? <Quote>{voteResult[1].option}</Quote> : ''}
+            </QuoteDiv>
+            <QuoteDiv>
+              <Ranking src={rank3} alt="" />
+              {voteResult[2] ? <Quote>{voteResult[2].option}</Quote> : ''}
+            </QuoteDiv>
+            <QuoteDiv>
+              <RankingSmall src={rank4} alt="" />
+              {voteResult[3] ? <Quote>{voteResult[3].option}</Quote> : ''}
+            </QuoteDiv>
+            <QuoteDiv>
+              <RankingSmall src={rank5} alt="" />
+              {voteResult[4] ? <Quote>{voteResult[4].option}</Quote> : ''}
+            </QuoteDiv>
+          </QuoteContainer>
+        </QuoteSection>
+        <CommentSection>
+          <CommentHead>
+            <Title>網友評論</Title>
+            <CommentBtn onClick={() => setShowNewComment(true)} />
+          </CommentHead>
+          <CommentDiv>
+            {comment.map((item) => (
+              <Comment
+                key={item.commentId}
+                commentId={item.commentId}
+                authorId={item.authorId}
+                date={item.date}
+                rate={item.rate}
+                comment={item.comment}
+                reviews={item.reviews}
+                smileBy={item.smileBy}
               />
-              <ListProfileName>我是魯拉拉</ListProfileName>
-            </ListProfileDiv>
-          </List>
-          <List></List>
-          <List></List>
-        </ListDiv>
-      </ListSection>
-      <TrailerPopup
-        trailerKey={eachMovie.trailerKey}
-        trigger={showTrailer}
-        setTrigger={setShowTrailer}
-      />
-    </MovieDiv>
+            ))}
+            <ReadMore>點我看更多</ReadMore>
+          </CommentDiv>
+        </CommentSection>
+        <NewComment
+          trigger={showNewComment}
+          setTrigger={setShowNewComment}
+          poster={eachMovie.poster}
+          chTitle={eachMovie.chTitle}
+        />
+        <ListSection>
+          <Title>相關片單</Title>
+          <ListDiv>
+            <List>
+              <OneList>
+                <ThemeList>
+                  <ListCh1
+                    src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/PSMRVeKvNsmfh8g5tUTB-756x1080.jpg"
+                    alt=""
+                  ></ListCh1>
+                  <ListCh2
+                    src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/vZUOqQeQSvy1ryr9fxjw-729x1080.jpg"
+                    alt=""
+                  ></ListCh2>
+                  <ListCh3
+                    src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/FdF8AKC2OMVSotuOHVuN-756x1080.jpg"
+                    alt=""
+                  ></ListCh3>
+                </ThemeList>
+                <ListTitle>好想好想出國玩片單</ListTitle>
+              </OneList>
+              <CollectNum>
+                430
+                <Love />
+              </CollectNum>
+              <ListProfileDiv>
+                <ListProfileImg
+                  src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=7e617ed2-9a96-4192-8847-c07d8f642228"
+                  alt=""
+                />
+                <ListProfileName>我是魯拉拉</ListProfileName>
+              </ListProfileDiv>
+            </List>
+            <List></List>
+            <List></List>
+          </ListDiv>
+        </ListSection>
+        <TrailerPopup
+          trailerKey={eachMovie.trailerKey}
+          trigger={showTrailer}
+          setTrigger={setShowTrailer}
+        />
+      </MovieDiv>
+      <Poll trigger={showVote} setTrigger={setShowVote} />
+    </>
   );
 }
