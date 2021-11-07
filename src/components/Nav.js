@@ -7,6 +7,7 @@ import { useHistory, Link } from 'react-router-dom';
 import { firestore, auth } from '../utils/firebase';
 import { useDispatch } from 'react-redux';
 import algolia from '../utils/algolia';
+import { useSelector } from 'react-redux';
 
 const MyLink = styled(Link)`
   text-decoration: none;
@@ -97,10 +98,80 @@ const SearchDiv = styled.div`
   }
 `;
 
+const NotificationDiv = styled.div`
+  width: 45vmin;
+  height: 60vmin;
+  background: #333;
+  padding: 0 2vmin 0 2vmin;
+  position: absolute;
+  font-weight: bold;
+  justify-content: center;
+  overflow: scroll;
+  right: 30px;
+  top: 64px;
+  display: none;
+  &:hover {
+    display: block;
+  }
+`;
+
+const RemindDot = styled.div`
+  position: absolute;
+  text-align: center;
+  background: red;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  bottom: 3.5vmin;
+  right: 15vmin;
+`;
+
 const BellIcon = styled(NotificationsNone)`
   transform: scale(1.4);
   margin-right: 25px;
   cursor: pointer;
+`;
+
+const BellDiv = styled.div`
+  display: block;
+  padding: 3vmin 0 3vmin 0;
+  &:hover ${NotificationDiv} {
+    display: block;
+  }
+`;
+
+const AlertListBlock = styled.div`
+  width: 100%;
+  height: 15vmin;
+  border-bottom: 1px rgba(255, 255, 255, 0.7) solid;
+  display: flex;
+  align-items: center;
+`;
+
+const AlertCommentBlock = styled.div`
+  width: 100%;
+  height: 15vmin;
+  border-bottom: 1px rgba(255, 255, 255, 0.7) solid;
+  display: flex;
+  align-items: center;
+`;
+
+const AlertReviewBlock = styled.div`
+  width: 100%;
+  height: 15vmin;
+  border-bottom: 1px rgba(255, 255, 255, 0.7) solid;
+  display: flex;
+  align-items: center;
+`;
+
+const AlertProfile = styled.img`
+  width: 12vmin;
+  height: 10vmin;
+`;
+
+const AlertMessage = styled.div`
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.7);
 `;
 
 const InfoDiv = styled.div`
@@ -118,6 +189,9 @@ const InfoDiv = styled.div`
   background: linear-gradient(180deg, #444, #000);
   box-shadow: 2px 2px 10px 2px #00bfa5;
   border-radius: 30px;
+  &:hover {
+    display: block;
+  }
 `;
 
 const ProfilePic = styled.img`
@@ -134,6 +208,7 @@ const ProfilePic = styled.img`
 const ProfileDiv = styled.div`
   display: block;
   margin-right: 30px;
+  padding: 3vmin 0 3vmin 0;
   &:hover ${InfoDiv} {
     display: flex;
   }
@@ -177,13 +252,15 @@ const FooterDiv = styled.div`
 export const Nav = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [hasUser, setHasUser] = useState(null);
-  const [userData, setUserData] = useState(null);
   const [keyword, setKeyword] = useState('');
   const history = useHistory();
+  const currentUser = useSelector((state) => state.currentUser);
 
   const dispatch = useDispatch();
 
   const currentUserId = auth.currentUser?.uid;
+
+  // const isFollow = currentUser.follow.includes();
 
   useEffect(() => {
     let isMounted = true;
@@ -200,10 +277,9 @@ export const Nav = () => {
     firestore
       .collection('Users')
       .doc(currentUserId)
-      .get()
-      .then((doc) => {
+      .onSnapshot((doc) => {
         const data = doc.data();
-        if (isMounted) setUserData(data);
+        if (isMounted) dispatch({ type: 'getCurrentUser', todo: data || '' });
       });
     return () => {
       isMounted = false;
@@ -215,7 +291,6 @@ export const Nav = () => {
       const searchResult = result.hits.map((hit) => {
         return hit;
       });
-      console.log(searchResult);
       dispatch({ type: 'getSearch', todo: searchResult });
       history.push('/search');
     });
@@ -240,13 +315,34 @@ export const Nav = () => {
         </SearchDiv>
         {hasUser ? (
           <>
-            <BellIcon />
+            <BellDiv>
+              <BellIcon />
+              <RemindDot />
+              <NotificationDiv>
+                <AlertListBlock>
+                  <AlertProfile src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956" />
+                  <AlertMessage>甜茶茶發表新片單「我愛耍廢」</AlertMessage>
+                </AlertListBlock>
+                <AlertCommentBlock>
+                  <AlertProfile src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956" />
+                  <AlertMessage>
+                    甜茶茶在電影「蠟筆小新」中發表新評論
+                  </AlertMessage>
+                </AlertCommentBlock>
+                <AlertReviewBlock>
+                  <AlertProfile src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956" />
+                  <AlertMessage>
+                    甜茶茶在電影「蠟筆小新」中您的評論裡發表新留言
+                  </AlertMessage>
+                </AlertReviewBlock>
+              </NotificationDiv>
+            </BellDiv>
             <ProfileDiv>
               <MyLink to={`/profile/${currentUserId}`}>
-                <ProfilePic src={userData?.profileImg} />
+                <ProfilePic src={currentUser?.profileImg} />
               </MyLink>
               <InfoDiv>
-                <div>暱稱：{userData?.userName}</div>
+                <div>暱稱：{currentUser?.userName}</div>
                 <div>日誌：30</div>
                 <div>片單：30</div>
                 <div>評論：30</div>

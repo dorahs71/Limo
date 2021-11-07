@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Cancel, AddCircle } from '@material-ui/icons';
 import { auth, firestore } from '../utils/firebase';
 import firebase from '../utils/firebase';
@@ -47,6 +47,13 @@ const Close = styled.div`
   z-index: 300;
 `;
 
+const CancelIcon = styled(Cancel)`
+  transform: scale(1.5);
+  color: #75e799;
+  background: #333;
+  border-radius: 50%;
+`;
+
 const AddBtn = styled(AddCircle)`
   transform: scale(1.6);
   margin-left: 3vmin;
@@ -54,13 +61,6 @@ const AddBtn = styled(AddCircle)`
   &:hover {
     color: #75e799;
   }
-`;
-
-const CancelIcon = styled(Cancel)`
-  transform: scale(1.5);
-  color: #75e799;
-  background: #333;
-  border-radius: 50%;
 `;
 
 const InputDiv = styled.div`
@@ -104,7 +104,7 @@ const Header = styled.div`
   padding: 5px;
   border-radius: 5px;
   text-shadow: 2px 2px #778899;
-  background: linear-gradient(to top, #7fffd4, #90ee90, transparent);
+  background: #7fffd4;
   @media (max-width: 1280px) {
     font-size: 28px;
   }
@@ -191,7 +191,7 @@ export default function AddToList({ trigger, setTrigger, movie, listName }) {
         listId: docRef.id,
         listTitle: newList,
         date: new Date(),
-        type: 'private',
+        listShare: false,
       })
       .then(setNewList(''));
   };

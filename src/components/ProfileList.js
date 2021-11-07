@@ -98,7 +98,6 @@ const MyLink = styled(Link)`
 
 export default function ProfileList({ title, posters, listId }) {
   const handleDeleteList = () => {
-    const uid = auth.currentUser.uid;
     firestore
       .collection('Lists')
       .doc(listId)

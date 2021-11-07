@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import ToggleBtn from '../components/Toggle';
+import ListStatus from '../components/ListStatus';
 import {
   Save,
   CancelOutlined,
@@ -291,9 +291,8 @@ export default function List() {
   const [getAuthor, setGetAuthor] = useState('');
   const { listId } = useParams();
   const [listData, setListData] = useState('');
-  const [updateTitle, setUpdateTitle] = useState('');
+  const [updateTitle, setUpdateTitle] = useState(updateList?.listTitle || '');
   const [updateIntro, setUpdateIntro] = useState('');
-  // const [listOrder, setListOrder] = useState({ initialOrder });
 
   const currentUserId = auth.currentUser?.uid;
   const authorId = updateList?.authorId;
@@ -379,7 +378,7 @@ export default function List() {
       });
   };
 
-  const isCollected = updateList.collect?.includes(currentUserId);
+  const isCollected = updateList?.collect?.includes(currentUserId);
 
   const toggleCollect = () => {
     if (isCollected) {
@@ -435,7 +434,13 @@ export default function List() {
             {isAuthor ? (
               <ToggleStatusDiv>
                 <Status>私人</Status>
-                <ToggleBtn />
+                <ListStatus
+                  authorId={authorId}
+                  status={updateList?.listShare}
+                  listId={listId}
+                  currentUserId={currentUserId}
+                  listTitle={updateTitle}
+                />
                 <Status>分享</Status>
               </ToggleStatusDiv>
             ) : (
@@ -449,7 +454,7 @@ export default function List() {
             <EditTitle>
               <ListTitle
                 placeholder="請寫下片單名稱..."
-                defaultValue={updateList?.listTitle || ''}
+                defaultValue={updateTitle}
                 onChange={(e) => {
                   setUpdateTitle(e.target.value);
                 }}

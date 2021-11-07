@@ -322,7 +322,7 @@ export default function Login({ trigger, setTrigger }) {
         .signInWithEmailAndPassword(email, password)
         .then((data) => {
           console.log(data);
-          history.push('/');
+          // history.push('/');
           setTrigger(false);
         })
         .catch((error) => {

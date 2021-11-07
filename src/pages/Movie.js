@@ -19,6 +19,7 @@ import Comment from '../components/Comment';
 import AddToList from '../components/AddToList';
 import TrailerPopup from '../components/TrailerPopup';
 import Poll from '../components/Poll';
+import Card from '../components/Card';
 
 const MovieDiv = styled.div`
   width: 100%;
@@ -602,6 +603,7 @@ export default function Movie() {
   const [comment, setComment] = useState([]);
   const [showTrailer, setShowTrailer] = useState(false);
   const [showVote, setShowVote] = useState(false);
+  const [showCard, setShowCard] = useState(false);
   const [voteResult, setVoteResult] = useState('');
 
   const uid = auth.currentUser?.uid;
@@ -722,11 +724,17 @@ export default function Movie() {
 
             <AddButtonDiv>
               <AddButton src={diary} alt="" onClick={addDiary} />
-              <AddButton src={smile} alt="" />
+              <AddButton src={smile} alt="" onClick={() => setShowCard(true)} />
               <AddButton src={list} alt="" onClick={addListName} />
             </AddButtonDiv>
           </IntroDiv>
         </MovieIntro>
+        <Card
+          trigger={showCard}
+          setTrigger={setShowCard}
+          poster={eachMovie.poster}
+          gallery={eachMovie.gallery}
+        />
         <TopDiv />
         <AddToList
           trigger={showAddToList}

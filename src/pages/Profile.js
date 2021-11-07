@@ -4,11 +4,12 @@ import { firestore, auth } from '../utils/firebase';
 import { useHistory, useParams } from 'react-router-dom';
 import firebase from '../utils/firebase';
 import ProfileList from '../components/ProfileList';
-import ToggleBtn from '../components/Toggle';
+// import ToggleBtn from '../components/Toggle';
 import ProfileDiary from '../components/ProfileDiary';
 import ProfileFollow from '../components/ProfileFollow';
 import ProfileComment from '../components/ProfileComment';
 import ProfileCollect from '../components/ProfileCollect';
+import CardPopup from '../components/CardPopup';
 import moment from 'moment';
 
 const MainProfile = styled.div`
@@ -63,7 +64,7 @@ const ChangeProfileBtn = styled.div`
   @media (max-width: 1280px) {
     width: 15vmin;
     padding: 10px;
-    font-size: 20px;
+    font-size: 18px;
     top: 33vmin;
   }
 `;
@@ -106,6 +107,7 @@ const LogoutBtn = styled.div`
   }
   @media (max-width: 1280px) {
     margin-top: 8vmin;
+    font-size: 18px;
   }
 `;
 
@@ -218,7 +220,7 @@ const CommentShowcase = styled.div`
 const FollowShowcase = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-gap: 25px 3px;
+  grid-gap: 15px 3px;
   padding: 10vmin 0px 10vmin 0px;
   width: 100%;
   max-width: 1440px;
@@ -242,14 +244,60 @@ const CollectShowcase = styled.div`
   }
 `;
 
+const CardShowcase = styled.div`
+  display: grid;
+  height: auto;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 30px 3px;
+  padding: 10vmin 0px 10vmin 0px;
+  width: 100%;
+  max-width: 1440px;
+  @media (max-width: 1280px) {
+    max-width: 1000px;
+    padding: 8vmin 0px 10vmin 0px;
+  }
+`;
+
+const ProfileCard = styled.div`
+  display: flex;
+  flex-direction: column;
+  /* border: 1px solid #7fffd4; */
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const CardSenderDiv = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const SenderImgDiv = styled.img`
+  width: 10vmin;
+  height: 8vmin;
+`;
+const SenderNameDiv = styled.div`
+  font-size: 20px;
+`;
+const CardDiv = styled.img`
+  width: 20vmin;
+  height: 15vmin;
+`;
+
 export default function Profile() {
   const [activeitem, setActiveitem] = useState('comment');
   const [showDiary, setShowDiary] = useState('');
   const [showList, setShowList] = useState('');
+  const [showShareList, setShowShareList] = useState('');
   const [showCollect, setShowCollect] = useState('');
   const [showProfile, setShowProfile] = useState('');
   const [showComment, setShowComment] = useState('');
   const [updateFollow, setUpdateFollow] = useState('');
+  const [showCard, setShowCard] = useState('');
+  const [showCardPopup, setShowCardPopup] = useState(false);
+  const [selectCard, setSelectCard] = useState('');
+  const [userData, setUserData] = useState('');
   const history = useHistory();
 
   const currentUserId = auth.currentUser?.uid;
@@ -309,6 +357,24 @@ export default function Profile() {
   useEffect(() => {
     let isMounted = true;
     firestore
+      .collection('Users')
+      .doc(userId)
+      .collection('Cards')
+      .orderBy('date')
+      .onSnapshot((collectionSnapshot) => {
+        const data = collectionSnapshot.docs.map((doc) => {
+          return doc.data();
+        });
+        if (isMounted) setShowCard(data);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    firestore
       .collection('Lists')
       .where('authorId', '==', userId)
       .orderBy('date', 'desc')
@@ -321,7 +387,25 @@ export default function Profile() {
     return () => {
       isMounted = false;
     };
-  }, [userId]);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    firestore
+      .collection('Lists')
+      .where('authorId', '==', userId)
+      .where('listShare', '==', true)
+      .orderBy('date', 'desc')
+      .onSnapshot((collectionSnapshot) => {
+        const data = collectionSnapshot.docs.map((doc) => {
+          return doc.data();
+        });
+        if (isMounted) setShowShareList(data);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -337,7 +421,7 @@ export default function Profile() {
     return () => {
       isMounted = false;
     };
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -351,7 +435,7 @@ export default function Profile() {
     return () => {
       isMounted = false;
     };
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -368,7 +452,37 @@ export default function Profile() {
     return () => {
       isMounted = false;
     };
-  }, [userId]);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    firestore
+      .collection('Users')
+      .get()
+      .then((collection) => {
+        const data = collection.docs.map((doc) => {
+          return doc.data();
+        });
+        if (isMounted) setUserData(data);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  let friendData = [];
+
+  if (userData !== '') {
+    showCard.map((item) => {
+      const data = userData.find(({ uid }) => uid === item.senderId);
+      friendData.push({
+        friendImg: data.profileImg,
+        friendName: data.userName,
+        cardUrl: item.cardUrl,
+      });
+      return data;
+    });
+  }
 
   // const toggleEditQuote = () => {
   //   if (editQuote) {
@@ -434,7 +548,7 @@ export default function Profile() {
               </IntroLine>
               <IntroLine>
                 <IntroTitle>即時通知</IntroTitle>
-                <ToggleBtn />
+                {/* <ToggleBtn /> */}
               </IntroLine>
             </>
           )}
@@ -473,6 +587,12 @@ export default function Profile() {
         >
           評論
         </Tag>
+        <Tag
+          active={activeitem === 'card'}
+          onClick={() => setActiveitem('card')}
+        >
+          小卡
+        </Tag>
       </TagDiv>
 
       {currentUserId === userId && activeitem === 'diary' && (
@@ -488,9 +608,9 @@ export default function Profile() {
             ))}
         </DiaryShowcase>
       )}
-      {activeitem === 'list' && (
+      {currentUserId === userId && activeitem === 'list' && (
         <ListShowcase>
-          {showList.map((item) => (
+          {showList?.map((item) => (
             <ProfileList
               key={item.listId}
               title={item.listTitle}
@@ -500,6 +620,20 @@ export default function Profile() {
           ))}
         </ListShowcase>
       )}
+
+      {currentUserId !== userId && activeitem === 'list' && (
+        <ListShowcase>
+          {showShareList?.map((item) => (
+            <ProfileList
+              key={item.listId}
+              title={item.listTitle}
+              posters={item.listPosters}
+              listId={item.listId}
+            />
+          ))}
+        </ListShowcase>
+      )}
+
       {activeitem === 'follow' && (
         <FollowShowcase>
           {showProfile.follow !== '' &&
@@ -539,6 +673,30 @@ export default function Profile() {
             ))}
         </CommentShowcase>
       )}
+      {currentUserId === userId && activeitem === 'card' && (
+        <CardShowcase>
+          {friendData.map((friend) => (
+            <ProfileCard
+              key={friend.cardUrl}
+              onClick={() => {
+                setSelectCard(friend.cardUrl);
+                setShowCardPopup(true);
+              }}
+            >
+              <CardSenderDiv>
+                <SenderImgDiv src={friend.friendImg} alt="" />
+                <SenderNameDiv>{friend.friendName}</SenderNameDiv>
+              </CardSenderDiv>
+              <CardDiv src={friend.cardUrl} alt="" />
+            </ProfileCard>
+          ))}
+        </CardShowcase>
+      )}
+      <CardPopup
+        trigger={showCardPopup}
+        setTrigger={setShowCardPopup}
+        cardImg={selectCard}
+      />
     </MainProfile>
   );
 }

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Cancel, StarRounded } from '@material-ui/icons';
 import { auth, firestore } from '../utils/firebase';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const PopupDiv = styled.div`
   width: 100%;
@@ -94,7 +95,7 @@ const Header = styled.div`
   padding: 5px;
   border-radius: 5px;
   text-shadow: 2px 2px #778899;
-  background: linear-gradient(to top, #7fffd4, #90ee90, transparent);
+  background: #7fffd4;
   @media (max-width: 1280px) {
     font-size: 28px;
   }
@@ -154,9 +155,11 @@ const SendBtn = styled.div`
 `;
 
 export default function NewComment({ trigger, setTrigger, poster, chTitle }) {
+  const authorId = auth.currentUser?.uid;
   const [comment, setComment] = useState('');
   const [selectedStar, setSelectedStar] = useState('5');
   const [hoverStar, setHoverStar] = useState(null);
+  const currentUser = useSelector((state) => state.currentUser);
 
   const possibleRate = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
@@ -172,10 +175,27 @@ export default function NewComment({ trigger, setTrigger, poster, chTitle }) {
       rate: selectedStar,
       date: new Date(),
       authorName: auth.currentUser.displayName || '',
-      authorId: auth.currentUser.uid,
+      authorId,
       authorImg: auth.currentUser.photoURL || '',
       comment,
     });
+
+    currentUser.followBy.map((item) => {
+      firestore
+        .collection('Users')
+        .doc(item)
+        .collection('Notifications')
+        .doc()
+        .set({
+          authorId,
+          authorName: auth.currentUser.displayName,
+          chTitle,
+          read: false,
+          date: new Date(),
+        });
+      return item;
+    });
+
     setTrigger(false);
     setComment('');
     setSelectedStar('5');
