@@ -10,12 +10,38 @@ import ProfileFollow from '../components/ProfileFollow';
 import ProfileComment from '../components/ProfileComment';
 import ProfileCollect from '../components/ProfileCollect';
 import CardPopup from '../components/CardPopup';
+import ChangeProfile from '../components/ChangeProfile';
+import BuyProfile from '../components/BuyProfile';
+import CoinAlert from '../components/CoinAlert';
 import moment from 'moment';
+import coin from '../images/limocoin.png';
+import change from '../images/change.png';
+import fans from '../images/fans.png';
+import { Cake, Storefront, Stars } from '@material-ui/icons';
+import nocollect from '../images/nocollect.png';
+import nocard from '../images/nocard.png';
+import nodiary from '../images/nodiary.png';
+import nofollow from '../images/nofollow.png';
+import nolist from '../images/nolist.png';
+import nocomment from '../images/nocomment.png';
+import DeleteAlert from '../components/DeleteAlert';
 
-const MainProfile = styled.div`
+const ProfileDiv = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+const MainProfile = styled.div`
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  @media (min-width: 1290px) {
+    max-width: 1280px;
+  }
 `;
 const ProfileSection = styled.div`
   display: flex;
@@ -24,21 +50,55 @@ const ProfileSection = styled.div`
   justify-content: center;
 `;
 
-const ProfileImgDiv = styled.div`
-  width: 20vmin;
-  height: 20vmin;
-  background: #333;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+const ChangeImg = styled.img`
+  width: 5vmin;
+  height: 5vmin;
+`;
+
+const ChangeWord = styled.div`
+  font-size: 2vmin;
 `;
 
 const ProfileImg = styled.img`
-  width: 20vmin;
+  width: 15vmin;
   height: 15vmin;
-  @media (max-width: 1280px) {
+`;
+
+const ProfileImgDiv = styled.div`
+  width: 20vmin;
+  height: 20vmin;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #c5cdc0;
+  border-radius: 50%;
+  position: relative;
+`;
+
+const ChangeProfileBtn = styled.div`
+  width: 10vmin;
+  height: 10vmin;
+  display: flex;
+  margin-top: -50%;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  display: none;
+  z-index: 1;
+`;
+
+const ProfileWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  &:hover ${ChangeProfileBtn} {
+    display: flex;
+  }
+
+  &:hover ${ProfileImgDiv} {
+    opacity: 0.25;
   }
 `;
 
@@ -46,114 +106,140 @@ const ProfileContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-around;
 `;
 
-const ChangeProfileBtn = styled.div`
-  top: 31vmin;
-  color: #333;
-  width: 10vmin;
-  height: 2vmin;
-  text-align: center;
-  line-height: 2vmin;
-  padding: 20px;
-  background: gold;
-  font-size: 22px;
-  border-radius: 10px;
-  cursor: pointer;
-  position: absolute;
-  @media (max-width: 1280px) {
-    width: 15vmin;
-    padding: 10px;
-    font-size: 18px;
-    top: 33vmin;
-  }
+const FollowIcon = styled(Stars)`
+  transform: scale(1.5);
+  color: ${(props) => (props.follow ? '#FFD700' : '#B2B2B2')};
+  margin-right: 2vmin;
 `;
 
 const FollowBtn = styled.div`
-  top: 31vmin;
-  color: #333;
-  width: 10vmin;
-  height: 2vmin;
+  margin-top: 3vmin;
+  font-size: 2.5vmin;
   text-align: center;
-  line-height: 2vmin;
-  padding: 20px;
-  background: ${(props) => (props.follow ? 'gold' : '#7fffd4')};
-  font-size: 22px;
-  border-radius: 10px;
+  width: 18vmin;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  padding: 10px;
+  border-radius: 20px;
   cursor: pointer;
-  position: absolute;
-  @media (max-width: 1280px) {
-    width: 15vmin;
-    padding: 10px;
-    font-size: 20px;
-    top: 33vmin;
+  &:hover {
+    background: #767b73;
+    color: #fff;
   }
 `;
 
 const LogoutBtn = styled.div`
-  margin-top: 5vmin;
-  cursor: pointer;
-  font-size: 20px;
-  padding: 10px;
-  line-height: 2vmin;
-  width: 6vmin;
-  height: 2vmin;
-  border: 5px solid #ffb6c1;
-  border-radius: 5px;
+  margin-top: 3vmin;
+  padding: 0.8vmin 1vmin;
+  font-size: 2.5vmin;
+  font-weight: 400;
+  background: #898f86;
+  box-shadow: rgba(20, 20, 20, 0.3) 0px 1px 2px 0px,
+    rgba(20, 20, 20, 0.15) 0px 1px 3px 1px;
+  color: #333;
   text-align: center;
+  cursor: pointer;
   &:hover {
-    background: linear-gradient(#ffb6c1);
-    color: #888;
-  }
-  @media (max-width: 1280px) {
-    margin-top: 8vmin;
-    font-size: 18px;
+    background: #cad2c6;
   }
 `;
 
 const ProfileIntroDiv = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
   margin-left: 8vmin;
-  @media (max-width: 1280px) {
-  }
+`;
+
+const IntroInfo = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
 `;
 
 const IntroLine = styled.div`
   display: flex;
-  font-size: 25px;
+  font-size: 3vmin;
   margin-top: 3vmin;
-  justify-content: space-between;
-  @media (max-width: 1280px) {
-    font-size: 22px;
-  }
+  align-items: center;
 `;
 
-const IntroTitle = styled.div`
-  display: block;
+const NameValue = styled.div`
+  font-size: 5vmin;
+  font-weight: 500;
 `;
 
 const IntroValue = styled.div`
-  margin-left: 6vmin;
+  margin-left: 3vmin;
   display: block;
 `;
 
+const CakeIcon = styled(Cake)`
+  transform: scale(1.3);
+`;
+
+const StoreIcon = styled(Storefront)`
+  transform: scale(1.2);
+  margin-right: 1vmin;
+`;
+
+const StoreBtn = styled.div`
+  margin-top: 3vmin;
+  padding: 1.5vmin 1vmin;
+  width: 14vmin;
+  height: 1vmin;
+  font-weight: 450;
+  font-size: 2.2vmin;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  text-align: center;
+  color: #898f86;
+  cursor: pointer;
+  &:hover {
+    background: #898f86;
+    color: #fff;
+  }
+`;
+
+const CoinNum = styled.div`
+  display: block;
+`;
+
+const CoinImg = styled.img`
+  width: 4vmin;
+  height: 4vmin;
+`;
+
+const FansImg = styled.img`
+  width: 4vmin;
+  height: 4vmin;
+`;
+
 const TagDiv = styled.div`
-  margin-top: 5vmin;
   display: flex;
 `;
 
 const Tag = styled.div`
   width: 15vmin;
-  font-size: 25px;
+  font-size: 2.5vmin;
   font-weight: 500;
   height: 6vmin;
   opacity: 0.8;
   color: ${(props) => (props.active ? '#fff' : '#666')};
   background: transparent;
   border-radius: 5px;
-  border-bottom: 5px solid ${(props) => (props.active ? '#7fffd4' : '#222')};
-  line-height: 8vmin;
+  border-bottom: 5px solid
+    ${(props) => (props.active ? '#7fffd4' : 'transparent')};
+  line-height: 6vmin;
   text-align: center;
   margin-left: 5vmin;
   cursor: pointer;
@@ -161,33 +247,14 @@ const Tag = styled.div`
     border-bottom: 5px solid #7fffd4;
     color: #fff;
   }
-  @media (max-width: 1280px) {
-    width: 15vmin;
-    font-size: 20px;
-    font-weight: 500;
-    height: 8vmin;
-    opacity: 0.8;
-    color: ${(props) => (props.active ? '#fff' : '#666')};
-    border-radius: 5px;
-    border-bottom: 5px solid ${(props) => (props.active ? '#7fffd4' : '#222')};
-    line-height: 8vmin;
-    text-align: center;
-    margin-left: 5vmin;
-    cursor: pointer;
-  }
 `;
 
 const DiaryShowcase = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 10px 3px;
-  padding: 10vmin 0px 10vmin 0px;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 1vmin 0.8vmin;
+  padding: 5vmin 0;
   width: 100%;
-  max-width: 1440px;
-  @media (max-width: 1280px) {
-    max-width: 1140px;
-    padding: 10vmin 0px 10vmin 0px;
-  }
 `;
 
 const ListShowcase = styled.div`
@@ -195,39 +262,25 @@ const ListShowcase = styled.div`
   height: auto;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 10px 3px;
-  padding: 10vmin 0px 10vmin 0px;
-  width: 100%;
-  max-width: 1440px;
-  @media (max-width: 1280px) {
-    max-width: 1000px;
-    padding: 8vmin 0px 10vmin 0px;
-  }
+  padding: 5vmin 0;
+  width: 90%;
 `;
 
 const CommentShowcase = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 5vmin 0;
+  text-align: center;
+  width: -webkit-fill-available;
   align-items: center;
-  padding: 10vmin 0px 10vmin 0px;
-  width: 100%;
-  max-width: 1440px;
-  @media (max-width: 1280px) {
-    max-width: 1140px;
-    padding: 8vmin 0px 10vmin 0px;
-  }
 `;
 
 const FollowShowcase = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-gap: 15px 3px;
-  padding: 10vmin 0px 10vmin 0px;
+  padding: 5vmin 0;
   width: 100%;
-  max-width: 1440px;
-  @media (max-width: 1280px) {
-    max-width: 1140px;
-    padding: 8vmin 0px 10vmin 0px;
-  }
 `;
 
 const CollectShowcase = styled.div`
@@ -235,13 +288,8 @@ const CollectShowcase = styled.div`
   height: auto;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 10px 3px;
-  padding: 10vmin 0px 10vmin 0px;
-  width: 100%;
-  max-width: 1440px;
-  @media (max-width: 1280px) {
-    max-width: 1000px;
-    padding: 8vmin 0px 10vmin 0px;
-  }
+  padding: 5vmin 0;
+  width: 90%;
 `;
 
 const CardShowcase = styled.div`
@@ -249,19 +297,13 @@ const CardShowcase = styled.div`
   height: auto;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 30px 3px;
-  padding: 10vmin 0px 10vmin 0px;
+  padding: 5vmin 0;
   width: 100%;
-  max-width: 1440px;
-  @media (max-width: 1280px) {
-    max-width: 1000px;
-    padding: 8vmin 0px 10vmin 0px;
-  }
 `;
 
 const ProfileCard = styled.div`
   display: flex;
   flex-direction: column;
-  /* border: 1px solid #7fffd4; */
   border-radius: 5px;
   justify-content: center;
   align-items: center;
@@ -274,19 +316,40 @@ const CardSenderDiv = styled.div`
 `;
 
 const SenderImgDiv = styled.img`
-  width: 10vmin;
-  height: 8vmin;
+  width: 5vmin;
+  height: 5vmin;
 `;
 const SenderNameDiv = styled.div`
-  font-size: 20px;
+  font-size: 2.5vmin;
 `;
 const CardDiv = styled.img`
+  margin-top: 1vmin;
   width: 20vmin;
   height: 15vmin;
+  border-radius: 10px;
+`;
+
+const Space = styled.div`
+  width: 100%;
+  height: 35vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const SpaceImg = styled.img`
+  width: 12vmin;
+  height: 11vmin;
+`;
+
+const Word = styled.div`
+  margin-top: 3vmin;
+  font-size: 2.5vmin;
 `;
 
 export default function Profile() {
-  const [activeitem, setActiveitem] = useState('comment');
+  const [activeitem, setActiveitem] = useState('list');
   const [showDiary, setShowDiary] = useState('');
   const [showList, setShowList] = useState('');
   const [showShareList, setShowShareList] = useState('');
@@ -296,12 +359,19 @@ export default function Profile() {
   const [updateFollow, setUpdateFollow] = useState('');
   const [showCard, setShowCard] = useState('');
   const [showCardPopup, setShowCardPopup] = useState(false);
+  const [showChangeProfile, setShowChangeProfile] = useState(false);
+  const [showCoinReview, setShowCoinReview] = useState(false);
+  const [showBuy, setShowBuy] = useState(false);
   const [selectCard, setSelectCard] = useState('');
   const [userData, setUserData] = useState('');
+  const [logoutAlert, setLogoutAlert] = useState(false);
+
   const history = useHistory();
 
   const currentUserId = auth.currentUser?.uid;
   const { userId } = useParams();
+
+  const isUser = currentUserId === userId;
 
   useEffect(() => {
     let isMounted = true;
@@ -326,6 +396,12 @@ export default function Profile() {
         .update({
           follow: firebase.firestore.FieldValue.arrayRemove(userId),
         });
+      firestore
+        .collection('Users')
+        .doc(userId)
+        .update({
+          followBy: firebase.firestore.FieldValue.arrayRemove(currentUserId),
+        });
     } else {
       firestore
         .collection('Users')
@@ -333,7 +409,17 @@ export default function Profile() {
         .update({
           follow: firebase.firestore.FieldValue.arrayUnion(userId),
         });
+      firestore
+        .collection('Users')
+        .doc(userId)
+        .update({
+          followBy: firebase.firestore.FieldValue.arrayUnion(currentUserId),
+        });
     }
+  };
+
+  const logout = () => {
+    auth.signOut().then(history.push('/'));
   };
 
   useEffect(() => {
@@ -370,7 +456,7 @@ export default function Profile() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -387,7 +473,7 @@ export default function Profile() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -405,7 +491,7 @@ export default function Profile() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -421,7 +507,7 @@ export default function Profile() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -435,7 +521,7 @@ export default function Profile() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -452,7 +538,7 @@ export default function Profile() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -484,219 +570,304 @@ export default function Profile() {
     });
   }
 
-  // const toggleEditQuote = () => {
-  //   if (editQuote) {
-  //     setEditQuote(false);
-  //   } else {
-  //     setEditQuote(true);
-  //   }
-  // };
-
   return (
-    <MainProfile>
-      <ProfileSection>
-        <ProfileContainer>
-          <ProfileImgDiv>
-            <ProfileImg
-              src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=7e617ed2-9a96-4192-8847-c07d8f642228"
-              alt=""
-            />
-          </ProfileImgDiv>
-          {currentUserId === userId && (
-            <>
-              <ChangeProfileBtn>我要換頭像</ChangeProfileBtn>
-              <LogoutBtn onClick={() => auth.signOut().then(history.push('/'))}>
-                登出
-              </LogoutBtn>
-            </>
-          )}
-          {currentUserId !== userId && (
-            <FollowBtn onClick={toggleFollow} follow={isFollow}>
-              {isFollow ? '追蹤中' : '我要追蹤'}
-            </FollowBtn>
-          )}
-        </ProfileContainer>
-        <ProfileIntroDiv>
-          {/* <EditQuote>
-              <Quote contentEditable={editQuote} edit={editQuote === true}>
-                偉大的人不追求成為領導者，而是時勢造就
-              </Quote>
-              <EditDiv>
-                <EditIcon onClick={toggleEditQuote} edit={editQuote === true} />
-              </EditDiv>
-            </EditQuote> 
-             border-bottom: 3px solid
-    ${(props) => (props.edit ? '#00e6ac' : 'transparent')};
-            */}
-          <IntroLine>
-            <IntroTitle>暱稱</IntroTitle>
-            <IntroValue>{showProfile.userName}</IntroValue>
-          </IntroLine>
-          <IntroLine>
-            <IntroTitle>誕生日</IntroTitle>
-            <IntroValue>
-              {moment(showProfile.birthday?.toDate())
-                .format('YYYY / MM / DD HH:mm:ss')
-                .substr(0, 15)}
-            </IntroValue>
-          </IntroLine>
-          {currentUserId === userId && (
-            <>
+    <ProfileDiv>
+      <MainProfile>
+        <ProfileSection>
+          <ProfileContainer>
+            <ProfileWrapper>
+              <ProfileImgDiv>
+                <ProfileImg src={showProfile.profileImg} alt="" />
+              </ProfileImgDiv>
+              <ChangeProfileBtn onClick={() => setShowChangeProfile(true)}>
+                <ChangeImg src={change} alt="" />
+                <ChangeWord>更換頭像</ChangeWord>
+              </ChangeProfileBtn>
+            </ProfileWrapper>
+            {currentUserId === userId && (
+              <>
+                <StoreBtn onClick={() => setShowBuy(true)}>
+                  <StoreIcon /> 頭像商城
+                </StoreBtn>
+                <LogoutBtn onClick={() => setLogoutAlert(true)}>登出</LogoutBtn>
+              </>
+            )}
+            {currentUserId !== userId && (
+              <FollowBtn onClick={toggleFollow} follow={isFollow}>
+                <FollowIcon follow={isFollow} />{' '}
+                {isFollow ? '追蹤中' : '我要追蹤'}
+              </FollowBtn>
+            )}
+          </ProfileContainer>
+          <ProfileIntroDiv>
+            <NameValue>{showProfile.userName}</NameValue>
+            <IntroInfo>
               <IntroLine>
-                <IntroTitle>積分</IntroTitle>
-                <IntroValue>235</IntroValue>
+                <CakeIcon />
+                <IntroValue>
+                  {moment(showProfile.birthday?.toDate())
+                    .format('YYYY / MM / DD HH:mm:ss')
+                    .substr(0, 15)}
+                </IntroValue>
               </IntroLine>
               <IntroLine>
+                <FansImg src={fans} alt="" />
+                <IntroValue>
+                  <CoinNum>
+                    {showProfile.followBy?.length || 0}&nbsp;&nbsp;粉絲
+                  </CoinNum>
+                </IntroValue>
+              </IntroLine>
+              {currentUserId === userId && (
+                <>
+                  <IntroLine>
+                    <CoinImg src={coin} alt="" />
+                    <IntroValue>
+                      <CoinNum>{showProfile.coin?.toLocaleString()}</CoinNum>
+                    </IntroValue>
+                  </IntroLine>
+
+                  {/* <IntroLine>
                 <IntroTitle>即時通知</IntroTitle>
-                {/* <ToggleBtn /> */}
-              </IntroLine>
-            </>
-          )}
-        </ProfileIntroDiv>
-      </ProfileSection>
-      <TagDiv>
-        {currentUserId === userId && (
+                <ToggleBtn />
+              </IntroLine> */}
+                </>
+              )}
+            </IntroInfo>
+          </ProfileIntroDiv>
+        </ProfileSection>
+        <TagDiv>
           <Tag
-            active={activeitem === 'diary'}
-            onClick={() => setActiveitem('diary')}
+            active={activeitem === 'list'}
+            onClick={() => setActiveitem('list')}
           >
-            日誌
+            片單
           </Tag>
-        )}
-        <Tag
-          active={activeitem === 'list'}
-          onClick={() => setActiveitem('list')}
-        >
-          片單
-        </Tag>
-        <Tag
-          active={activeitem === 'follow'}
-          onClick={() => setActiveitem('follow')}
-        >
-          追蹤
-        </Tag>
-        <Tag
-          active={activeitem === 'collect'}
-          onClick={() => setActiveitem('collect')}
-        >
-          收藏
-        </Tag>
-        <Tag
-          active={activeitem === 'comment'}
-          onClick={() => setActiveitem('comment')}
-        >
-          評論
-        </Tag>
-        <Tag
-          active={activeitem === 'card'}
-          onClick={() => setActiveitem('card')}
-        >
-          小卡
-        </Tag>
-      </TagDiv>
 
-      {currentUserId === userId && activeitem === 'diary' && (
-        <DiaryShowcase>
-          {showDiary !== '' &&
-            showDiary.map((item) => (
-              <ProfileDiary
-                key={item.diaryId}
-                diaryId={item.diaryId}
-                poster={item.poster}
-                chTitle={item.chTitle}
-              />
-            ))}
-        </DiaryShowcase>
-      )}
-      {currentUserId === userId && activeitem === 'list' && (
-        <ListShowcase>
-          {showList?.map((item) => (
-            <ProfileList
-              key={item.listId}
-              title={item.listTitle}
-              posters={item.listPosters}
-              listId={item.listId}
-            />
-          ))}
-        </ListShowcase>
-      )}
+          <Tag
+            active={activeitem === 'comment'}
+            onClick={() => setActiveitem('comment')}
+          >
+            評論
+          </Tag>
 
-      {currentUserId !== userId && activeitem === 'list' && (
-        <ListShowcase>
-          {showShareList?.map((item) => (
-            <ProfileList
-              key={item.listId}
-              title={item.listTitle}
-              posters={item.listPosters}
-              listId={item.listId}
-            />
-          ))}
-        </ListShowcase>
-      )}
+          <Tag
+            active={activeitem === 'collect'}
+            onClick={() => setActiveitem('collect')}
+          >
+            收藏
+          </Tag>
+          <Tag
+            active={activeitem === 'follow'}
+            onClick={() => setActiveitem('follow')}
+          >
+            追蹤
+          </Tag>
 
-      {activeitem === 'follow' && (
-        <FollowShowcase>
-          {showProfile.follow !== '' &&
-            showProfile.follow.map((item) => (
-              <ProfileFollow key={item} followId={item} />
-            ))}
-        </FollowShowcase>
-      )}
-      {activeitem === 'collect' && (
-        <CollectShowcase>
-          {showCollect.map((item) => (
-            <ProfileCollect
-              key={item.listId}
-              title={item.listTitle}
-              posters={item.listPosters}
-              listId={item.listId}
-            />
-          ))}
-        </CollectShowcase>
-      )}
-      {activeitem === 'comment' && (
-        <CommentShowcase>
-          {showComment !== '' &&
-            showComment.map((item) => (
-              <ProfileComment
-                key={item.commentId}
-                commentId={item.commentId}
-                movieId={item.movieId}
-                poster={item.poster}
-                chTitle={item.chTitle}
-                date={item.date}
-                rate={item.rate}
-                comment={item.comment}
-                reviews={item.reviews}
-                smileBy={item.smileBy}
-              />
-            ))}
-        </CommentShowcase>
-      )}
-      {currentUserId === userId && activeitem === 'card' && (
-        <CardShowcase>
-          {friendData.map((friend) => (
-            <ProfileCard
-              key={friend.cardUrl}
-              onClick={() => {
-                setSelectCard(friend.cardUrl);
-                setShowCardPopup(true);
-              }}
+          {isUser && (
+            <Tag
+              active={activeitem === 'diary'}
+              onClick={() => setActiveitem('diary')}
             >
-              <CardSenderDiv>
-                <SenderImgDiv src={friend.friendImg} alt="" />
-                <SenderNameDiv>{friend.friendName}</SenderNameDiv>
-              </CardSenderDiv>
-              <CardDiv src={friend.cardUrl} alt="" />
-            </ProfileCard>
-          ))}
-        </CardShowcase>
-      )}
-      <CardPopup
-        trigger={showCardPopup}
-        setTrigger={setShowCardPopup}
-        cardImg={selectCard}
-      />
-    </MainProfile>
+              日誌
+            </Tag>
+          )}
+          {isUser && (
+            <Tag
+              active={activeitem === 'card'}
+              onClick={() => setActiveitem('card')}
+            >
+              小卡
+            </Tag>
+          )}
+        </TagDiv>
+
+        {isUser && activeitem === 'list' && showList.length === 0 && (
+          <Space>
+            <SpaceImg src={nolist} alt="" />
+            <Word>快將喜歡的電影加入片單吧！</Word>
+          </Space>
+        )}
+
+        {isUser && activeitem === 'list' && showList.length > 0 && (
+          <ListShowcase>
+            {showList?.map((item) => (
+              <ProfileList
+                key={item.listId}
+                title={item.listTitle}
+                posters={item.listPosters}
+                listId={item.listId}
+                isUser={isUser}
+              />
+            ))}
+          </ListShowcase>
+        )}
+
+        {!isUser && activeitem === 'list' && showShareList.length === 0 && (
+          <Space>
+            <SpaceImg src={nolist} alt="" />
+            <Word>快將喜歡的電影加入片單吧！</Word>
+          </Space>
+        )}
+
+        {!isUser && activeitem === 'list' && showShareList.length > 0 && (
+          <ListShowcase>
+            {showShareList?.map((item) => (
+              <ProfileList
+                key={item.listId}
+                title={item.listTitle}
+                posters={item.listPosters}
+                listId={item.listId}
+                isUser={isUser}
+              />
+            ))}
+          </ListShowcase>
+        )}
+
+        {activeitem === 'follow' && showProfile.follow === undefined && (
+          <Space>
+            <SpaceImg src={nofollow} alt="" />
+            <Word>你還沒有關注的對象呦！</Word>
+          </Space>
+        )}
+
+        {activeitem === 'follow' && showProfile.follow?.length === 0 && (
+          <Space>
+            <SpaceImg src={nofollow} alt="" />
+            <Word>你還沒有關注的對象呦！</Word>
+          </Space>
+        )}
+
+        {activeitem === 'follow' &&
+          showProfile.follow !== '' &&
+          showProfile.follow?.length > 0 && (
+            <FollowShowcase>
+              {showProfile.follow?.map((item) => (
+                <ProfileFollow key={item} followId={item} />
+              ))}
+            </FollowShowcase>
+          )}
+
+        {activeitem === 'collect' && showCollect.length === 0 && (
+          <Space>
+            <SpaceImg src={nocollect} alt="" />
+            <Word>開始收藏喜歡的片單吧！</Word>
+          </Space>
+        )}
+        {activeitem === 'collect' && showCollect.length > 0 && (
+          <CollectShowcase>
+            {showCollect?.map((item) => (
+              <ProfileCollect
+                key={item.listId}
+                title={item.listTitle}
+                posters={item.listPosters}
+                listId={item.listId}
+                isUser={isUser}
+              />
+            ))}
+          </CollectShowcase>
+        )}
+
+        {activeitem === 'comment' && showComment.length === 0 && (
+          <Space>
+            <SpaceImg src={nocomment} alt="" />
+            <Word>開始分享自己對電影的看法吧！</Word>
+          </Space>
+        )}
+
+        {activeitem === 'comment' && showComment.length > 0 && (
+          <CommentShowcase>
+            {showComment !== '' &&
+              showComment.map((item) => (
+                <ProfileComment
+                  key={item.commentId}
+                  commentId={item.commentId}
+                  movieId={item.movieId}
+                  poster={item.poster}
+                  chTitle={item.chTitle}
+                  date={item.date}
+                  rate={item.rate}
+                  comment={item.comment}
+                  reviews={item.reviews}
+                  smileBy={item.smileBy}
+                  isUser={isUser}
+                  currentUserId={currentUserId}
+                  showCoin={setShowCoinReview}
+                />
+              ))}
+          </CommentShowcase>
+        )}
+
+        {isUser && activeitem === 'diary' && showDiary.length === 0 && (
+          <Space>
+            <SpaceImg src={nodiary} alt="" />
+            <Word>快將喜歡的電影加入日誌吧！</Word>
+          </Space>
+        )}
+
+        {isUser && activeitem === 'diary' && showDiary.length > 0 && (
+          <DiaryShowcase>
+            {showDiary !== '' &&
+              showDiary.map((item) => (
+                <ProfileDiary
+                  key={item.diaryId}
+                  diaryId={item.diaryId}
+                  poster={item.poster}
+                  chTitle={item.chTitle}
+                />
+              ))}
+          </DiaryShowcase>
+        )}
+
+        {isUser && activeitem === 'card' && friendData.length === 0 && (
+          <Space>
+            <SpaceImg src={nocard} alt="" />
+            <Word>還沒收到朋友寄來的小卡呦～</Word>
+          </Space>
+        )}
+
+        {isUser && activeitem === 'card' && friendData.length > 0 && (
+          <CardShowcase>
+            {friendData.map((friend) => (
+              <ProfileCard
+                key={friend.cardUrl}
+                onClick={() => {
+                  setSelectCard(friend.cardUrl);
+                  setShowCardPopup(true);
+                }}
+              >
+                <CardSenderDiv>
+                  <SenderImgDiv src={friend.friendImg} alt="" />
+                  <SenderNameDiv>{friend.friendName}</SenderNameDiv>
+                </CardSenderDiv>
+                <CardDiv src={friend.cardUrl} alt="" />
+              </ProfileCard>
+            ))}
+          </CardShowcase>
+        )}
+        <CardPopup
+          trigger={showCardPopup}
+          setTrigger={setShowCardPopup}
+          cardImg={selectCard}
+        />
+        <ChangeProfile
+          trigger={showChangeProfile}
+          setTrigger={setShowChangeProfile}
+        />
+        <BuyProfile trigger={showBuy} setTrigger={setShowBuy} />
+        <CoinAlert
+          trigger={showCoinReview}
+          setTrigger={setShowCoinReview}
+          type={'留言'}
+          coin={30}
+        />
+        <DeleteAlert
+          trigger={logoutAlert}
+          setTrigger={setLogoutAlert}
+          message={'確認要登出LIMO嗎？'}
+          remove={logout}
+        />
+      </MainProfile>
+    </ProfileDiv>
   );
 }

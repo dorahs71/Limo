@@ -8,35 +8,29 @@ import {
   TextFields,
   FormatBold,
 } from '@material-ui/icons';
-// import { auth, firestore } from '../utils/firebase';
-// import firebase from '../utils/firebase';
 import { fabric } from 'fabric';
+import { useSelector } from 'react-redux';
 
 const PopupDiv = styled.div`
   width: 100%;
   height: 100vh;
   top: 0;
   position: fixed;
-  background-color: rgba(22, 22, 22, 0.8);
+  background-color: rgba(15, 14, 13, 0.9);
   z-index: 100;
 `;
 
 const CardDiv = styled.div`
   display: flex;
   flex-direction: column;
-  font-size: 25px;
+  font-size: 2.5vmin;
   width: 80%;
   height: 87%;
-  background: #333;
   padding: 20px 20px;
   position: relative;
-  top: 100px;
+  top: 5vmin;
   margin: 0 auto;
   align-items: center;
-  @media (max-width: 1280px) {
-    top: 5vmin;
-    font-size: 25px;
-  }
 `;
 
 const Close = styled.div`
@@ -44,15 +38,17 @@ const Close = styled.div`
   position: absolute;
   display: block;
   padding: 5px 5px;
-  right: -10px;
-  top: -10px;
+  right: -1vmin;
+  top: -1vmin;
   z-index: 300;
+  color: #c5cdc0;
+  &:hover {
+    color: #75e799;
+  }
 `;
 
 const CancelIcon = styled(Cancel)`
   transform: scale(1.5);
-  color: #75e799;
-  background: #333;
   border-radius: 50%;
 `;
 
@@ -69,27 +65,37 @@ const TextFunction = styled.div`
 
 const AddText = styled(TextFields)`
   transform: scale(1.5);
-  color: #75e799;
+  color: #c5cdc0;
   cursor: pointer;
   margin-bottom: 3vmin;
+  &:hover {
+    color: #75e799;
+  }
 `;
 
 const ColorInput = styled.input`
   margin-bottom: 3vmin;
+  cursor: pointer;
 `;
 
 const BoldText = styled(FormatBold)`
   transform: scale(1.5);
-  color: #75e799;
+  color: #c5cdc0;
   cursor: pointer;
   margin-bottom: 3vmin;
+  &:hover {
+    color: #75e799;
+  }
 `;
 
 const DeleteText = styled(DeleteOutlined)`
   transform: scale(1.5);
-  color: #75e799;
+  color: #c5cdc0;
   cursor: pointer;
   margin-bottom: 3vmin;
+  &:hover {
+    color: #75e799;
+  }
 `;
 
 const GalleryDiv = styled.div`
@@ -124,69 +130,91 @@ const SendDiv = styled.div`
   color: #fff;
   display: flex;
   align-items: center;
-  margin-top: 5vmin;
+  /* margin-top: 5vmin; */
 `;
 
 const FriendDiv = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   overflow: scroll;
   width: 80%;
-  background: #666;
-  border-radius: 20px;
   padding: 2px 2px 0 2px;
 `;
 
 const SendButton = styled.div`
-  background: #00ffff;
+  background: #c5cdc0;
+  font-weight: 400;
   width: 15vmin;
-  height: 10vmin;
+  height: 6vmin;
   border-radius: 10px;
-  font-size: 20px;
+  font-size: 2.5vmin;
   color: #333;
   text-align: center;
-  line-height: 10vmin;
+  line-height: 6vmin;
   cursor: pointer;
-  margin-left: 8vmin;
+  margin-left: 5vmin;
+  &:hover {
+    background: #75e799;
+  }
+`;
+
+const ImgWrapper = styled.div`
+  width: 12vmin;
+  height: 12.5vmin;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: ${(props) => (props.select ? '#75e799' : '')};
 `;
 
 const FollowDiv = styled.div`
+  width: 100%;
+  height: auto;
   display: flex;
   position: relative;
-  margin-right: 3vmin;
   flex-direction: column;
-  border-radius: 10px;
   align-items: center;
   cursor: pointer;
-  color: ${(props) => (props.select ? '#333' : '')};
-  background: ${(props) => (props.select ? 'gold' : '')};
-  &:hover {
-    color: #333;
-    background: gold;
+  &:hover ${ImgWrapper} {
+    background: #75e799;
+    border-radius: 50%;
   }
 `;
 
 const FollowImg = styled.img`
-  width: 13vmin;
+  width: 10vmin;
   height: 10vmin;
 `;
 
 const FollowName = styled.div`
-  font-size: 16px;
+  font-size: 2.5vmin;
   text-align: center;
+  margin-top: 0.5vmin;
 `;
 
-export default function Card({ trigger, setTrigger, poster, gallery }) {
+export default function Card({
+  trigger,
+  setTrigger,
+  poster,
+  gallery,
+  setSendCardAlert,
+}) {
   const [canvas, setCanvas] = useState('');
   const [addOverlay, setAddOverlay] = useState(true);
   const [color, setColor] = useState('#000');
   const [userData, setUserData] = useState('');
   const [selectFriend, setSelectFriend] = useState('');
+  const currentUser = useSelector((state) => state.currentUser);
 
   const currentUserId = auth.currentUser?.uid;
 
   useEffect(() => {
     let isMounted = true;
-    if (isMounted) setCanvas(initCanvas());
+    if (isMounted) {
+      setCanvas(initCanvas());
+      setAddOverlay(true);
+    }
     return () => {
       isMounted = false;
     };
@@ -211,12 +239,11 @@ export default function Card({ trigger, setTrigger, poster, gallery }) {
   let friendData = [];
 
   if (trigger) {
-    const currentUser = userData.find(({ uid }) => uid === currentUserId);
     const friendList = currentUser.follow.filter((element) =>
       currentUser.followBy.includes(element)
     );
     friendList.map((item) => {
-      const data = userData.find(({ uid }) => uid === item);
+      const data = userData?.find(({ uid }) => uid === item);
       friendData.push(data);
       return data;
     });
@@ -228,18 +255,31 @@ export default function Card({ trigger, setTrigger, poster, gallery }) {
       height: 450,
     });
 
-  function backchange(e) {
-    if (canvas !== '' && addOverlay) {
-      let overlayRect = new fabric.Rect({
-        width: canvas?.get('width'),
-        height: canvas?.get('height'),
-        selectable: false,
-        fill: 'rgb(255, 255, 255, 0.5)',
-      });
+  if (canvas !== '') {
+    fabric.Image.fromURL(
+      poster,
+      function (img) {
+        canvas.setBackgroundImage(img, canvas.renderAll?.bind(canvas), {
+          scaleX: canvas.width / img.width,
+          scaleY: canvas.height / img.height,
+        });
+      },
+      { crossOrigin: 'anonymous' }
+    );
+  }
 
-      canvas.add(overlayRect);
-      setAddOverlay(false);
-    }
+  function backchange(e) {
+    // if (canvas !== '' && addOverlay) {
+    //   let overlayRect = new fabric.Rect({
+    //     width: canvas?.get('width'),
+    //     height: canvas?.get('height'),
+    //     selectable: false,
+    //     fill: 'rgb(255, 255, 255, 0.5)',
+    //   });
+
+    //   canvas.add(overlayRect);
+    //   setAddOverlay(false);
+    // }
     const imgURL = e.target.src;
     fabric.Image.fromURL(
       imgURL,
@@ -273,7 +313,7 @@ export default function Card({ trigger, setTrigger, poster, gallery }) {
   const handleTextColor = (e) => {
     if (trigger && e.target !== null) {
       setColor(e.target.value);
-      canvas.getActiveObject().set('fill', color);
+      canvas.getActiveObject()?.set('fill', color);
       canvas.renderAll();
     }
   };
@@ -311,13 +351,16 @@ export default function Card({ trigger, setTrigger, poster, gallery }) {
           });
         });
         notificationRef.set({
-          senderId: currentUserId,
-          type: 'card',
+          authorId: currentUserId,
+          authorName: currentUser.userName,
+          authorImg: currentUser.profileImg,
+          message: `${currentUser.userName}送給你一張新小卡`,
           read: false,
           date: new Date(),
         });
       });
     setTrigger(false);
+    setSendCardAlert(true);
   };
 
   return trigger ? (
@@ -326,6 +369,7 @@ export default function Card({ trigger, setTrigger, poster, gallery }) {
         <Close
           onClick={() => {
             setTrigger(false);
+            setSelectFriend('');
           }}
         >
           <CancelIcon />
@@ -366,9 +410,10 @@ export default function Card({ trigger, setTrigger, poster, gallery }) {
                 onClick={() => {
                   setSelectFriend(item.uid);
                 }}
-                select={selectFriend === item.uid}
               >
-                <FollowImg src={item.profileImg} alt="" />
+                <ImgWrapper select={selectFriend === item.uid}>
+                  <FollowImg src={item.profileImg} alt="" />
+                </ImgWrapper>
                 <FollowName>{item.userName}</FollowName>
               </FollowDiv>
             ))}

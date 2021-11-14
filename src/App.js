@@ -17,27 +17,11 @@ const NavDiv = styled.div`
   height: 65px;
   color: #fff;
   z-index: 100;
-  background: #000;
+  background: #1b1919;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  &:before {
-    content: '';
-    position: absolute;
-    top: 100%;
-    width: 100%;
-    left: 0;
-    height: 3px;
-    border-radius: 2px;
-    background: linear-gradient(
-      130deg,
-      transparent,
-      #75e799 20.07%,
-      #f8ff00 50.07%,
-      #319197 76.05%,
-      transparent
-    );
-  }
+  box-shadow: 1px 4px 5px -1px rgba(27, 25, 25, 0.56);
 `;
 
 const StartNav = styled.div`
@@ -47,7 +31,7 @@ const StartNav = styled.div`
   height: 65px;
   color: #fff;
   z-index: 100;
-  background: linear-gradient(to top, transparent 0%, rgb(0, 0, 0, 0.3) 50%);
+  background: linear-gradient(to top, transparent 0%, rgb(34, 32, 32, 0.3) 50%);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -89,7 +73,8 @@ export default function App() {
         <Route path="/profile/:userId" exact>
           <Profile />
         </Route>
-        <Route path="/search" exact>
+        <Route path="/search/:keyword">
+          {/* <Route path="/search/:keyword"> */}
           <Search />
         </Route>
       </Switch>

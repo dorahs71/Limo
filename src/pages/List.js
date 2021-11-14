@@ -1,18 +1,13 @@
 import styled from 'styled-components';
 import ListStatus from '../components/ListStatus';
-import {
-  Save,
-  CancelOutlined,
-  LocalOffer,
-  AddCircle,
-  Favorite,
-} from '@material-ui/icons';
+import { Save, Favorite, DeleteOutline } from '@material-ui/icons';
 import { useState, useEffect } from 'react';
 import { firestore, auth } from '../utils/firebase';
 import firebase from '../utils/firebase';
-import { useParams } from 'react-router-dom';
-import ListBlock from '../components/ListBlock';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { useParams, Link } from 'react-router-dom';
+import ReduceCoinAlert from '../components/ReduceCoinAlert';
+import CoinAlert from '../components/CoinAlert';
+import ListDeleteAlert from '../components/ListDeleteAlert';
 
 const ListSection = styled.div`
   display: flex;
@@ -24,17 +19,18 @@ const ListSection = styled.div`
 const ListHead = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-around;
 `;
 const ListContainer = styled.div`
   display: flex;
-  width: 70%;
+  width: 80%;
   flex-direction: column;
 `;
 
 const ProfileImgDiv = styled.div`
   width: 20vmin;
   height: 20vmin;
-  background: #333;
+  background: #c5cdc0;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -43,14 +39,14 @@ const ProfileImgDiv = styled.div`
 `;
 
 const ProfileImg = styled.img`
-  width: 20vmin;
+  width: 15vmin;
   height: 15vmin;
-  @media (max-width: 1280px) {
-  }
 `;
 
 const ProfileName = styled.div`
-  font-size: 24px;
+  margin-top: 1vmin;
+  font-size: 3vmin;
+  font-weight: 500;
 `;
 
 const ProfileContainer = styled.div`
@@ -71,89 +67,97 @@ const ListIntroDiv = styled.div`
 
 const SaveIcon = styled(Save)`
   transform: scale(1.5);
-  color: #555;
+  color: #898f86;
   cursor: pointer;
   &:hover {
-    color: #00cca3;
+    color: #99cfff;
+  }
+  @media (max-width: 1280px) {
+    transform: scale(1.2);
   }
 `;
 
 const TitleSaveDiv = styled.div`
   width: 5vmin;
   height: 5vmin;
-  margin-top: 3vmin;
-  margin-left: 2vmin;
-  color: #555;
+  align-self: flex-end;
+  margin-top: -5%;
+  color: #898f86;
   cursor: pointer;
-  display: block;
-  &:hover {
-    color: #00cca3;
-  }
+  display: none;
 `;
 
 const EditTitle = styled.div`
   display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  /* &:focus-within ${TitleSaveDiv} {
+  &:hover ${TitleSaveDiv} {
     display: block;
-  } */
+  }
 `;
 
 const ListTitle = styled.input`
   background: transparent;
-  color: #ffaf1a;
-  width: 100%;
-  text-align: center;
-  font-size: 35px;
-  font-weight: 700;
+  color: #fff;
+  max-width: 100%;
   border: 0;
+  cursor: ${(props) => (props.isAuthor ? 'text' : 'default')};
+  border-bottom: 8px solid #61d498;
+  text-align: center;
+  font-size: 5vmin;
+  font-weight: 700;
   resize: none;
   ::placeholder {
     color: #555;
   }
   &:focus {
     outline: 0;
-    border-bottom: 3px solid #ffaf1a;
   }
 `;
 
 const IntroSaveDiv = styled.div`
   width: 4vmin;
   height: 4vmin;
-  margin-top: 22vmin;
-  margin-left: 2vmin;
-  color: #555;
+  align-self: flex-end;
+  margin-top: -5%;
+  color: #898f86;
   cursor: pointer;
-  display: block;
-  &:hover {
-    color: #00cca3;
-  }
+  display: none;
 `;
 
 const ListIntro = styled.textarea`
-  margin-top: 5vmin;
+  margin-top: 4vmin;
+  padding-top: 2vmin;
   background: transparent;
   width: 100%;
-  color: #fffaf0;
-  height: 20vmin;
+  font-family: 'Segoe UI';
+  color: #fff;
+  height: 16vmin;
+  cursor: ${(props) => (props.isAuthor ? 'text' : 'default')};
   overflow: scroll;
+  text-align: center;
   border-radius: 5px;
-  font-size: 23px;
-  border: 2px #222 inset;
+  font-size: 2.8vmin;
+  border: 2px #222 solid;
   resize: none;
   ::placeholder {
     color: #555;
   }
   &:focus {
     outline: 0;
-    border: 2px inset #ffaf1a;
+    border: 1px solid
+      ${(props) => (props.isAuthor ? 'rgba(127, 255, 212, 0.7)' : '0')};
   }
 `;
 
 const EditIntro = styled.div`
   display: flex;
   width: 100%;
-  &:focus-within ${IntroSaveDiv} {
+  flex-direction: column;
+  justify-content: center;
+  &:hover ${IntroSaveDiv} {
     display: block;
   }
 `;
@@ -167,139 +171,145 @@ const ToggleStatusDiv = styled.div`
   border-radius: 20px;
 `;
 
-const CollectBtn = styled.div`
-  margin-top: 3vmin;
-  font-size: 25px;
-  text-align: center;
-  width: 15vmin;
-  display: flex;
-  padding: 10px;
-  background: gold;
-  color: #333;
-  border-radius: 20px;
-  cursor: pointer;
-`;
-
 const CollectIcon = styled(Favorite)`
   transform: scale(1.5);
-  color: ${(props) => (props.collect ? '#ea4848' : '#444')};
-  margin-left: 2vmin;
+  color: ${(props) => (props.collect ? '#f08080' : '#B2B2B2')};
+  margin-right: 2vmin;
+`;
+
+const CollectBtn = styled.div`
+  margin-top: 3vmin;
+  font-size: 2.5vmin;
+  text-align: center;
+  width: 18vmin;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  padding: 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  &:hover {
+    background: #767b73;
+    color: #fff;
+  }
+`;
+
+const CollectNum = styled.div`
+  font-size: 2.3vmin;
+  margin-top: 1vmin;
+  color: #898f86;
+`;
+
+const CollectWord = styled.div`
+  display: block;
 `;
 
 const Status = styled.div`
   font-size: 20px;
 `;
 
-const ThemeListDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+const DeleteDiv = styled.div`
+  height: 2vmin;
+  position: absolute;
+  display: none;
+  width: 2vmin;
+  z-index: 12;
+  cursor: pointer;
+  bottom: 5vmin;
 `;
 
-const HashtagSection = styled.div`
-  padding: 10vmin 5vmin 5vmin 5vmin;
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const HashtagContainer = styled.div`
-  display: flex;
-  width: 100%;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  padding: 5vmin 5vmin 5vmin 7vmin;
-`;
-
-const HashtagHead = styled.div`
-  width: 100%;
-  display: flex;
-  margin-top: 5vmin;
-  justify-content: center;
-  align-items: center;
-`;
-
-const AddHashtag = styled.input`
-  width: 100%;
-  height: 3vmin;
-  font-size: 25px;
-  padding: 10px;
-  background: #444;
-  border: 0;
-  color: #fff8dc;
-  border-bottom: 3px solid rgba(127, 255, 212, 0.7);
-  &:focus {
-    outline: 0;
+const DeleteIcon = styled(DeleteOutline)`
+  transform: scale(1.5);
+  color: #777;
+  z-index: 20;
+  &:hover {
+    color: #edabab;
+  }
+  @media (max-width: 1280px) {
+    transform: scale(1.2);
   }
 `;
 
-const Close = styled.div`
-  cursor: pointer;
-  position: absolute;
-  display: block;
-  padding: 5px 5px;
-  right: -34px;
-  top: -3px;
-  display: none;
-`;
-
-const CancelIcon = styled(CancelOutlined)`
-  transform: scale(1.15);
-  color: #f08080;
-  border-radius: 50%;
-`;
-
-const HashtagDiv = styled.div`
+const Box = styled.div`
   display: flex;
-  margin: 2vmin 7vmin 0 0vmin;
-  width: auto;
+  justify-content: center;
+  width: 25vmin;
+  height: 35vmin;
   position: relative;
-  &:hover ${Close} {
+  cursor: pointer;
+  &:hover ${DeleteDiv} {
     display: flex;
   }
 `;
 
-const Hashtag = styled.div`
-  font-size: 23px;
-  margin-left: 1vmin;
+const Poster = styled.img`
+  width: 100%;
+  height: 100%;
 `;
 
-const TagIcon = styled(LocalOffer)`
-  transform: scale(1.5);
-  color: #7fffd4;
-`;
-
-const AddBtn = styled(AddCircle)`
-  transform: scale(1.6);
-  margin-left: 3vmin;
-  cursor: pointer;
+const Overlay = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s;
   &:hover {
-    color: #75e799;
+    opacity: 1;
+  }
+  > * {
+    transform: translateY(2vmin);
+    transition: transform 0.4s;
+  }
+  &:hover > * {
+    transform: translateY(0);
   }
 `;
 
 const ArrangeListDiv = styled.div`
   width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   height: auto;
-  margin-top: 5vmin;
+  margin: 8vmin;
+`;
+
+const MovieTitle = styled.div`
+  width: 70%;
+  text-align: center;
+  font-size: 2.8vmin;
+  font-weight: 500;
+`;
+
+const MyLink = styled(Link)`
+  text-decoration: none;
+  color: #fff;
 `;
 
 export default function List() {
-  const [addTag, setAddTag] = useState('');
   const [updateList, setUpdateList] = useState('');
   const [getAuthor, setGetAuthor] = useState('');
   const { listId } = useParams();
   const [listData, setListData] = useState('');
-  const [updateTitle, setUpdateTitle] = useState(updateList?.listTitle || '');
+  const [updateTitle, setUpdateTitle] = useState('');
   const [updateIntro, setUpdateIntro] = useState('');
+  const [showCoinList, setShowCoinList] = useState(false);
+  const [showReduceCoin, setShowReduceCoin] = useState(false);
+  const [removeMovieAlert, setRemoveMovieAlert] = useState(false);
 
   const currentUserId = auth.currentUser?.uid;
   const authorId = updateList?.authorId;
-
   const isAuthor = authorId === currentUserId;
-
-  // const initialOrder = listData;
 
   useEffect(() => {
     let isMounted = true;
@@ -308,7 +318,11 @@ export default function List() {
       .doc(listId)
       .onSnapshot((snapshot) => {
         const data = snapshot.data();
-        if (isMounted) setUpdateList(data);
+        if (isMounted) {
+          setUpdateList(data);
+          setUpdateTitle(data.listTitle);
+          setUpdateIntro(data.listIntro);
+        }
       });
     return () => {
       isMounted = false;
@@ -330,7 +344,7 @@ export default function List() {
     return () => {
       isMounted = false;
     };
-  }, [listId]);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -359,25 +373,6 @@ export default function List() {
     });
   };
 
-  const handleAddTag = () => {
-    firestore
-      .collection('Lists')
-      .doc(listId)
-      .update({
-        hashtag: firebase.firestore.FieldValue.arrayUnion(addTag),
-      });
-    setAddTag('');
-  };
-
-  const removeTag = (tag) => {
-    firestore
-      .collection('Lists')
-      .doc(listId)
-      .update({
-        hashtag: firebase.firestore.FieldValue.arrayRemove(tag),
-      });
-  };
-
   const isCollected = updateList?.collect?.includes(currentUserId);
 
   const toggleCollect = () => {
@@ -398,29 +393,24 @@ export default function List() {
     }
   };
 
-  // const reorder = (list, startIndex, endIndex) => {
-  //   const result = Array.from(list);
-  //   const [removed] = result.splice(startIndex, 1);
-  //   result.splice(endIndex, 0, removed);
+  const handleDeleteMovie = (id, poster) => {
+    firestore
+      .collection('Lists')
+      .doc(listId)
+      .collection('ListData')
+      .doc(id)
+      .delete()
+      .catch((error) => {
+        console.error('Error removing document: ', error);
+      });
 
-  //   return result;
-  // };
-
-  // const onDragEnd = (result) => {
-  //   if (!result.destination) {
-  //     return;
-  //   }
-  //   if (result.destination.index === result.source.index) {
-  //     return;
-  //   }
-  //   const newOrder = reorder(
-  //     listOrder,
-  //     result.source.index,
-  //     result.destination.index
-  //   );
-
-  //   setListOrder({ newOrder });
-  // };
+    firestore
+      .collection('Lists')
+      .doc(listId)
+      .update({
+        listPosters: firebase.firestore.FieldValue.arrayRemove(poster),
+      });
+  };
 
   return (
     <ListSection>
@@ -438,98 +428,106 @@ export default function List() {
                   authorId={authorId}
                   status={updateList?.listShare}
                   listId={listId}
-                  currentUserId={currentUserId}
                   listTitle={updateTitle}
+                  showCoin={setShowCoinList}
+                  reduceCoin={setShowReduceCoin}
                 />
                 <Status>分享</Status>
               </ToggleStatusDiv>
             ) : (
               <CollectBtn collect={isCollected} onClick={toggleCollect}>
-                {isCollected ? '已收藏' : '收藏片單'}
                 <CollectIcon collect={isCollected} />
+                <CollectWord>{isCollected ? '已收藏' : '收藏片單'}</CollectWord>
               </CollectBtn>
             )}
           </ProfileContainer>
           <ListIntroDiv>
             <EditTitle>
               <ListTitle
+                isAuthor={isAuthor}
                 placeholder="請寫下片單名稱..."
                 defaultValue={updateTitle}
+                readOnly={isAuthor ? false : true}
                 onChange={(e) => {
                   setUpdateTitle(e.target.value);
                 }}
               />
-              <TitleSaveDiv onClick={handleUpdateListTitle}>
-                <SaveIcon />
-              </TitleSaveDiv>
+
+              {isAuthor ? (
+                <TitleSaveDiv onClick={handleUpdateListTitle}>
+                  <SaveIcon />
+                </TitleSaveDiv>
+              ) : (
+                ''
+              )}
+              <CollectNum>
+                共 {updateList?.collect?.length || 0} 人收藏
+              </CollectNum>
             </EditTitle>
             <EditIntro>
               <ListIntro
+                isAuthor={isAuthor}
                 readOnly={isAuthor ? false : true}
                 placeholder="這個片單是關於..."
-                defaultValue={updateList?.listIntro || ''}
+                defaultValue={updateList.listIntro}
                 onChange={(e) => {
                   setUpdateIntro(e.target.value);
                 }}
               />
-              <IntroSaveDiv onClick={handleUpdateListIntro}>
-                <SaveIcon />
-              </IntroSaveDiv>
+              {isAuthor ? (
+                <IntroSaveDiv onClick={handleUpdateListIntro}>
+                  <SaveIcon />
+                </IntroSaveDiv>
+              ) : (
+                ''
+              )}
             </EditIntro>
           </ListIntroDiv>
         </ListHead>
 
-        <ThemeListDiv>
-          <HashtagSection>
-            <HashtagHead>
-              <AddHashtag
-                placeholder="寫下我的片單標籤"
-                value={addTag}
-                onChange={(e) => setAddTag(e.target.value)}
-              />
-              <AddBtn onClick={handleAddTag} />
-            </HashtagHead>
-            <HashtagContainer>
-              {updateList?.hashtag?.map((keyword) => {
-                return (
-                  <HashtagDiv key={keyword}>
-                    <Close onClick={() => removeTag(keyword)}>
-                      <CancelIcon />
-                    </Close>
-                    <TagIcon />
-                    <Hashtag>{keyword}</Hashtag>
-                  </HashtagDiv>
-                );
-              })}
-            </HashtagContainer>
-          </HashtagSection>
-          {/* <DragDropContext onDragEnd={onDragEnd}> */}
-          <DragDropContext>
-            <Droppable droppableId="list">
-              {(provided) => (
-                <ArrangeListDiv
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                >
-                  {listData !== '' &&
-                    listData.map((item, index) => (
-                      <ListBlock
-                        key={item.listDataId}
-                        index={index}
-                        listDataId={item.listDataId}
-                        movieId={item.movieId}
-                        chTitle={item.chTitle}
-                        listNote={item.listNote}
-                        poster={item.poster}
-                      />
-                    ))}
-                  {provided.placeholder}
-                </ArrangeListDiv>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </ThemeListDiv>
+        <ArrangeListDiv>
+          {listData !== '' &&
+            listData.map((item) => (
+              <>
+                <Box key={item.movieId}>
+                  {isAuthor ? (
+                    <DeleteDiv onClick={() => setRemoveMovieAlert(true)}>
+                      <DeleteIcon />
+                    </DeleteDiv>
+                  ) : (
+                    ''
+                  )}
+                  <MyLink to={`/movie/${item.movieId}`}>
+                    <Poster src={item.poster} alt="" />
+                    <Overlay>
+                      <MovieTitle>{item.chTitle}</MovieTitle>
+                    </Overlay>
+                  </MyLink>
+                </Box>
+                <ListDeleteAlert
+                  id={item.movieId}
+                  poster={item.poster}
+                  trigger={removeMovieAlert}
+                  setTrigger={setRemoveMovieAlert}
+                  message={'確認要移除此電影嗎？'}
+                  remove={handleDeleteMovie}
+                />
+              </>
+            ))}
+        </ArrangeListDiv>
       </ListContainer>
+      <CoinAlert
+        trigger={showCoinList}
+        setTrigger={setShowCoinList}
+        type={'片單'}
+        coin={300}
+      />
+      <ReduceCoinAlert
+        trigger={showReduceCoin}
+        setTrigger={setShowReduceCoin}
+        type={'片單'}
+        coin={300}
+      />
     </ListSection>
   );
 }

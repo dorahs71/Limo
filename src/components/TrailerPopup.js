@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Cancel } from '@material-ui/icons';
-import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import AOS from 'aos';
 
 const PopupDiv = styled.div`
   width: 100%;
@@ -10,18 +11,29 @@ const PopupDiv = styled.div`
   background-color: rgba(22, 22, 22, 0.8);
   z-index: 100;
 `;
+const Close = styled.div`
+  cursor: pointer;
+  position: absolute;
+  display: none;
+  padding: 5px 5px;
+  right: -10px;
+  top: -10px;
+  z-index: 300;
+  color: #c5cdc0;
+  &:hover {
+    color: #75e799;
+  }
+`;
 
 const TrailerContainer = styled.div`
   width: 100vmin;
   height: 65vmin;
   position: relative;
-  top: 20vmin;
+  top: 15vmin;
   margin: 0 auto;
-  /* @media (max-width: 1280px) {
-    width: 70vmin;
-    height: 55vmin;
-    top: 25vmin;
-  } */
+  &:hover ${Close} {
+    display: block;
+  }
 `;
 
 const TrailerDiv = styled.iframe`
@@ -31,28 +43,18 @@ const TrailerDiv = styled.iframe`
   }
 `;
 
-const Close = styled.div`
-  cursor: pointer;
-  position: absolute;
-  display: block;
-  padding: 5px 5px;
-  right: -10px;
-  top: -10px;
-  z-index: 300;
-`;
-
 const CancelIcon = styled(Cancel)`
   transform: scale(1.5);
-  color: #75e799;
-  background: #333;
   border-radius: 50%;
 `;
 
 export default function TrailerPopup({ trigger, setTrigger, trailerKey }) {
-  const { movieId } = useParams();
+  useEffect(() => {
+    AOS.init({ duration: 800 });
+  }, []);
 
   return trigger ? (
-    <PopupDiv>
+    <PopupDiv data-aos="zoom-in">
       <TrailerContainer>
         <Close
           onClick={() => {

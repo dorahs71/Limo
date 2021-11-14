@@ -25,7 +25,7 @@ export default function Coverflow() {
       .collection('Movies')
       .where('rate', '>', '6.5')
       .orderBy('rate', 'desc')
-      .limit(10)
+      .limit(16)
       .get()
       .then((item) => {
         const movieList = item.docs.map((doc) => doc.data());
@@ -45,21 +45,23 @@ export default function Coverflow() {
       <Carousel activeIndex={activeIndex} setActiveIndex={setActiveIndex}>
         {movies.map((movie, i) => {
           return (
-            <CarouselCard key={movie.movieId} active={activeIndex === i}>
-              <MyLink to={`/movie/${movie.movieId}`}>
-                <div
-                  className="carousel-card-content"
-                  style={{ backgroundImage: `url("${movie.poster}")` }}
-                >
-                  <div className="carousel-card-title">
-                    {movie.chTitle}
-                    <br />
-                    <Star />
-                    {movie.rate}
+            <>
+              <CarouselCard key={movie.movieId} active={activeIndex === i}>
+                <MyLink to={`/movie/${movie.movieId}`}>
+                  <div
+                    className="carousel-card-content"
+                    style={{ backgroundImage: `url("${movie.poster}")` }}
+                  >
+                    <div className="carousel-card-title">
+                      {movie.chTitle}
+                      <br />
+                      <Star />
+                      {movie.rate}
+                    </div>
                   </div>
-                </div>
-              </MyLink>
-            </CarouselCard>
+                </MyLink>
+              </CarouselCard>
+            </>
           );
         })}
       </Carousel>

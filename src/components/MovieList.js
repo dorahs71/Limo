@@ -2,29 +2,36 @@ import styled from 'styled-components';
 
 const ListDiv = styled.div`
   width: 100%;
-  padding: 10px 10px;
+  margin-top: 5vmin;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 4vmin 6vmin;
+`;
+
+const ListProfileDiv = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  margin-top: 100px;
-  @media (max-width: 1280px) {
-    margin-top: 50px;
-    max-width: 1000px;
-  }
+  color: #fff;
+  align-items: center;
+  justify-content: center;
 `;
 
 const OneList = styled.div`
   position: relative;
-  width: 250px;
-  height: 250px;
+  cursor: pointer;
+  width: 30vmin;
+  height: 35vmin;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   margin: 30px 50px;
-  @media (max-width: 1280px) {
-    width: 250px;
-    height: 210px;
-    margin: 20px 30px;
+
+  &:hover {
+    color: #75e799;
+  }
+
+  &:hover ${ListProfileDiv} {
+    color: #75e799;
   }
 `;
 
@@ -34,58 +41,57 @@ const ThemeList = styled.div`
 
 const ListCh1 = styled.img`
   position: absolute;
-  width: 10rem;
-  height: 12rem;
+  width: 18vmin;
+  height: 22vmin;
   right: 0px;
   z-index: -1;
-  box-shadow: 1px 1px 10px 1px;
   -moz-transform: rotate(5deg);
   transform: rotate(5deg);
   @media (max-width: 1280px) {
-    width: 8rem;
-    height: 10rem;
   }
 `;
 
 const ListCh2 = styled.img`
   position: absolute;
-  width: 10rem;
-  height: 12rem;
+  width: 18vmin;
+  height: 22vmin;
   right: 50px;
   z-index: 0;
-  box-shadow: 1px 1px 10px 1px;
   @media (max-width: 1280px) {
-    width: 8rem;
-    height: 10rem;
   }
 `;
 
 const ListCh3 = styled.img`
   position: absolute;
-  width: 10rem;
-  height: 12rem;
+  width: 18vmin;
+  height: 22vmin;
   right: 100px;
   z-index: 1;
-  box-shadow: 1px 1px 10px 1px #333;
   -moz-transform: rotate(-3deg);
   transform: rotate(-3deg);
   @media (max-width: 1280px) {
-    width: 8rem;
-    height: 10rem;
   }
 `;
 
 const ListTitle = styled.div`
-  font-size: 25px;
-  @media (max-width: 1280px) {
-    font-size: 20px;
-  }
+  font-size: 2.5vmin;
+  margin-top: 22vmin;
 `;
 
-export default function List() {
+const ListProfileImg = styled.img`
+  width: 4vmin;
+  height: 4vmin;
+  margin-right: 1vmin;
+`;
+
+const ListProfileName = styled.div`
+  font-size: 2vmin;
+`;
+
+export default function MovieList() {
   return (
     <ListDiv>
-      <OneList data-aos="fade-right">
+      <OneList>
         <ThemeList>
           <ListCh1
             src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/PSMRVeKvNsmfh8g5tUTB-756x1080.jpg"
@@ -101,8 +107,15 @@ export default function List() {
           ></ListCh3>
         </ThemeList>
         <ListTitle>好想好想出國玩片單</ListTitle>
+        <ListProfileDiv>
+          <ListProfileImg
+            src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fspider.png?alt=media&token=c399cd45-8018-4648-99b2-bbceb838ee78"
+            alt=""
+          />
+          <ListProfileName>我是魯拉拉</ListProfileName>
+        </ListProfileDiv>
       </OneList>
-      <OneList data-aos="fade-bottom">
+      <OneList>
         <ThemeList>
           <ListCh1
             src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/jNTjnulWyG04vzUEfxzN-992x1418.JPG"
@@ -118,8 +131,15 @@ export default function List() {
           ></ListCh3>
         </ThemeList>
         <ListTitle>吃不下東西片單</ListTitle>
+        <ListProfileDiv>
+          <ListProfileImg
+            src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fspider.png?alt=media&token=c399cd45-8018-4648-99b2-bbceb838ee78"
+            alt=""
+          />
+          <ListProfileName>我是魯拉拉</ListProfileName>
+        </ListProfileDiv>
       </OneList>
-      <OneList data-aos="fade-left">
+      <OneList>
         <ThemeList>
           <ListCh1
             src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/October2021/nqQ6186G9Jr9gSpbRqcu-757x1080.jpg"
@@ -135,8 +155,15 @@ export default function List() {
           ></ListCh3>
         </ThemeList>
         <ListTitle>說好一起耍廢片單</ListTitle>
+        <ListProfileDiv>
+          <ListProfileImg
+            src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fspider.png?alt=media&token=c399cd45-8018-4648-99b2-bbceb838ee78"
+            alt=""
+          />
+          <ListProfileName>我是魯拉拉</ListProfileName>
+        </ListProfileDiv>
       </OneList>
-      <OneList data-aos="fade-right">
+      <OneList>
         <ThemeList>
           <ListCh1
             src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/9gwE7Cf9zzvvtcRqFDss-756x1080.jpg"
@@ -152,8 +179,15 @@ export default function List() {
           ></ListCh3>
         </ThemeList>
         <ListTitle>貓狗大戰片單</ListTitle>
+        <ListProfileDiv>
+          <ListProfileImg
+            src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fspider.png?alt=media&token=c399cd45-8018-4648-99b2-bbceb838ee78"
+            alt=""
+          />
+          <ListProfileName>我是魯拉拉</ListProfileName>
+        </ListProfileDiv>
       </OneList>
-      <OneList data-aos="fade-up">
+      <OneList>
         <ThemeList>
           <ListCh1
             src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/HbO2lxjjQGtjxkbP86Uh-741x1080.jpg"
@@ -169,8 +203,15 @@ export default function List() {
           ></ListCh3>
         </ThemeList>
         <ListTitle>愛是我自己片單</ListTitle>
+        <ListProfileDiv>
+          <ListProfileImg
+            src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fspider.png?alt=media&token=c399cd45-8018-4648-99b2-bbceb838ee78"
+            alt=""
+          />
+          <ListProfileName>我是魯拉拉</ListProfileName>
+        </ListProfileDiv>
       </OneList>
-      <OneList data-aos="fade-left">
+      <OneList>
         <ThemeList>
           <ListCh1
             src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/October2021/MSRbo2ocgQ6N9DdzBUk0-1434x2048.jpg"
@@ -186,6 +227,13 @@ export default function List() {
           ></ListCh3>
         </ThemeList>
         <ListTitle>就是要冬眠片單</ListTitle>
+        <ListProfileDiv>
+          <ListProfileImg
+            src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fspider.png?alt=media&token=c399cd45-8018-4648-99b2-bbceb838ee78"
+            alt=""
+          />
+          <ListProfileName>我是魯拉拉</ListProfileName>
+        </ListProfileDiv>
       </OneList>
     </ListDiv>
   );

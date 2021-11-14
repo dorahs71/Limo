@@ -97,7 +97,6 @@ const MyLink = styled(Link)`
 
 export default function ListBlock({
   listDataId,
-  index,
   movieId,
   chTitle,
   listNote,
@@ -140,34 +139,26 @@ export default function ListBlock({
   };
 
   return (
-    <Draggable draggableId={listDataId} index={index}>
-      {(provided) => (
-        <ListBlockDiv
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-        >
-          <MovieDiv>
-            <MyLink to={`/movie/${movieId}`}>
-              <MoviePoster src={poster} alt="" />
-              <MovieTitle>{chTitle}</MovieTitle>
-            </MyLink>
-          </MovieDiv>
-          <EditListContent>
-            <ListContent
-              placeholder="我想談談這部電影..."
-              defaultValue={listNote || ''}
-              onChange={(e) => {
-                setUpdateNote(e.target.value);
-              }}
-            />
-            <FunctionDiv>
-              <SaveNote onClick={handleUpdateListNote} />
-              <DeleteIcon onClick={handleDeleteMovie} />
-            </FunctionDiv>
-          </EditListContent>
-        </ListBlockDiv>
-      )}
-    </Draggable>
+    <ListBlockDiv>
+      <MovieDiv>
+        <MyLink to={`/movie/${movieId}`}>
+          <MoviePoster src={poster} alt="" />
+          <MovieTitle>{chTitle}</MovieTitle>
+        </MyLink>
+      </MovieDiv>
+      <EditListContent>
+        <ListContent
+          placeholder="我想談談這部電影..."
+          defaultValue={listNote || ''}
+          onChange={(e) => {
+            setUpdateNote(e.target.value);
+          }}
+        />
+        <FunctionDiv>
+          <SaveNote onClick={handleUpdateListNote} />
+          <DeleteIcon onClick={handleDeleteMovie} />
+        </FunctionDiv>
+      </EditListContent>
+    </ListBlockDiv>
   );
 }

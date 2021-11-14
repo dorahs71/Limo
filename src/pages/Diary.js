@@ -1,11 +1,13 @@
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { firestore, auth } from '../utils/firebase';
 import firebase from '../utils/firebase';
 import DiaryQuote from '../components/DiaryQuote';
 import DiaryBlock from '../components/DiaryBlock';
 import TrailerPopup from '../components/TrailerPopup';
+import diary from '../images/diary.png';
+import noquote from '../images/noquote.png';
 import AOS from 'aos';
 import {
   StarRounded,
@@ -13,152 +15,123 @@ import {
   LocalOffer,
   AddCircle,
   CancelOutlined,
-  LibraryAdd,
+  RateReview,
+  PostAdd,
+  Theaters,
 } from '@material-ui/icons';
+import TagDeleteAlert from '../components/TagDeleteAlert';
 
 const DiaryContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
-const BackgroundDiv = styled.div`
+const MyLink = styled(Link)`
+  text-decoration: none;
   width: 100%;
-  height: auto;
-  opacity: 0.5;
-  overflow: visible;
-  position: relative;
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 20vmin;
-    background: linear-gradient(to top, #111, transparent);
-    z-index: 3;
-  }
+  display: flex;
+  justify-content: center;
 `;
 
-const Zoom = styled.img`
-  display: inline-block;
+const Background = styled.div`
+  opacity: 0.05;
+  background: ${(prop) => `url(${prop.img})no-repeat center fixed`};
   width: 100%;
+  height: 100%;
   top: 0;
-  left: 0;
-  transform: scale(1);
-  transition: 1s ease-in-out;
-  &:hover {
-    transform: scale(1.2);
-  }
+  position: fixed;
+  background-size: cover;
+  z-index: -1;
 `;
 
-const HeadPic = styled.div`
-  overflow: hidden;
-  margin: 0;
+const MovieMain = styled.div`
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: 1290px) {
+    max-width: 1280px;
+  }
 `;
 
 const MovieIntro = styled.div`
   display: flex;
-`;
-
-const PosterDiv = styled.div`
-  display: block;
+  width: 100%;
+  margin-top: 10%;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const PosterImg = styled.img`
-  position: absolute;
   z-index: 5;
-  left: 10vmin;
-  top: 50vmin;
-  width: 53vmin;
+  width: 50vmin;
   height: 60vmin;
-  @media (max-width: 1280px) {
-    width: 53vmin;
-    height: 66vmin;
-  }
-`;
-
-const PosterSquare = styled.div`
-  position: absolute;
-  z-index: 4;
-  left: 0px;
-  top: 55vmin;
-  width: 80vmin;
-  height: 50vmin;
-  background: #75e799;
-  @media (max-width: 1280px) {
-    width: 70vmin;
-    height: 50vmin;
-  }
+  box-shadow: 2px 2px 19px 2px rgba(20, 19, 19, 1);
 `;
 
 const IntroDiv = styled.div`
-  font-size: 28px;
-  top: 50vmin;
-  right: 40vmin;
-  position: absolute;
   z-index: 5;
+  width: 40%;
   display: flex;
   flex-direction: column;
   text-align: center;
+  align-items: center;
+  justify-content: center;
   @media (max-width: 1280px) {
-    top: 51vmin;
-    font-size: 21px;
     font-weight: 500;
   }
 `;
 
 const ChTitle = styled.div`
   font-weight: bold;
-  font-size: 42px;
-  @media (max-width: 1280px) {
-    font-size: 42px;
-  }
+  font-size: 5vmin;
 `;
 
 const EnTitle = styled.div`
-  @media (max-width: 1280px) {
-    font-size: 25px;
-  }
+  font-size: 2.2vmin;
+  font-weight: 500;
+  color: #c5cdc0;
 `;
 
-const MovieDate = styled.div`
-  margin-top: 5vmin;
-  @media (max-width: 1280px) {
-  }
+const ColumnDiv = styled.div`
+  display: flex;
+  margin-top: 4vmin;
+  flex-direction: column;
+  align-items: flex-start;
 `;
 
-const Length = styled.div`
-  margin-top: 2vmin;
-  @media (max-width: 1280px) {
-  }
-`;
-
-const Director = styled.div`
-  margin-top: 2vmin;
-  @media (max-width: 1280px) {
-  }
-`;
-
-const Rate = styled.div`
-  margin-top: 2vmin;
+const ColumnValue = styled.div`
+  display: flex;
   align-items: center;
+  @media (max-width: 1280px) {
+  }
+`;
+
+const Column = styled.div`
+  margin-top: 1vmin;
+  font-size: 2.5vmin;
+  align-items: center;
+  display: flex;
 `;
 
 const Star = styled(StarRounded)`
   transform: scale(1.3);
   color: gold;
-  margin-right: 1vmin;
+  margin-right: 5px;
   @media (max-width: 1280px) {
     transform: scale(1.1);
   }
 `;
 
 const TrailerButton = styled.div`
-  width: 100%;
+  width: 50%;
   display: flex;
   height: 5vmin;
-  background: gold;
+  background: #62d498;
   padding: 8px 5px;
   color: #333;
   margin-top: 4vmin;
@@ -166,14 +139,14 @@ const TrailerButton = styled.div`
   cursor: pointer;
   align-items: center;
   justify-content: center;
+  &:hover {
+    background: #8aefba;
+  }
 `;
 
 const Trailer = styled.div`
-  font-size: 28px;
+  font-size: 2.5vmin;
   line-height: 5vmin;
-  @media (max-width: 1280px) {
-    font-size: 20px;
-  }
 `;
 
 const TrailerIcon = styled(LiveTv)`
@@ -186,125 +159,49 @@ const TrailerIcon = styled(LiveTv)`
   }
 `;
 
-const TopDiv = styled.div`
-  width: 100%;
-  height: 35vmin;
-  position: relative;
-  &:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 20vmin;
-    background: linear-gradient(to top, #fffaf0, transparent);
-    z-index: 3;
-  }
-`;
-
-const StoryDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(#fffaf0, #fffaf0, #fffaf0, #fffaf0, #111);
-  padding: 20px 20px;
-  color: #333;
-  text-align: center;
-  align-items: center;
-  position: relative;
-`;
-
-const Story = styled.div`
-  width: 80%;
-  font-size: 27px;
-  margin-top: 5vmin;
-  margin-bottom: 20vmin;
+const MovieIcon = styled(Theaters)`
+  transform: scale(1.3);
+  margin-right: 0.5vmin;
   @media (max-width: 1280px) {
-    font-size: 22px;
+    transform: scale(1);
   }
 `;
 
-const StoryTitle = styled.div`
-  margin-top: 10vmin;
-  color: #333;
-  font-size: 50px;
-  font-weight: 700;
-  width: auto;
-  position: relative;
-  @media (max-width: 1280px) {
-    font-size: 40px;
-  }
-  /* &:before {
-    content: '';
-    position: absolute;
-    left: 71.5vmin;
-    bottom: 0;
-    height: 1px;
-    width: 15%;
-    border-bottom: 6px solid #75e799;
-  } */
-`;
-
-const Title = styled(StoryTitle)`
-  color: #fff;
-  text-align: center;
-  &:before {
-    left: 68vmin;
-  }
-`;
-
-const CastDiv = styled.div`
-  background: #111;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Cast = styled.div`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 50px 0px;
-  padding: 30px 0px;
-  width: 100%;
-  max-width: 1440px;
-  @media (max-width: 1280px) {
-    max-width: 1140px;
-  }
-`;
-
-const ActorDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const ActorImg = styled.img`
-  width: 18vmin;
-  height: 20vmin;
-  border-radius: 50% 30px;
-  @media (max-width: 1280px) {
-    width: 20vmin;
-    height: 22vmin;
-  }
-`;
-
-const ActorName = styled.div`
+const MovieLinkBtn = styled.div`
+  padding: 1.2vmin 1vmin;
   margin-top: 3vmin;
-  font-size: 25px;
-  font-weight: 700;
-  @media (max-width: 1280px) {
-    font-size: 20px;
-    font-weight: 500;
+  width: 25vmin;
+  height: 1vmin;
+  font-weight: 400;
+  font-size: 2.2vmin;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  text-align: center;
+  color: #898f86;
+  cursor: pointer;
+  &:hover {
+    background: #898f86;
+    color: #fff;
   }
 `;
 
-const HashtagSection = styled.div`
-  padding: 3vmin 2vmin 2vmin 2vmin;
+const SectionDiv = styled.div`
   display: flex;
   flex-direction: column;
-  @media (max-width: 1280px) {
-    padding: 10vmin 5vmin 5vmin 5vmin;
-  }
+  padding: 3vmin;
+  text-align: center;
+  width: -webkit-fill-available;
+  align-items: center;
+`;
+
+const Title = styled.div`
+  margin-top: 10vmin;
+  font-size: 4.5vmin;
+  font-weight: 700;
+  width: 20vmin;
+  border-bottom: 8px solid #61d498;
 `;
 
 const HashtagContainer = styled.div`
@@ -312,8 +209,6 @@ const HashtagContainer = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  padding: 5vmin 5vmin 5vmin 7vmin;
-  max-width: 1140px;
 `;
 
 const HashtagHead = styled.div`
@@ -325,13 +220,13 @@ const HashtagHead = styled.div`
 `;
 
 const AddHashtag = styled.input`
-  width: 80%;
+  width: 100%;
   height: 3vmin;
-  font-size: 25px;
+  font-size: 2.8vmin;
   padding: 10px;
   background: #444;
   border: 0;
-  color: #fff8dc;
+  color: #fff;
   border-bottom: 3px solid rgba(127, 255, 212, 0.7);
   &:focus {
     outline: 0;
@@ -362,9 +257,6 @@ const HashtagDiv = styled.div`
   &:hover ${Close} {
     display: flex;
   }
-  @media (max-width: 1280px) {
-    margin: 5vmin 0 0 8vmin;
-  }
 `;
 
 const Hashtag = styled.div`
@@ -391,18 +283,41 @@ const AddBtn = styled(AddCircle)`
   &:hover {
     color: #75e799;
   }
+  @media (max-width: 1280px) {
+    transform: scale(1.2);
+  }
 `;
 
-const AddQuoteDiv = styled.div`
-  width: 5vmin;
-  height: 5vmin;
-  /* display: none; */
+const FunctionBtn = styled.div`
+  padding: 1.2vmin 1vmin;
+  margin-top: -3vmin;
+  width: 14vmin;
+  height: 1vmin;
+  font-weight: 450;
+  font-size: 2.2vmin;
+  border-radius: 10px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  text-align: center;
+  color: #898f86;
+  cursor: pointer;
+  &:hover {
+    background: #898f86;
+    color: #fff;
+  }
 `;
 
-const QuoteSection = styled.div`
-  background: linear-gradient(#111, #00264d);
+const FunctionHead = styled.div`
   width: 100%;
-  height: auto;
+  display: flex;
+  justify-content: center;
+`;
+
+const Function = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const QuoteContainer = styled.div`
@@ -411,9 +326,6 @@ const QuoteContainer = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  /* &:hover ${AddQuoteDiv} {
-    display: block;
-  } */
 `;
 
 const QuoteDiv = styled.div`
@@ -423,45 +335,47 @@ const QuoteDiv = styled.div`
   align-items: center;
 `;
 
-const QuoteHead = styled.div`
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-`;
-
-const AddQuoteIcon = styled(LibraryAdd)`
-  transform: scale(1.5);
-  color: #555;
-  margin-top: 5vmin;
-  cursor: pointer;
-  &:hover {
-    color: #ffaf1a;
+const QuoteIcon = styled(RateReview)`
+  transform: scale(1.3);
+  margin-right: 0.5vmin;
+  @media (max-width: 1280px) {
+    transform: scale(1);
   }
 `;
 
-const DiarySection = styled.div`
-  background: linear-gradient(#00264d, #111);
-  padding: 30px 60px;
-  text-align: center;
-  margin-bottom: 10vmin;
-`;
-
 const DiaryWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-const DiaryHead = styled.div`
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+const DiaryIcon = styled(PostAdd)`
+  transform: scale(1.3);
+  margin-right: 0.5vmin;
+  @media (max-width: 1280px) {
+    transform: scale(1);
+  }
 `;
 
-const AddDiaryDiv = styled.div`
-  width: 5vmin;
-  height: 5vmin;
-  /* display: none; */
+const Space = styled.div`
+  width: 100%;
+  height: 25vmin;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const SpaceImg = styled.img`
+  margin-top: 1vmin;
+  width: 12vmin;
+  height: 11vmin;
+`;
+
+const Word = styled.div`
+  margin-top: 3vmin;
+  font-size: 2.8vmin;
 `;
 
 export default function Diary() {
@@ -470,12 +384,13 @@ export default function Diary() {
   }, []);
 
   const { diaryId } = useParams();
-  const [movieIntro, setMovieIntro] = useState('');
+  const [eachMovie, setEachMovie] = useState('');
   const [addTag, setAddTag] = useState('');
   const [updateHashtag, setUpdateHashtag] = useState('');
   const [updateQuote, setUpdateQuote] = useState('');
   const [updateDiary, setUpdateDiary] = useState('');
   const [showTrailer, setShowTrailer] = useState(false);
+  const [removeTagAlert, setRemoveTagAlert] = useState(false);
 
   const uid = auth.currentUser?.uid;
 
@@ -496,7 +411,7 @@ export default function Diary() {
           .get()
           .then((docSnapshot) => {
             const movieData = docSnapshot.data();
-            if (isMounted) setMovieIntro(movieData);
+            if (isMounted) setEachMovie(movieData);
           });
       });
     return () => {
@@ -563,7 +478,7 @@ export default function Diary() {
   const handleAddTag = () => {
     firestore
       .collection('Movies')
-      .doc(movieIntro.movieId)
+      .doc(eachMovie.movieId)
       .update({
         movieTag: firebase.firestore.FieldValue.arrayUnion(addTag),
       });
@@ -581,7 +496,7 @@ export default function Diary() {
   const removeTag = (tag) => {
     firestore
       .collection('Movies')
-      .doc(movieIntro.movieId)
+      .doc(eachMovie.movieId)
       .update({
         movieTag: firebase.firestore.FieldValue.arrayRemove(tag),
       });
@@ -627,119 +542,137 @@ export default function Diary() {
 
   return (
     <DiaryContainer>
-      {/* {window.scrollTo(0, 0)} */}
-      <BackgroundDiv>
-        <HeadPic>
-          {movieIntro !== '' && <Zoom src={movieIntro?.gallery[0]} alt="" />}
-        </HeadPic>
-      </BackgroundDiv>
-      <MovieIntro>
-        <PosterDiv>
-          <PosterImg src={movieIntro?.poster} alt="" data-aos="fade-right" />
-          <PosterSquare data-aos="fade-right" />
-        </PosterDiv>
-        <IntroDiv data-aos="fade-up">
-          <ChTitle>{movieIntro?.chTitle}</ChTitle>
-          <EnTitle>{movieIntro?.enTitle}</EnTitle>
-          <Rate>
-            評分：
-            <Star />
-            {movieIntro?.rate}/ {movieIntro?.rateNum}人
-          </Rate>
-          <MovieDate>上映日期：{movieIntro?.date}</MovieDate>
-          <Length>片長：{movieIntro?.length}</Length>
-          <Director>導演：{movieIntro?.director}</Director>
-          <TrailerButton onClick={() => setShowTrailer(true)}>
-            <TrailerIcon />
-            <Trailer> 我想看預告片</Trailer>
-          </TrailerButton>
-        </IntroDiv>
-      </MovieIntro>
-      <TopDiv />
-      <StoryDiv>
-        <StoryTitle data-aos="fade-up">劇情簡介</StoryTitle>
-        <Story data-aos="fade-up">{movieIntro?.story}</Story>
-      </StoryDiv>
-      <CastDiv>
-        <Title>演員列表</Title>
-        <Cast>
-          {movieIntro?.cast?.map((item) => (
-            <ActorDiv key={item.chActor}>
-              <ActorImg src={item.actorImg} alt="" />
-              <ActorName>
-                {item.chActor} <br />
-                {item.enActor || ''}
-              </ActorName>
-            </ActorDiv>
-          ))}
-        </Cast>
-      </CastDiv>
-      <HashtagSection>
-        <Title>我的標籤</Title>
-        <HashtagHead>
-          <AddHashtag
-            placeholder="寫下我的電影標籤"
-            value={addTag}
-            onChange={(e) => setAddTag(e.target.value)}
-          />
-          <AddBtn onClick={handleAddTag} />
-        </HashtagHead>
-        <HashtagContainer>
-          {updateHashtag?.hashtag?.map((item) => (
-            <HashtagDiv key={item}>
-              <Close onClick={() => removeTag(item)}>
-                <CancelIcon />
-              </Close>
-              <TagIcon />
-              <Hashtag>{item}</Hashtag>
-            </HashtagDiv>
-          ))}
-        </HashtagContainer>
-      </HashtagSection>
-      <QuoteSection>
-        <QuoteHead>
-          <Title>經典對白</Title>
-        </QuoteHead>
-        <QuoteContainer>
-          <QuoteDiv>
-            {updateQuote !== '' &&
-              updateQuote.map((item) => (
-                <DiaryQuote
-                  key={item.diaryQuoteId}
-                  diaryQuoteId={item.diaryQuoteId}
-                  diaryQuote={item.diaryQuote}
+      <MovieMain>
+        <MovieIntro>
+          <PosterImg src={eachMovie.poster} alt="" data-aos="fade-right" />
+          <IntroDiv data-aos="fade-left">
+            <ChTitle>{eachMovie.chTitle}</ChTitle>
+            <EnTitle>{eachMovie.enTitle}</EnTitle>
+            <ColumnDiv>
+              <ColumnValue>
+                <Column>
+                  評分：
+                  <Star /> {eachMovie.rate} / {eachMovie.rateNum}人
+                </Column>
+              </ColumnValue>
+              <ColumnValue>
+                <Column>上映日期：{eachMovie.date} </Column>
+              </ColumnValue>
+              <ColumnValue>
+                <Column>片長：{eachMovie.length} </Column>
+              </ColumnValue>
+              <ColumnValue>
+                <Column>導演：{eachMovie.director} </Column>
+              </ColumnValue>
+            </ColumnDiv>
+            {eachMovie.trailerKey !== '' && (
+              <TrailerButton onClick={() => setShowTrailer(true)}>
+                <TrailerIcon />
+                <Trailer> 我想看預告片</Trailer>
+              </TrailerButton>
+            )}
+            <MyLink to={`/movie/${eachMovie.movieId}`}>
+              <MovieLinkBtn>
+                <MovieIcon /> 查看電影詳細資訊
+              </MovieLinkBtn>
+            </MyLink>
+          </IntroDiv>
+        </MovieIntro>
+
+        <SectionDiv>
+          <Title>我的標籤</Title>
+          <HashtagHead>
+            <AddHashtag
+              placeholder="寫下我的電影標籤"
+              value={addTag}
+              onChange={(e) => setAddTag(e.target.value)}
+            />
+            <AddBtn onClick={handleAddTag} />
+          </HashtagHead>
+          <HashtagContainer>
+            {updateHashtag?.hashtag?.map((item) => (
+              <>
+                <HashtagDiv key={item}>
+                  <Close onClick={() => setRemoveTagAlert(true)}>
+                    <CancelIcon />
+                  </Close>
+                  <TagIcon />
+                  <Hashtag>{item}</Hashtag>
+                </HashtagDiv>
+                <TagDeleteAlert
+                  tag={item}
+                  trigger={removeTagAlert}
+                  setTrigger={setRemoveTagAlert}
+                  message={'確認要移除此標籤嗎？'}
+                  remove={removeTag}
+                />
+              </>
+            ))}
+          </HashtagContainer>
+        </SectionDiv>
+        <SectionDiv>
+          <FunctionHead>
+            <Title>經典對白</Title>
+          </FunctionHead>
+          <Function>
+            <FunctionBtn onClick={addQuote}>
+              <QuoteIcon /> 新增對白
+            </FunctionBtn>
+          </Function>
+
+          <QuoteContainer>
+            <QuoteDiv>
+              {updateQuote.length > 0 &&
+                updateQuote.map((item) => (
+                  <DiaryQuote
+                    key={item.diaryQuoteId}
+                    diaryQuoteId={item.diaryQuoteId}
+                    diaryQuote={item.diaryQuote}
+                  />
+                ))}
+              {updateQuote.length === 0 && (
+                <Space>
+                  <SpaceImg src={noquote} alt="" />
+                  <Word>來記下你的有感對白～</Word>
+                </Space>
+              )}
+            </QuoteDiv>
+          </QuoteContainer>
+        </SectionDiv>
+        <SectionDiv>
+          <FunctionHead>
+            <Title>我的日記</Title>
+          </FunctionHead>
+          <Function>
+            <FunctionBtn onClick={addNewDiary}>
+              <DiaryIcon /> 新增日記
+            </FunctionBtn>
+          </Function>
+          <DiaryWrapper>
+            {updateDiary.length > 0 &&
+              updateDiary.map((item) => (
+                <DiaryBlock
+                  key={item.diaryDataId}
+                  diaryDataId={item.diaryDataId}
+                  diaryNote={item.diaryNote}
+                  date={item.date}
                 />
               ))}
-          </QuoteDiv>
-          <AddQuoteDiv onClick={addQuote}>
-            <AddQuoteIcon />
-          </AddQuoteDiv>
-        </QuoteContainer>
-      </QuoteSection>
-      <DiarySection>
-        <DiaryHead>
-          <Title>我的日誌</Title>
-        </DiaryHead>
-        <DiaryWrapper>
-          {updateDiary !== '' &&
-            updateDiary.map((item) => (
-              <DiaryBlock
-                key={item.diaryDataId}
-                diaryDataId={item.diaryDataId}
-                diaryNote={item.diaryNote}
-                date={item.date}
-              />
-            ))}
-          <AddDiaryDiv onClick={addNewDiary}>
-            <AddQuoteIcon />
-          </AddDiaryDiv>
-        </DiaryWrapper>
-      </DiarySection>
+            {updateDiary.length === 0 && (
+              <Space>
+                <SpaceImg src={diary} alt="" />
+                <Word>來寫新的日誌吧！</Word>
+              </Space>
+            )}
+          </DiaryWrapper>
+        </SectionDiv>
+      </MovieMain>
       <TrailerPopup
-        trailerKey={movieIntro.trailerKey}
+        trailerKey={eachMovie.trailerKey}
         trigger={showTrailer}
         setTrigger={setShowTrailer}
       />
+      <Background img={eachMovie.poster} />
     </DiaryContainer>
   );
 }

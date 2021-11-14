@@ -2,26 +2,26 @@ import styled from 'styled-components';
 import { Cancel } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
 import { firestore, auth } from '../utils/firebase';
+import { useState } from 'react';
+import DeleteAlert from '../components/DeleteAlert';
 
 const Close = styled.div`
   cursor: pointer;
   position: absolute;
   display: none;
   padding: 5px 5px;
-  right: 2vmin;
-  top: -1vmin;
-  z-index: 300;
-  @media (max-width: 1280px) {
-    right: 25px;
-    top: -10px;
-  }
+  right: 0vmin;
+  top: -2vmin;
 `;
 
 const CancelIcon = styled(Cancel)`
-  transform: scale(1.5);
-  color: #75e799;
+  transform: scale(1.1);
   background: #333;
   border-radius: 50%;
+  color: #c5cdc0;
+  &:hover {
+    color: #75e799;
+  }
 `;
 
 const DiaryDiv = styled.div`
@@ -35,17 +35,14 @@ const DiaryDiv = styled.div`
 `;
 
 const DiaryPoster = styled.img`
-  width: 25vmin;
-  height: 35vmin;
+  width: 23vmin;
+  height: 28vmin;
 `;
 
 const DiaryTitle = styled.div`
   margin-top: 2vmin;
-  font-size: 25px;
+  font-size: 2.5vmin;
   color: #fff;
-  @media (max-width: 1280px) {
-    font-size: 20px;
-  }
 `;
 
 const MyLink = styled(Link)`
@@ -54,6 +51,7 @@ const MyLink = styled(Link)`
 `;
 
 export default function ProfileDiary({ diaryId, poster, chTitle }) {
+  const [removeDiaryAlert, setRemoveDiaryAlert] = useState(false);
   const handleDeleteDiary = () => {
     const uid = auth.currentUser.uid;
     firestore
@@ -68,14 +66,22 @@ export default function ProfileDiary({ diaryId, poster, chTitle }) {
   };
 
   return (
-    <DiaryDiv>
-      <MyLink to={`/diary/${diaryId}`}>
-        <DiaryPoster src={poster} alt="" />
-        <DiaryTitle>{chTitle}</DiaryTitle>
-      </MyLink>
-      <Close onClick={handleDeleteDiary}>
-        <CancelIcon />
-      </Close>
-    </DiaryDiv>
+    <>
+      <DiaryDiv>
+        <MyLink to={`/diary/${diaryId}`}>
+          <DiaryPoster src={poster} alt="" />
+          <DiaryTitle>{chTitle}</DiaryTitle>
+        </MyLink>
+        <Close onClick={() => setRemoveDiaryAlert(true)}>
+          <CancelIcon />
+        </Close>
+      </DiaryDiv>
+      <DeleteAlert
+        trigger={removeDiaryAlert}
+        setTrigger={setRemoveDiaryAlert}
+        message={'確認要刪除此日誌嗎？'}
+        remove={handleDeleteDiary}
+      />
+    </>
   );
 }

@@ -1,4 +1,5 @@
 import { firestore } from '../utils/firebase';
+import firebase from '../utils/firebase';
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -46,12 +47,13 @@ export default function ListStatus({
   status,
   listId,
   authorId,
-  currentUserId,
+
+  reduceCoin,
   listTitle,
+  showCoin,
 }) {
   const [listStatus, setListStatus] = useState(status);
   const currentUser = useSelector((state) => state.currentUser);
-  const isFollow = currentUser?.follow.includes(authorId);
 
   useEffect(() => {
     setListStatus(status);
@@ -63,23 +65,48 @@ export default function ListStatus({
       firestore.collection('Lists').doc(listId).update({
         listShare: false,
       });
+      firestore
+        .collection('Users')
+        .doc(authorId)
+        .update({
+          coin: firebase.firestore.FieldValue.increment(-300),
+        });
+
+      reduceCoin(true);
     } else {
       setListStatus(true);
       firestore.collection('Lists').doc(listId).update({
         listShare: true,
       });
-      if (isFollow) {
-        console.log(isFollow);
-        // firestore
-        //   .collection('Users')
-        //   .doc(currentUserId)
-        //   .collection('Notifications')
-        //   .set({
-        //     authorId,
-        //     listId,
-        //     read: false,
-        //     listTitle,
-        //   });
+
+      if (currentUser.followBy !== undefined) {
+        currentUser.followBy.map((item) => {
+          firestore
+            .collection('Users')
+            .doc(item)
+            .collection('Notifications')
+            .doc()
+            .set({
+              authorId,
+              listId,
+              authorName: currentUser.userName,
+              authorImg: currentUser.profileImg,
+              read: false,
+              listTitle,
+              type: 'list',
+              date: new Date(),
+            });
+          return item;
+        });
+
+        firestore
+          .collection('Users')
+          .doc(authorId)
+          .update({
+            coin: firebase.firestore.FieldValue.increment(300),
+          });
+
+        showCoin(true);
       }
     }
   };

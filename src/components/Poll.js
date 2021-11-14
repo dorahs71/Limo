@@ -1,57 +1,71 @@
 import Polls from 'react-polls';
-// import '../stylesheets/reactPollCSS.css';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Cancel } from '@material-ui/icons';
 import styled from 'styled-components';
 import { firestore } from '../utils/firebase';
 import firebase from '../utils/firebase';
+import AOS from 'aos';
 
 const PopupDiv = styled.div`
   width: 100%;
   height: 100vh;
   top: 0;
   position: fixed;
-  background-color: rgba(22, 22, 22, 0.8);
+  background-color: rgba(22, 22, 22, 0.95);
   z-index: 100;
 `;
 
-const PollDiv = styled.div`
-  width: 100vmin;
-  height: 55vmin;
-  position: relative;
-  display: flex;
-  font-size: 25px;
-  flex-direction: column;
-  border-radius: 5vmin;
-  top: 250px;
-  margin: 0 auto;
-  background: #fff;
-`;
-
 const Title = styled.div`
-  font-size: 40px;
+  font-size: 4vmin;
   font-weight: 800;
-  color: #4f70d6;
+  color: #fff;
+  width: 30vmin;
+  border-bottom: 4px solid #75e799;
+  align-self: center;
   text-align: center;
-  margin-top: 10vmin;
+  margin-top: 8vmin;
+  @media (max-width: 1280px) {
+    width: 34vmin;
+  }
 `;
 
 const Close = styled.div`
   cursor: pointer;
   position: absolute;
   display: block;
-  padding: 5px 5px;
-  right: -2px;
-  top: -2px;
+  padding: 1vmin 1vmin;
+  right: 0vmin;
+  top: 7vmin;
   z-index: 300;
+  color: #c5cdc0;
+  &:hover {
+    color: #75e799;
+  }
 `;
 
 const CancelIcon = styled(Cancel)`
-  transform: scale(1.5);
-  color: #75e799;
-  background: #333;
+  transform: scale(1.6);
   border-radius: 50%;
+
+  @media (max-width: 1280px) {
+    transform: scale(1.2);
+  }
+`;
+
+const PollDiv = styled.div`
+  width: 120vmin;
+  height: 75vmin;
+  position: relative;
+  display: flex;
+  font-size: 25px;
+  flex-direction: column;
+  border-radius: 5vmin;
+  top: 12vmin;
+  margin: 0 auto;
+  @media (max-width: 1280px) {
+    top: 80px;
+  }
 `;
 
 const InputDiv = styled.div`
@@ -59,43 +73,69 @@ const InputDiv = styled.div`
   margin-top: 5vmin;
   align-items: center;
   justify-content: center;
+  padding: 4vmin;
+  background: #c5cdc0;
+  @media (max-width: 1280px) {
+    margin-top: 2vmin;
+  }
+`;
+
+const PollContainer = styled.div`
+  overflow: scroll;
+  font-size: 20px;
+  margin-top: 3vmin;
 `;
 
 const AddQuoteBtn = styled.div`
   width: 10vmin;
-  height: 3vmin;
-  font-size: 20px;
-  background: #4f70d6;
-  color: #fff;
+  height: 5vmin;
+  line-height: 5vmin;
+  font-size: 2.5vmin;
+  font-weight: 400;
+  background: #898f86;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  color: #333;
   text-align: center;
   border-radius: 10vmin;
   cursor: pointer;
   margin-left: 2vmin;
   &:hover {
-    background: gold;
+    background: #75e799;
+  }
+  @media (max-width: 1280px) {
+    width: 12vmin;
   }
 `;
 
 const Input = styled.input`
   font-size: 23px;
   width: 80%;
-  border: #4f70d6 2px solid;
+  border: #c5cdc0 2px solid;
   border-radius: 5px;
+  &:focus {
+    outline: 0;
+    border: 1px solid #75e799;
+  }
 `;
 
 const pollStyle = {
   questionSeparator: true,
   questionSeparatorWidth: 'question',
   questionBold: false,
-  questionColor: '#4F70D6',
+  questionColor: '#c5cdc0',
   align: 'center',
-  theme: 'blue',
+  theme: 'white',
 };
 
 export default function Poll({ trigger, setTrigger }) {
   const [input, setInput] = useState('');
   const [getQuote, setGetQuote] = useState('');
   const { movieId } = useParams();
+
+  useEffect(() => {
+    AOS.init({ duration: 300 });
+  }, []);
 
   const addQuote = () => {
     const docRef = firestore
@@ -106,6 +146,7 @@ export default function Poll({ trigger, setTrigger }) {
     docRef.set({
       movieQuoteId: docRef.id,
       option: input,
+      date: new Date(),
       votes: 0,
     });
     setInput('');
@@ -117,6 +158,7 @@ export default function Poll({ trigger, setTrigger }) {
       .collection('Movies')
       .doc(movieId)
       .collection('Quotes')
+      .orderBy('date', 'desc')
       .onSnapshot((collectionSnapshot) => {
         const data = collectionSnapshot.docs.map((doc) => {
           return doc.data();
@@ -136,7 +178,7 @@ export default function Poll({ trigger, setTrigger }) {
 
     const index = quoteAnswers.findIndex((x) => x.option === voteAnswer);
     const movieQuoteId = quoteAnswers[index].movieQuoteId;
-    console.log(movieQuoteId);
+
     firestore
       .collection('Movies')
       .doc(movieId)
@@ -148,7 +190,7 @@ export default function Poll({ trigger, setTrigger }) {
   };
 
   return trigger ? (
-    <PopupDiv>
+    <PopupDiv data-aos="zoom-in">
       <PollDiv>
         <Close
           onClick={() => {
@@ -158,14 +200,16 @@ export default function Poll({ trigger, setTrigger }) {
           <CancelIcon />
         </Close>
 
-        <Title>投下你的經典對白吧！</Title>
-        <Polls
-          question={''}
-          answers={getQuote}
-          onVote={(voteAnswer) => handleVote(voteAnswer, getQuote)}
-          customStyles={pollStyle}
-          noStorage
-        />
+        <Title>投下你的經典對白</Title>
+        <PollContainer>
+          <Polls
+            question={''}
+            answers={getQuote}
+            onVote={(voteAnswer) => handleVote(voteAnswer, getQuote)}
+            customStyles={pollStyle}
+            noStorage
+          />
+        </PollContainer>
         <InputDiv>
           <Input
             value={input}
@@ -173,7 +217,7 @@ export default function Poll({ trigger, setTrigger }) {
               setInput(e.target.value);
             }}
           />
-          <AddQuoteBtn onClick={addQuote}>加新對白</AddQuoteBtn>
+          <AddQuoteBtn onClick={addQuote}>新增對白</AddQuoteBtn>
         </InputDiv>
       </PollDiv>
     </PopupDiv>

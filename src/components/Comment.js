@@ -8,61 +8,47 @@ import { useState, useEffect } from 'react';
 import moment from 'moment';
 
 const CommentContainer = styled.div`
-  width: 80%;
-  height: 18vmin;
-  font-size: 25px;
-  background: linear-gradient(#555, #111);
+  width: -webkit-fill-available;
+  min-height: 16vmin;
+  font-size: 2.5vmin;
+  text-align: justify;
+  background: #595a59;
+  box-shadow: 5px 5px 10px rgba(28, 28, 28, 1);
   display: flex;
   align-items: center;
-  padding: 0px 20px;
+  padding: 2vmin 3vmin;
   margin-top: 3vmin;
-  @media (max-width: 1280px) {
-    font-size: 20px;
-    padding: 10px 20px;
-    height: 20vmin;
-  }
 `;
 
 const UserDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
-  @media (max-width: 1280px) {
-    width: 13%;
-  }
+  width: 15vmin;
 `;
 
 const User = styled.img`
-  width: 10vmin;
-  height: 8vmin;
-  @media (max-width: 1280px) {
-    width: 15vmin;
-    height: 10vmin;
-  }
+  width: 6vmin;
+  height: 6vmin;
 `;
 
 const UserName = styled.div`
-  font-size: 20px;
+  font-size: 2.2vmin;
+  margin-top: 1vmin;
   font-weight: 500;
   text-align: center;
-  color: #75e799;
-  text-decoration: underline;
-  @media (max-width: 1280px) {
-    font-size: 18px;
-    font-weight: 500;
-  }
 `;
 
 const ContentDiv = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: 5vmin;
+  margin-left: 2vmin;
   width: 100%;
 `;
 
 const CommentContent = styled.div`
-  margin-top: 1vmin;
+  margin-top: 5px;
+  align-self: flex-start;
 `;
 
 const UserRate = styled.div`
@@ -72,66 +58,72 @@ const UserRate = styled.div`
 
 const CommentDate = styled.div`
   margin-left: auto;
+  font-size: 2.2vmin;
+  color: #c5cdc0;
 `;
 
 const FunctionDiv = styled.div`
+  margin-top: 1vmin;
   display: flex;
   margin-left: auto;
 `;
 
 const Recomment = styled(Forum)`
-  transform: scale(1.5);
-  margin-right: 1vmin;
+  transform: scale(1.2);
+  margin-right: 0.5vmin;
   @media (max-width: 1280px) {
-    transform: scale(1.2);
+    transform: scale(1);
   }
 `;
 
 const RecommentDiv = styled.div`
-  font-size: 20px;
+  font-size: 2.2vmin;
   margin-right: 5vmin;
   cursor: pointer;
   &:hover {
     color: #75e799;
   }
-  @media (max-width: 1280px) {
-    font-size: 16px;
-  }
 `;
 
 const Smile = styled(EmojiEmotions)`
-  transform: scale(1.5);
-  margin-right: 1vmin;
-
+  transform: scale(1.2);
+  margin-right: 0.5vmin;
   @media (max-width: 1280px) {
-    transform: scale(1.2);
+    transform: scale(1);
   }
 `;
 
 const SmileDiv = styled.div`
-  font-size: 20px;
+  font-size: 2.2vmin;
   cursor: pointer;
   color: ${(props) => (props.smile ? '#75e799' : '')};
   &:hover {
     color: #75e799;
   }
-  @media (max-width: 1280px) {
-    font-size: 16px;
-  }
 `;
 
 const Star = styled(StarRounded)`
-  transform: scale(1.3);
+  transform: scale(1.5);
   color: gold;
   margin-right: 1vmin;
+  @media (max-width: 1280px) {
+    transform: scale(1);
+  }
 `;
 
 const Rate = styled.div`
-  font-size: 22px;
+  font-size: 2.5vmin;
 `;
 
 const MyLink = styled(Link)`
   text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  &:hover {
+    color: #75e799;
+  }
 `;
 
 export default function Comment({
@@ -142,8 +134,8 @@ export default function Comment({
   comment,
   reviews,
   smileBy,
+  showCoin,
 }) {
-  const { movieId } = useParams();
   const uid = auth.currentUser?.uid;
   const isSmiled = smileBy?.includes(uid);
   const [showReview, setShowReview] = useState(false);
@@ -152,8 +144,6 @@ export default function Comment({
   const toggleSmile = () => {
     if (isSmiled) {
       firestore
-        .collection('Movies')
-        .doc(movieId)
         .collection('Comments')
         .doc(commentId)
         .update({
@@ -161,8 +151,6 @@ export default function Comment({
         });
     } else {
       firestore
-        .collection('Movies')
-        .doc(movieId)
         .collection('Comments')
         .doc(commentId)
         .update({
@@ -209,6 +197,7 @@ export default function Comment({
           </CommentDate>
           <UserRate>
             <Star />
+
             <Rate> {rate}</Rate>
           </UserRate>
           <CommentContent>{comment}</CommentContent>
@@ -229,6 +218,7 @@ export default function Comment({
         trigger={showReview}
         commentId={commentId}
         reviews={reviews || ''}
+        showCoin={showCoin}
       />
     </>
   );

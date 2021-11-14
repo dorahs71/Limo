@@ -3,16 +3,19 @@ import { useState } from 'react';
 import { Telegram } from '@material-ui/icons';
 import { auth, firestore } from '../utils/firebase';
 import firebase from '../utils/firebase';
-import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+
 import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 const ReviewSection = styled.div`
   display: flex;
   flex-direction: column;
-  font-size: 25px;
-  width: 80%;
+  font-size: 2.5vmin;
+  width: -webkit-fill-available;
   background: #333;
   padding: 20px 20px;
+  box-shadow: 5px 5px 10px rgba(28, 28, 28, 1);
   align-items: center;
 `;
 
@@ -21,31 +24,33 @@ const SendIcon = styled(Telegram)`
   color: #75e799;
   cursor: pointer;
   margin-left: 2vmin;
+  @media (max-width: 1280px) {
+    transform: scale(1.5);
+  }
 `;
 
 const InputDiv = styled.div`
+  margin-top: 2vmin;
+  min-height: 5vmin;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  @media (max-width: 1280px) {
-    font-size: 18px;
-  }
 `;
 
 const Input = styled.textarea`
-  font-size: 25px;
+  font-size: 2.5vmin;
   width: 90%;
   height: 3vmin;
   margin-left: 2vmin;
   background: #444;
   border-radius: 5px;
-  overflow: hidden;
+  overflow: visible;
   border: none;
-  border-bottom: 3px solid rgba(127, 255, 212, 0.7);
-  color: #fff8dc;
+  border-bottom: 2px solid rgba(127, 255, 212, 0.7);
+  color: #fff;
   resize: none;
-  padding: 5px;
+  padding: 0.8vmin;
   &:empty:before {
     content: attr(data-placeholder);
     color: #777;
@@ -54,85 +59,99 @@ const Input = styled.textarea`
   &:focus {
     outline: none;
   }
-  @media (max-width: 1280px) {
-    font-size: 20px;
-    height: 5vmin;
-  }
 `;
 
 const ReviewDiv = styled.div`
   background: #444;
   border-radius: 5px;
+  width: inherit;
   margin-top: 5vmin;
-  width: 80%;
+  min-height: 10vmin;
   display: flex;
+  text-align: justify;
   align-items: center;
-  padding: 10px;
+  padding: 3vmin;
 `;
 
-const ReviewerDiv = styled.div`
+const UserDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 15vmin;
 `;
 
-const ReviewerImg = styled.img`
-  width: 10vmin;
-  height: 8vmin;
-  @media (max-width: 1280px) {
-    width: 12vmin;
-    height: 8vmin;
-  }
+const User = styled.img`
+  width: 6vmin;
+  height: 6vmin;
 `;
 
-const ReviewerName = styled.div`
-  font-size: 2vmin;
-  color: #75e799;
+const UserName = styled.div`
+  font-size: 2.2vmin;
+  margin-top: 1vmin;
   font-weight: 500;
-  text-decoration: underline;
-  @media (max-width: 1280px) {
-    font-size: 18px;
-  }
+  text-align: center;
 `;
 
 const ReviewContentDiv = styled.div`
   margin-left: 3vmin;
   padding: 1vmin 1vmin;
   display: flex;
+  min-width: 4vmin;
   flex-direction: column;
   width: 100%;
 `;
 
 const ReviewDate = styled.div`
-  font-size: 18px;
   margin-left: auto;
-  order: -1;
+  font-size: 2.2vmin;
+  color: #c5cdc0;
 `;
 
 const ReviewContent = styled.div`
-  font-size: 25px;
-  @media (max-width: 1280px) {
-    font-size: 20px;
+  margin-top: 5px;
+  align-self: flex-start;
+`;
+
+const MyLink = styled(Link)`
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+  &:hover {
+    color: #75e799;
   }
 `;
 
-export default function Review({ trigger, commentId, reviews }) {
+export default function Review({ trigger, commentId, reviews, showCoin }) {
   const [newReview, setNewReview] = useState('');
+  const currentUser = useSelector((state) => state.currentUser);
 
   const onSubmit = () => {
-    setNewReview('');
+    const authorId = auth.currentUser.uid;
+
     firestore
       .collection('Comments')
       .doc(commentId)
       .update({
         reviews: firebase.firestore.FieldValue.arrayUnion({
           reviewDate: new Date(),
-          reviewerName: auth.currentUser.displayName || '',
-          reviewerId: auth.currentUser.uid,
-          reviewerImg: auth.currentUser.photoURL || '',
+          reviewerName: currentUser.userName || '',
+          reviewerId: currentUser.uid,
+          reviewerImg: currentUser.profileImg || '',
           reviewContent: newReview,
         }),
       });
+
+    firestore
+      .collection('Users')
+      .doc(authorId)
+      .update({
+        coin: firebase.firestore.FieldValue.increment(30),
+      });
+
+    setNewReview('');
+    showCoin(true);
   };
 
   return trigger ? (
@@ -153,10 +172,12 @@ export default function Review({ trigger, commentId, reviews }) {
         reviews.map((item, index) => {
           return (
             <ReviewDiv key={index}>
-              <ReviewerDiv>
-                <ReviewerImg src={item.reviewerImg} alt="" />
-                <ReviewerName>{item.reviewerName}</ReviewerName>
-              </ReviewerDiv>
+              <UserDiv>
+                <MyLink to={`/profile/${item.reviewerId}`}>
+                  <User src={item.reviewerImg} alt="" />
+                  <UserName>{item.reviewerName}</UserName>
+                </MyLink>
+              </UserDiv>
               <ReviewContentDiv>
                 <ReviewDate>
                   {moment(item.reviewDate.toDate()).format(

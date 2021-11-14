@@ -1,9 +1,11 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Cancel, AddCircle } from '@material-ui/icons';
 import { auth, firestore } from '../utils/firebase';
 import firebase from '../utils/firebase';
 import { useParams } from 'react-router-dom';
+import WarningAlert from './WarningAlert';
+import AOS from 'aos';
 
 const PopupDiv = styled.div`
   width: 100%;
@@ -17,24 +19,15 @@ const PopupDiv = styled.div`
 const AddToListDiv = styled.div`
   display: flex;
   flex-direction: column;
-  font-size: 25px;
-  width: 60vmin;
-  height: 55vmin;
-  background: #333;
-  border: 1px solid #75e799;
+  font-size: 2.5vmin;
+  width: 70vmin;
+  min-height: 55vmin;
   padding: 20px 20px;
   position: relative;
-  top: 250px;
-
+  top: 12vmin;
   margin: 0 auto;
   justify-content: center;
   align-items: center;
-  @media (max-width: 1280px) {
-    width: 70vmin;
-    height: 55vmin;
-    top: 25vmin;
-    font-size: 25px;
-  }
 `;
 
 const Close = styled.div`
@@ -42,15 +35,17 @@ const Close = styled.div`
   position: absolute;
   display: block;
   padding: 5px 5px;
-  right: -10px;
-  top: -10px;
+  right: 2vmin;
+  top: -1vmin;
   z-index: 300;
+  color: #c5cdc0;
+  &:hover {
+    color: #75e799;
+  }
 `;
 
 const CancelIcon = styled(Cancel)`
   transform: scale(1.5);
-  color: #75e799;
-  background: #333;
   border-radius: 50%;
 `;
 
@@ -58,8 +53,12 @@ const AddBtn = styled(AddCircle)`
   transform: scale(1.6);
   margin-left: 3vmin;
   cursor: pointer;
+  color: #c5cdc0;
   &:hover {
     color: #75e799;
+  }
+  @media (max-width: 1280px) {
+    transform: scale(1.4);
   }
 `;
 
@@ -70,12 +69,12 @@ const InputDiv = styled.div`
   align-items: center;
   justify-content: center;
   @media (max-width: 1280px) {
-    font-size: 18px;
+    font-size: 2.5vmin;
   }
 `;
 
 const Input = styled.textarea`
-  font-size: 25px;
+  font-size: 2.8vmin;
   width: 80%;
   height: 3vmin;
   margin-left: 2vmin;
@@ -83,57 +82,44 @@ const Input = styled.textarea`
   resize: none;
   border: none;
   border-bottom: 3px solid rgba(127, 255, 212, 0.7);
-  color: #fff8dc;
   resize: none;
   padding: 10px;
+  color: #fff;
   background: #444;
   &:focus {
     outline: none;
   }
   @media (max-width: 1280px) {
     width: 50vmin;
-    font-size: 20px;
   }
 `;
 
-const Header = styled.div`
-  width: 100%;
-  font-size: 40px;
+const Title = styled.div`
+  font-size: 4vmin;
+  font-weight: 800;
+  color: #fff;
+  width: 16vmin;
+  border-bottom: 4px solid #75e799;
+  align-self: center;
   text-align: center;
-  font-weight: bolder;
-  padding: 5px;
-  border-radius: 5px;
-  text-shadow: 2px 2px #778899;
-  background: #7fffd4;
-  @media (max-width: 1280px) {
-    font-size: 28px;
-  }
 `;
 
 const SendBtn = styled.div`
   text-align: center;
-  width: 50%;
-  height: 5vmin;
-  line-height: 5vmin;
-  border: 4px solid #7fffd4;
+  padding: 1.5vmin;
+  background: #c5cdc0;
+  color: #333;
   border-radius: 5px;
-  font-size: 25px;
-  margin-top: 4vmin;
-  margin-bottom: 3vmin;
+  font-size: 2.5vmin;
+  margin: 5vmin 0px;
   cursor: pointer;
   &:hover {
-    background: linear-gradient(to left, #87cefa, #66cdaa);
-    color: #191970;
-  }
-  @media (max-width: 1280px) {
-    font-size: 20px;
+    background: #75e799;
   }
 `;
 
 const ListDiv = styled.div`
-  /* background: #444;
-  color: #777; */
-  font-size: 23px;
+  font-size: 3vmin;
   border-radius: 5px;
   margin-top: 2vmin;
   padding: 10px;
@@ -141,17 +127,17 @@ const ListDiv = styled.div`
   border-bottom: 3px solid #444;
   cursor: pointer;
   text-align: center;
-  color: ${(props) => (props.select ? '#fff8dc' : '#777')};
+  color: ${(props) => (props.select ? '#fff' : '#777')};
   background: ${(props) => (props.select ? '#666' : '#444')};
   &:hover {
-    color: #fff8dc;
+    color: #fff;
     background: #666;
   }
 `;
 
 const ListSection = styled.div`
   width: 100%;
-  height: 22vmin;
+  min-height: 23vmin;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -159,77 +145,122 @@ const ListSection = styled.div`
   margin-top: 2vmin;
 `;
 
-export default function AddToList({ trigger, setTrigger, movie, listName }) {
+export default function AddToList({
+  trigger,
+  setTrigger,
+  movie,
+  listName,
+  setAddListAlert,
+}) {
   const [newList, setNewList] = useState('');
   const [selectListId, setSelectListId] = useState('');
-
+  const [selectListData, setSelectListData] = useState('');
+  const [listNameAlert, setListNameAlert] = useState(false);
+  const [listSelectAlert, setListSelectAlert] = useState(false);
+  const [ownListAlert, setOwnListAlert] = useState(false);
   const { movieId } = useParams();
 
-  // useEffect(() => {
-  //   let isMounted = true;
-  //   firestore
-  //     .collection('Lists')
-  //     .where('authorId', '==', uid)
-  //     .orderBy('date', 'desc')
-  //     .onSnapshot((collectionSnapshot) => {
-  //       const data = collectionSnapshot.docs.map((doc) => {
-  //         return doc.data();
-  //       });
-  //       if (isMounted) setShowList(data);
-  //     });
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, [uid, authorId]);
+  useEffect(() => {
+    AOS.init({ duration: 300 });
+  }, []);
 
   const addList = () => {
     const uid = auth.currentUser.uid;
-    const docRef = firestore.collection('Lists').doc();
-    docRef
-      .set({
-        authorId: uid,
-        listId: docRef.id,
-        listTitle: newList,
-        date: new Date(),
-        listShare: false,
+
+    if (newList === '') {
+      setListNameAlert(true);
+    } else {
+      const docRef = firestore.collection('Lists').doc();
+      docRef
+        .set({
+          authorId: uid,
+          listId: docRef.id,
+          listTitle: newList,
+          date: new Date(),
+          listShare: false,
+        })
+        .then(setNewList(''));
+    }
+  };
+
+  const checkListData = (id) => {
+    setSelectListId(id);
+    firestore
+      .collection('Lists')
+      .doc(id)
+      .get()
+      .then((doc) => {
+        const data = doc.data();
+        return data;
       })
-      .then(setNewList(''));
+      .then((data) => {
+        if (data.listPosters) {
+          firestore
+            .collection('Lists')
+            .doc(id)
+            .collection('ListData')
+            .get()
+            .then((collectionSnapshot) => {
+              const data = collectionSnapshot.docs.map((doc) => {
+                return doc.data();
+              });
+              setSelectListData(data);
+            });
+        }
+      });
   };
 
   const onSubmit = () => {
-    firestore
-      .collection('Lists')
-      .doc(selectListId)
-      .update({
-        listPosters: firebase.firestore.FieldValue.arrayUnion(movie.poster),
+    const listData = [];
+    if (selectListData !== '') {
+      selectListData?.map((item) => {
+        listData.push(item.movieId);
+        return listData;
       });
+    }
 
-    const docRef = firestore
-      .collection('Lists')
-      .doc(selectListId)
-      .collection('ListData')
-      .doc();
-    docRef.set({
-      listDataId: docRef.id,
-      movieId,
-      poster: movie.poster,
-      chTitle: movie.chTitle,
-      date: new Date(),
-    });
-    setTrigger(false);
+    if (selectListId === '') {
+      setListSelectAlert(true);
+    } else if (listData.includes(movieId)) {
+      setOwnListAlert(true);
+    } else {
+      firestore
+        .collection('Lists')
+        .doc(selectListId)
+        .update({
+          listPosters: firebase.firestore.FieldValue.arrayUnion(movie.poster),
+        });
+
+      firestore
+        .collection('Lists')
+        .doc(selectListId)
+        .collection('ListData')
+        .doc(movieId)
+        .set({
+          movieId,
+          poster: movie.poster,
+          chTitle: movie.chTitle,
+          date: new Date(),
+        });
+
+      setSelectListId('');
+      setTrigger(false);
+      setAddListAlert(true);
+    }
   };
 
   return trigger ? (
-    <PopupDiv>
+    <PopupDiv data-aos="zoom-in">
       <AddToListDiv>
         <Close
           onClick={() => {
             setTrigger(false);
+            setSelectListId('');
           }}
         >
           <CancelIcon />
         </Close>
-        <Header>加入片單</Header>
+        <Title>加入片單</Title>
 
         <InputDiv>
           <Input
@@ -245,15 +276,30 @@ export default function AddToList({ trigger, setTrigger, movie, listName }) {
             listName?.map((item) => (
               <ListDiv
                 key={item.listTitle}
-                onClick={() => setSelectListId(item.listId)}
+                onClick={() => checkListData(item.listId)}
                 select={selectListId === item.listId}
               >
                 {item.listTitle}
               </ListDiv>
             ))}
         </ListSection>
-        <SendBtn onClick={onSubmit}>加入片單</SendBtn>
+        <SendBtn onClick={onSubmit}>確認加入</SendBtn>
       </AddToListDiv>
+      <WarningAlert
+        trigger={listNameAlert}
+        setTrigger={setListNameAlert}
+        message={'尚未填寫新片單名稱呦！'}
+      />
+      <WarningAlert
+        trigger={listSelectAlert}
+        setTrigger={setListSelectAlert}
+        message={'尚未指定要加入的片單呦！'}
+      />
+      <WarningAlert
+        trigger={ownListAlert}
+        setTrigger={setOwnListAlert}
+        message={'這部電影已加入此片單囉!'}
+      />
     </PopupDiv>
   ) : (
     ''

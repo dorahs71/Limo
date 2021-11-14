@@ -5,9 +5,10 @@ import { NotificationsNone, SearchOutlined } from '@material-ui/icons';
 import Login from './Login';
 import { useHistory, Link } from 'react-router-dom';
 import { firestore, auth } from '../utils/firebase';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import algolia from '../utils/algolia';
-import { useSelector } from 'react-redux';
+import moment from 'moment';
+import 'moment/locale/zh-tw';
 
 const MyLink = styled(Link)`
   text-decoration: none;
@@ -46,7 +47,8 @@ const SearchIcon = styled(SearchOutlined)`
 const SearchBar = styled.input`
   flex-grow: 1;
   height: 30px;
-  font-size: 1.2rem;
+  width: 100%;
+  font-size: 2.5vmin;
   padding: 0 0.5em;
   border: 0;
   color: #fff;
@@ -62,7 +64,7 @@ const SearchBar = styled.input`
   }
   ::placeholder,
   ::-webkit-input-placeholder {
-    font-size: 1.2rem;
+    font-size: 2.5vmin;
     color: #a9a9a9;
   }
 `;
@@ -83,24 +85,24 @@ const SearchDiv = styled.div`
   transition: width 500ms ease-in-out;
   position: relative;
   overflow: hidden;
-  &:focus-within {
+  &:hover {
     width: 20rem;
   }
-  &:focus-within ${SearchBtn} {
+  &:hover ${SearchBtn} {
     background: linear-gradient(90deg, #00c9ff 0%, #92fe9d 100%);
   }
-  &:focus-within ${SearchIcon} {
+  &:hover ${SearchIcon} {
     color: #333;
     transition: color 150ms ease-in-out;
   }
-  &:focus-within ${SearchBar} {
+  &:hover ${SearchBar} {
     opacity: 1;
   }
 `;
 
 const NotificationDiv = styled.div`
-  width: 45vmin;
-  height: 60vmin;
+  width: 35vmin;
+  height: auto;
   background: #333;
   padding: 0 2vmin 0 2vmin;
   position: absolute;
@@ -122,12 +124,12 @@ const RemindDot = styled.div`
   border-radius: 50%;
   width: 15px;
   height: 15px;
-  bottom: 3.5vmin;
-  right: 15vmin;
+  bottom: 3vmin;
+  right: 11vmin;
 `;
 
 const BellIcon = styled(NotificationsNone)`
-  transform: scale(1.4);
+  transform: scale(1.3);
   margin-right: 25px;
   cursor: pointer;
 `;
@@ -156,7 +158,15 @@ const AlertCommentBlock = styled.div`
   align-items: center;
 `;
 
-const AlertReviewBlock = styled.div`
+// const AlertReviewBlock = styled.div`
+//   width: 100%;
+//   height: 15vmin;
+//   border-bottom: 1px rgba(255, 255, 255, 0.7) solid;
+//   display: flex;
+//   align-items: center;
+// `;
+
+const AlertCardBlock = styled.div`
   width: 100%;
   height: 15vmin;
   border-bottom: 1px rgba(255, 255, 255, 0.7) solid;
@@ -165,12 +175,25 @@ const AlertReviewBlock = styled.div`
 `;
 
 const AlertProfile = styled.img`
-  width: 12vmin;
-  height: 10vmin;
+  width: 5vmin;
+  height: 5vmin;
+`;
+
+const AlertMessageDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 1vmin;
 `;
 
 const AlertMessage = styled.div`
-  font-size: 18px;
+  font-size: 2vmin;
+  color: rgba(255, 255, 255, 0.7);
+`;
+
+const AlertTime = styled.div`
+  margin-top: 3vmin;
+  font-size: 15px;
   color: rgba(255, 255, 255, 0.7);
 `;
 
@@ -180,12 +203,13 @@ const InfoDiv = styled.div`
   right: 30px;
   top: 70px;
   width: 12rem;
-  height: 10rem;
+  height: auto;
   display: none;
   flex-direction: column;
   justify-content: space-around;
   text-align: center;
   font-size: 18px;
+  padding: 1vmin 0;
   background: linear-gradient(180deg, #444, #000);
   box-shadow: 2px 2px 10px 2px #00bfa5;
   border-radius: 30px;
@@ -195,13 +219,13 @@ const InfoDiv = styled.div`
 `;
 
 const ProfilePic = styled.img`
-  width: 6vmin;
-  height: 4.5vmin;
+  width: 3vmin;
+  height: 3.2vmin;
   margin-top: 2px;
   cursor: pointer;
   @media (max-width: 1280px) {
-    width: 8vmin;
-    height: 6vmin;
+    width: 4vmin;
+    height: 4.5vmin;
   }
 `;
 
@@ -222,7 +246,7 @@ const LoginDiv = styled.div`
 `;
 
 const FooterDiv = styled.div`
-  background: #000;
+  background: #1b1919;
   bottom: 0;
   left: 0;
   display: block;
@@ -231,36 +255,21 @@ const FooterDiv = styled.div`
   margin: 0;
   height: 40px;
   line-height: 40px;
-  &:before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    left: 0;
-    height: 2px;
-    border-radius: 2px;
-    background: linear-gradient(
-      130deg,
-      transparent,
-      #75e799 20.07%,
-      #f8ff00 50.07%,
-      #319197 76.05%,
-      transparent
-    );
-  }
+  box-shadow: 1px -8px 13px -6px rgba(27, 25, 25, 0.66);
 `;
 
 export const Nav = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [hasUser, setHasUser] = useState(null);
+  const [notification, setNotification] = useState('');
   const [keyword, setKeyword] = useState('');
   const history = useHistory();
   const currentUser = useSelector((state) => state.currentUser);
+  // const keyword = useSelector((state) => state.keyword);
 
   const dispatch = useDispatch();
 
   const currentUserId = auth.currentUser?.uid;
-
-  // const isFollow = currentUser.follow.includes();
 
   useEffect(() => {
     let isMounted = true;
@@ -286,15 +295,56 @@ export const Nav = () => {
     };
   }, [currentUserId]);
 
-  const getSearchData = (e) => {
+  useEffect(() => {
+    let isMounted = true;
+    firestore
+      .collection('Users')
+      .doc(currentUserId)
+      .collection('Notifications')
+      .orderBy('date', 'desc')
+      .onSnapshot((collection) => {
+        const data = collection.docs.map((doc) => {
+          return doc.data();
+        });
+        if (isMounted) setNotification(data);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [currentUserId]);
+
+  const getSearchData = () => {
     algolia.search(keyword).then((result) => {
       const searchResult = result.hits.map((hit) => {
         return hit;
       });
       dispatch({ type: 'getSearch', todo: searchResult });
-      history.push('/search');
+      // history.push('/search');
+      history.push(`/search/${keyword || undefined}`);
     });
   };
+
+  const keypressSearchData = (e) => {
+    if (e.key === 'Enter') {
+      algolia.search(keyword).then((result) => {
+        const searchResult = result.hits.map((hit) => {
+          return hit;
+        });
+        dispatch({ type: 'getSearch', todo: searchResult });
+        history.push('/search');
+      });
+    }
+  };
+
+  let listData = [];
+  let cardData = [];
+  let commentData = [];
+
+  if (notification !== '') {
+    listData = notification.filter((x) => x.type === 'list');
+    cardData = notification.filter((x) => x.type === 'card');
+    commentData = notification.filter((x) => x.type === 'comment');
+  }
 
   return (
     <>
@@ -305,11 +355,11 @@ export const Nav = () => {
         <SearchDiv>
           <SearchBar
             type="text"
-            placeholder="今天想看什麼電影？"
+            placeholder="請輸入電影名、演員、標籤"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
           />
-          <SearchBtn onClick={getSearchData}>
+          <SearchBtn onClick={getSearchData} onKeyPress={keypressSearchData}>
             <SearchIcon />
           </SearchBtn>
         </SearchDiv>
@@ -319,34 +369,63 @@ export const Nav = () => {
               <BellIcon />
               <RemindDot />
               <NotificationDiv>
-                <AlertListBlock>
-                  <AlertProfile src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956" />
-                  <AlertMessage>甜茶茶發表新片單「我愛耍廢」</AlertMessage>
-                </AlertListBlock>
-                <AlertCommentBlock>
-                  <AlertProfile src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956" />
-                  <AlertMessage>
-                    甜茶茶在電影「蠟筆小新」中發表新評論
-                  </AlertMessage>
-                </AlertCommentBlock>
-                <AlertReviewBlock>
+                {listData?.map((item) => (
+                  <AlertListBlock>
+                    <AlertProfile src={item.authorImg} alt="" />
+                    <AlertMessageDiv>
+                      <AlertMessage>
+                        {item.authorName}發表新片單「{item.listTitle}」
+                      </AlertMessage>
+                      <AlertTime>
+                        {moment(item.date.toDate()).fromNow()}
+                      </AlertTime>
+                    </AlertMessageDiv>
+                  </AlertListBlock>
+                ))}
+                {commentData?.map((item) => (
+                  <AlertCommentBlock>
+                    <AlertProfile src={item.authorImg} alt="" />
+                    <AlertMessageDiv>
+                      <AlertMessage>
+                        {item.authorName}在電影「{item.chTitle}」中發表新評論
+                      </AlertMessage>
+                      <AlertTime>
+                        {moment(item.date.toDate()).fromNow()}
+                      </AlertTime>
+                    </AlertMessageDiv>
+                  </AlertCommentBlock>
+                ))}
+                {/* <AlertReviewBlock>
                   <AlertProfile src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956" />
                   <AlertMessage>
                     甜茶茶在電影「蠟筆小新」中您的評論裡發表新留言
                   </AlertMessage>
-                </AlertReviewBlock>
+                </AlertReviewBlock> */}
+                {cardData?.map((item) => (
+                  <AlertCardBlock>
+                    <AlertProfile src={item.authorImg} alt="" />
+                    <AlertMessageDiv>
+                      <AlertMessage>
+                        {item.authorName}送給你一張新卡片
+                      </AlertMessage>
+                      <AlertTime>
+                        {moment(item.date.toDate()).fromNow()}
+                      </AlertTime>
+                    </AlertMessageDiv>
+                  </AlertCardBlock>
+                ))}
               </NotificationDiv>
             </BellDiv>
             <ProfileDiv>
               <MyLink to={`/profile/${currentUserId}`}>
                 <ProfilePic src={currentUser?.profileImg} />
               </MyLink>
-              <InfoDiv>
+              {/* <InfoDiv>
                 <div>暱稱：{currentUser?.userName}</div>
                 <div>日誌：30</div>
                 <div>片單：30</div>
                 <div>評論：30</div>
-              </InfoDiv>
+              </InfoDiv> */}
             </ProfileDiv>
           </>
         ) : (

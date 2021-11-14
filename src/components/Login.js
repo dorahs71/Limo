@@ -5,7 +5,7 @@ import { auth, createUserDoc } from '../utils/firebase';
 import googleLogo from '../images/google.png';
 import fbLogo from '../images/fb.png';
 import { Cancel } from '@material-ui/icons';
-import poster from '../images/loginPoster.jpeg';
+
 import { useHistory } from 'react-router-dom';
 
 const PopupDiv = styled.div`
@@ -23,26 +23,14 @@ const LoginDiv = styled.div`
   font-size: 25px;
   width: 50vmin;
   height: 80vmin;
-  background: #333;
-  border: 1px solid #75e799;
-  padding: 20px 20px;
+  padding: 2vmin 20px;
   position: relative;
-  top: 70px;
+  background: #343939;
+  opacity: 0.8;
+  top: 10vmin;
   margin: 0 auto;
   justify-content: center;
   align-items: center;
-  @media (max-width: 1280px) {
-    width: 25rem;
-    height: 580px;
-  }
-`;
-
-const Poster = styled.img`
-  width: 100%;
-  opacity: 0.09;
-  z-index: 1;
-  position: absolute;
-  height: 100%;
 `;
 
 const InputDiv = styled.div`
@@ -62,19 +50,15 @@ const InputName = styled.div`
 `;
 
 const Input = styled.input`
-  font-size: 20px;
+  font-size: 2.5vmin;
   width: 36vmin;
   height: 5vmin;
   margin-left: 2vmin;
   background: transparent;
   border-radius: 5px;
-  color: #fff8dc;
+  color: #fff;
   &:focus {
     outline: none;
-  }
-  @media (max-width: 1280px) {
-    width: 15rem;
-    font-size: 18px;
   }
 `;
 
@@ -83,16 +67,18 @@ const Button = styled.div`
   height: 3rem;
   padding: 5px 5px;
   border-radius: 5px;
-  border: 5px double #7fffd4;
   background: transparent;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
   cursor: pointer;
   font-size: 24px;
   text-align: center;
   line-height: 3rem;
+  font-weight: 400;
+  background: #62d498;
+  color: #333;
   &:hover {
-    background: #7fffd4;
-    color: #191970;
-    border: 5px double #20b2aa;
+    background: #8aefba;
+    color: #fff;
   }
   @media (max-width: 1280px) {
     height: 2rem;
@@ -108,7 +94,7 @@ const GoogleBtn = styled.div`
   height: 3rem;
   padding: 5px 5px;
   font-size: 23px;
-  box-shadow: 2px 2px 5px #7fffd4;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
   color: #333;
   line-height: 3rem;
   display: flex;
@@ -163,26 +149,24 @@ const FbBtn = styled(GoogleBtn)`
   }
 `;
 
-const Header = styled.div`
-  width: 100%;
-  font-size: 40px;
+const Title = styled.div`
+  font-size: 4vmin;
+  font-weight: 800;
+  color: #fff;
+  width: 16vmin;
+  border-bottom: 4px solid #75e799;
+  align-self: center;
+  margin: 0 auto;
   text-align: center;
-  font-weight: bolder;
-  padding: 5px;
-  border-radius: 5px;
-  text-shadow: 2px 2px #778899;
-  background: #75e799;
-  @media (max-width: 1280px) {
-    font-size: 32px;
-  }
 `;
 
-const RegisterHeader = styled(Header)`
-  background: #7fffd4;
+const RegisterTitle = styled(Title)`
+  border-bottom: 4px solid #4ac3e0;
 `;
 
 const Content = styled.div`
   padding: 20px 20px;
+  flex-direction: column;
   z-index: 3;
 `;
 
@@ -222,12 +206,14 @@ const Close = styled.div`
   right: -10px;
   top: -10px;
   z-index: 300;
+  color: #c5cdc0;
+  &:hover {
+    color: #75e799;
+  }
 `;
 
 const CancelIcon = styled(Cancel)`
   transform: scale(1.5);
-  color: #75e799;
-  background: #333;
   border-radius: 50%;
 `;
 
@@ -236,17 +222,18 @@ const ChangeBtn = styled.div`
   padding: 5px 5px;
   border-radius: 40px;
   text-align: center;
-  margin-top: 80px;
+  margin-top: 8vmin;
+  font-weight: 500;
   color: #75e799;
-  font-size: 20px;
+  font-size: 2vmin;
   cursor: pointer;
   :hover {
+    background: #75e799;
     color: #fff;
   }
-  @media (max-width: 1280px) {
-    font-size: 16px;
+  /* @media (max-width: 1280px) {
     margin-top: 40px;
-  }
+  } */
 `;
 
 const ErrorText = styled.p`
@@ -345,7 +332,6 @@ export default function Login({ trigger, setTrigger }) {
   return trigger ? (
     <PopupDiv>
       <LoginDiv>
-        <Poster src={poster} alt="" />
         <Close
           onClick={() => {
             setTrigger(false);
@@ -355,7 +341,7 @@ export default function Login({ trigger, setTrigger }) {
         </Close>
         {activeItem === 'login' && (
           <Content>
-            <Header>歡迎登入</Header>
+            <Title>歡迎登入</Title>
             <InputDiv>
               <InputName>信箱</InputName>
               <Input
@@ -399,7 +385,7 @@ export default function Login({ trigger, setTrigger }) {
         )}
         {activeItem === 'register' && (
           <Content>
-            <RegisterHeader>新人註冊</RegisterHeader>
+            <RegisterTitle>新人註冊</RegisterTitle>
             <InputDiv>
               <InputName>暱稱</InputName>
               <Input
