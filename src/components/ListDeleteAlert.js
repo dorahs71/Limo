@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import ask from '../images/ask.png';
 import AOS from 'aos';
 import { useEffect } from 'react';
+import { firestore } from '../utils/firebase';
+import firebase from '../utils/firebase';
 
 const PopupDiv = styled.div`
   display: flex;
@@ -87,13 +89,40 @@ export default function ListDeleteAlert({
   trigger,
   setTrigger,
   message,
-  remove,
-  id,
+  listId,
+  movieId,
   poster,
 }) {
   useEffect(() => {
     AOS.init({ duration: 300 });
   }, []);
+
+  const handleDeleteMovie = () => {
+    firestore
+      .collection('Lists')
+      .doc(listId)
+      .collection('ListData')
+      .doc(movieId)
+      .delete()
+      .catch((error) => {
+        console.error('Error removing document: ', error);
+      });
+
+    firestore
+      .collection('Lists')
+      .doc(listId)
+      .update({
+        listPosters: firebase.firestore.FieldValue.arrayRemove(poster),
+      });
+
+    firestore
+      .collection('Movies')
+      .doc(movieId)
+      .update({
+        list: firebase.firestore.FieldValue.arrayRemove(listId),
+      });
+  };
+
   return trigger ? (
     <PopupDiv>
       <AlertWindow data-aos="zoom-in">
@@ -103,7 +132,7 @@ export default function ListDeleteAlert({
           <CancleBtn onClick={() => setTrigger(false)}>取消</CancleBtn>
           <SendBtn
             onClick={() => {
-              remove(id, poster);
+              handleDeleteMovie();
               setTrigger(false);
             }}
           >

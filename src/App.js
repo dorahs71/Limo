@@ -9,14 +9,24 @@ import Diary from './pages/Diary';
 import List from './pages/List';
 import Search from './pages/Search';
 import ScrollToTop from './components/ScrollToTop';
+import NotFound from './pages/NotFound';
+
+const MainDiv = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 const NavDiv = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
-  height: 65px;
+  height: 10vmin;
   color: #fff;
-  z-index: 100;
+  z-index: 1000;
   background: #1b1919;
   display: flex;
   justify-content: space-between;
@@ -28,9 +38,9 @@ const StartNav = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
-  height: 65px;
+  height: 10vmin;
   color: #fff;
-  z-index: 100;
+  z-index: 1000;
   background: linear-gradient(to top, transparent 0%, rgb(34, 32, 32, 0.3) 50%);
   display: flex;
   justify-content: space-between;
@@ -46,39 +56,46 @@ export default function App() {
   };
 
   return (
-    <BrowserRouter>
-      {isScrolled ? (
-        <NavDiv>
-          <Nav />
-        </NavDiv>
-      ) : (
-        <StartNav>
-          <Nav />
-        </StartNav>
-      )}
-      <ScrollToTop />
-      <Switch>
-        <Route path="/" exact>
-          <Index />
-        </Route>
-        <Route path="/movie/:movieId" exact>
-          <Movie />
-        </Route>
-        <Route path="/diary/:diaryId" exact>
-          <Diary />
-        </Route>
-        <Route path="/list/:listId" exact>
-          <List />
-        </Route>
-        <Route path="/profile/:userId" exact>
-          <Profile />
-        </Route>
-        <Route path="/search/:keyword">
-          {/* <Route path="/search/:keyword"> */}
-          <Search />
-        </Route>
-      </Switch>
-      <Footer />
-    </BrowserRouter>
+    <MainDiv>
+      <BrowserRouter>
+        {isScrolled ? (
+          <NavDiv>
+            <Nav />
+          </NavDiv>
+        ) : (
+          <StartNav>
+            <Nav />
+          </StartNav>
+        )}
+        <ScrollToTop />
+        <Switch>
+          <Route path="/" exact>
+            <Index />
+          </Route>
+          <Route path="/movie/:movieId" exact>
+            <Movie />
+          </Route>
+          <Route path="/diary/:diaryId" exact>
+            <Diary />
+          </Route>
+          <Route path="/list/:listId" exact>
+            <List />
+          </Route>
+          <Route path="/profile/:userId/:active" exact>
+            <Profile />
+          </Route>
+          <Route path="/search/:keyword">
+            <Search />
+          </Route>
+          <Route path="/404">
+            <NotFound />
+          </Route>
+          <Route path="">
+            <NotFound />
+          </Route>
+        </Switch>
+        <Footer />
+      </BrowserRouter>
+    </MainDiv>
   );
 }

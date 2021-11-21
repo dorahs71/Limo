@@ -10,17 +10,20 @@ const Close = styled.div`
   position: absolute;
   display: none;
   padding: 5px 5px;
-  right: 0vmin;
+  right: -1vmin;
   top: -2vmin;
 `;
 
 const CancelIcon = styled(Cancel)`
-  transform: scale(1.1);
+  transform: scale(1.3);
   background: #333;
   border-radius: 50%;
   color: #c5cdc0;
   &:hover {
     color: #75e799;
+  }
+  @media (max-width: 1280px) {
+    transform: scale(1.1);
   }
 `;
 
@@ -35,13 +38,18 @@ const DiaryDiv = styled.div`
 `;
 
 const DiaryPoster = styled.img`
-  width: 23vmin;
-  height: 28vmin;
+  width: 20vmin;
+  height: 26vmin;
+  object-fit: contain;
+  @media (max-width: 1280px) {
+    width: 23vmin;
+    height: 28vmin;
+  }
 `;
 
 const DiaryTitle = styled.div`
   margin-top: 2vmin;
-  font-size: 2.5vmin;
+  font-size: 2vmin;
   color: #fff;
 `;
 

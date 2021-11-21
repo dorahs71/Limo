@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import searchReducer from './searchReducer';
 import currentUserReducer from './currentUserReducer';
-import keywordReducer from './keywordReducer';
+import activeStateReducer from './activeStateReducer';
 
 const reducers = combineReducers({
   search: searchReducer,
   currentUser: currentUserReducer,
-  keyword: keywordReducer,
+  active: activeStateReducer,
 });
 
 export default reducers;

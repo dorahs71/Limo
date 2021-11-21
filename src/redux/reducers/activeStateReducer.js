@@ -1,6 +1,6 @@
 const reducer = (state = [], action) => {
   switch (action.type) {
-    case 'getKeyword':
+    case 'changeState':
       return action.todo;
     default:
       return state;

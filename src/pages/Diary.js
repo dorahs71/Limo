@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useHistory, useParams, Link } from 'react-router-dom';
 import { firestore, auth } from '../utils/firebase';
 import firebase from '../utils/firebase';
 import DiaryQuote from '../components/DiaryQuote';
@@ -20,6 +20,7 @@ import {
   Theaters,
 } from '@material-ui/icons';
 import TagDeleteAlert from '../components/TagDeleteAlert';
+import loading from '../images/loading.gif';
 
 const DiaryContainer = styled.div`
   width: 100%;
@@ -52,37 +53,49 @@ const MovieMain = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  @media (min-width: 1290px) {
-    max-width: 1280px;
-  }
 `;
 
 const MovieIntro = styled.div`
   display: flex;
   width: 100%;
   margin-top: 10%;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  @media (max-width: 1024px) {
+    margin-top: 20%;
+    justify-content: center;
+  }
 `;
 
 const PosterImg = styled.img`
   z-index: 5;
-  width: 50vmin;
-  height: 60vmin;
+  width: 39vmin;
+  height: 58vmin;
+  object-fit: contain;
   box-shadow: 2px 2px 19px 2px rgba(20, 19, 19, 1);
+  @media (max-width: 1280px) {
+    width: 42vmin;
+    height: 60vmin;
+  }
 `;
 
 const IntroDiv = styled.div`
+  margin-left: 8vmin;
   z-index: 5;
   width: 40%;
   display: flex;
+  font-weight: 500;
   flex-direction: column;
   text-align: center;
   align-items: center;
   justify-content: center;
-  @media (max-width: 1280px) {
-    font-weight: 500;
+  @media (max-width: 1024px) {
+    align-items: center;
+    justify-content: center;
+    margin-top: 5vmin;
+    width: 80%;
+    margin-left: 0;
   }
 `;
 
@@ -142,6 +155,9 @@ const TrailerButton = styled.div`
   &:hover {
     background: #8aefba;
   }
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const Trailer = styled.div`
@@ -184,6 +200,9 @@ const MovieLinkBtn = styled.div`
   &:hover {
     background: #898f86;
     color: #fff;
+  }
+  @media (max-width: 600px) {
+    width: 100%;
   }
 `;
 
@@ -368,14 +387,27 @@ const Space = styled.div`
 `;
 
 const SpaceImg = styled.img`
-  margin-top: 1vmin;
   width: 12vmin;
-  height: 11vmin;
+  height: 12vmin;
 `;
 
 const Word = styled.div`
   margin-top: 3vmin;
   font-size: 2.8vmin;
+`;
+
+const Loading = styled.img`
+  width: 10vmin;
+  height: 10vmin;
+`;
+
+const LoadingDiv = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default function Diary() {
@@ -393,6 +425,7 @@ export default function Diary() {
   const [removeTagAlert, setRemoveTagAlert] = useState(false);
 
   const uid = auth.currentUser?.uid;
+  const history = useHistory();
 
   useEffect(() => {
     let isMounted = true;
@@ -404,6 +437,7 @@ export default function Diary() {
       .get()
       .then((docSnapshot) => {
         const data = docSnapshot.data();
+        if (isMounted) setUpdateHashtag(data);
         const movieId = data?.movieId;
         firestore
           .collection('Movies')
@@ -418,22 +452,6 @@ export default function Diary() {
       isMounted = false;
     };
   }, [uid, diaryId]);
-
-  useEffect(() => {
-    let isMounted = true;
-    firestore
-      .collection('Users')
-      .doc(uid)
-      .collection('Diaries')
-      .doc(diaryId)
-      .onSnapshot((snapshot) => {
-        const data = snapshot.data();
-        if (isMounted) setUpdateHashtag(data);
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, [uid]);
 
   useEffect(() => {
     let isMounted = true;
@@ -540,7 +558,11 @@ export default function Diary() {
     });
   };
 
-  return (
+  if (eachMovie === undefined) {
+    history.push('/404');
+  }
+
+  return eachMovie && updateHashtag ? (
     <DiaryContainer>
       <MovieMain>
         <MovieIntro>
@@ -674,5 +696,9 @@ export default function Diary() {
       />
       <Background img={eachMovie.poster} />
     </DiaryContainer>
+  ) : (
+    <LoadingDiv>
+      <Loading src={loading} alt="" />
+    </LoadingDiv>
   );
 }

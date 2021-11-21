@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { firestore, auth } from '../utils/firebase';
-import { CalendarToday, Save, Delete } from '@material-ui/icons';
+import { CalendarToday, Edit, Save, Delete } from '@material-ui/icons';
 import moment from 'moment';
 import DeleteAlert from '../components/DeleteAlert';
 
@@ -19,7 +19,7 @@ const DiaryDiv = styled.div`
   margin-top: 6vmin;
   padding: 7vmin 3vmin 5vmin 0vmin;
   @media (max-width: 1280px) {
-    height: 10vmin;
+    min-height: 10vmin;
   }
 `;
 
@@ -32,16 +32,33 @@ const DiaryDateDiv = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  @media (max-width: 600px) {
+    margin-left: 2vmin;
+  }
 `;
 
 const CalendarIcon = styled(CalendarToday)`
   transform: scale(8);
   color: #6d726b;
   position: absolute;
-  top: 25px;
+  top: 2vmin;
   @media (max-width: 1280px) {
     transform: scale(5);
-    top: 10px;
+  }
+  @media (max-width: 1024px) {
+    top: 3vmin;
+  }
+  @media (max-width: 768px) {
+    transform: scale(4);
+    top: 2vmin;
+  }
+  @media (max-width: 600px) {
+    transform: scale(2.5);
+    top: 1vmin;
+  }
+  @media (max-width: 375px) {
+    transform: scale(2.5);
+    top: 0vmin;
   }
 `;
 
@@ -51,6 +68,12 @@ const DiaryDate = styled.div`
   color: #6d726b;
   @media (max-width: 1280px) {
     font-size: 25px;
+  }
+  @media (max-width: 768px) {
+    font-size: 3vmin;
+  }
+  @media (max-width: 600px) {
+    font-size: 2vmin;
   }
 `;
 
@@ -62,13 +85,16 @@ const DiaryYear = styled.div`
   @media (max-width: 1280px) {
     font-size: 20px;
   }
+  @media (max-width: 600px) {
+    font-size: 2vmin;
+  }
 `;
 
 const FunctionDiv = styled.div`
-  margin-top: 3vmin;
   display: flex;
   margin-left: auto;
 `;
+
 const SaveIcon = styled(Save)`
   transform: scale(1.7);
   color: #898f86;
@@ -78,6 +104,24 @@ const SaveIcon = styled(Save)`
   }
   @media (max-width: 1280px) {
     transform: scale(1.2);
+  }
+  @media (max-width: 600px) {
+    transform: scale(0.8);
+  }
+`;
+
+const EditIcon = styled(Edit)`
+  transform: scale(1.7);
+  color: #898f86;
+  cursor: pointer;
+  &:hover {
+    color: #99cfff;
+  }
+  @media (max-width: 1280px) {
+    transform: scale(1.2);
+  }
+  @media (max-width: 600px) {
+    transform: scale(0.8);
   }
 `;
 
@@ -92,10 +136,14 @@ const DeleteIcon = styled(Delete)`
   @media (max-width: 1280px) {
     transform: scale(1.2);
   }
+  @media (max-width: 600px) {
+    margin-left: 0vmin;
+    transform: scale(0.8);
+  }
 `;
 
 const EditDiary = styled.div`
-  flex-grow: 10;
+  width: 85%;
   display: flex;
   flex-direction: column;
 `;
@@ -104,16 +152,30 @@ const DiaryContent = styled.textarea`
   color: #333;
   font-weight: 400;
   font-size: 2.8vmin;
-  min-height: 3vmin;
+  height: 10vmin;
   background: transparent;
+  white-space: pre-wrap;
   resize: none;
   width: 100%;
   border: 0;
   &:focus {
     outline: 0;
   }
-  @media (max-width: 1280px) {
+  @media (max-width: 768px) {
+    margin-left: 2vmin;
   }
+`;
+
+const ReadDiary = styled.div`
+  text-align: start;
+  align-self: flex-end;
+  color: #333;
+  font-weight: 400;
+  font-size: 2.8vmin;
+  min-height: 3vmin;
+  white-space: pre-wrap;
+  width: 90%;
+  margin: 0;
 `;
 
 export default function DiaryBlock({ diaryDataId, diaryNote, date }) {
@@ -121,8 +183,10 @@ export default function DiaryBlock({ diaryDataId, diaryNote, date }) {
   const uid = auth.currentUser.uid;
   const [updateNote, setUpdateNote] = useState('');
   const [removeNoteAlert, setRemoveNoteAlert] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   const updateDiaryNote = () => {
+    setEdit(false);
     firestore
       .collection('Users')
       .doc(uid)
@@ -149,6 +213,11 @@ export default function DiaryBlock({ diaryDataId, diaryNote, date }) {
       });
   };
 
+  const handleKeyDown = (e) => {
+    e.target.style.height = '10vmin';
+    e.target.style.height = `${e.target.scrollHeight}px`;
+  };
+
   return (
     <>
       <DiaryDiv>
@@ -161,19 +230,30 @@ export default function DiaryBlock({ diaryDataId, diaryNote, date }) {
             {moment(date.toDate()).format('YYYY/MM/DD HH:mm:ss').substr(0, 4)}
           </DiaryYear>
         </DiaryDateDiv>
-        <EditDiary>
-          <DiaryContent
-            placeholder="我想談談這部電影..."
-            defaultValue={diaryNote || ''}
-            onChange={(e) => {
-              setUpdateNote(e.target.value);
-            }}
-          />
-          <FunctionDiv>
-            <SaveIcon onClick={updateDiaryNote} />
-            <DeleteIcon onClick={() => setRemoveNoteAlert(true)} />
-          </FunctionDiv>
-        </EditDiary>
+        {edit ? (
+          <EditDiary>
+            <DiaryContent
+              placeholder="我想談談這部電影..."
+              defaultValue={diaryNote || ''}
+              onKeyDown={(e) => handleKeyDown(e)}
+              onChange={(e) => {
+                setUpdateNote(e.target.value);
+              }}
+            />
+            <FunctionDiv>
+              <SaveIcon onClick={updateDiaryNote} />
+              <DeleteIcon onClick={() => setRemoveNoteAlert(true)} />
+            </FunctionDiv>
+          </EditDiary>
+        ) : (
+          <EditDiary>
+            <ReadDiary>{diaryNote}</ReadDiary>
+            <FunctionDiv>
+              <EditIcon onClick={() => setEdit(true)} />
+              <DeleteIcon onClick={() => setRemoveNoteAlert(true)} />
+            </FunctionDiv>
+          </EditDiary>
+        )}
       </DiaryDiv>
       <DeleteAlert
         trigger={removeNoteAlert}

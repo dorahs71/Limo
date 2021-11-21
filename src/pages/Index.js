@@ -5,51 +5,153 @@ import { Link } from 'react-router-dom';
 import { InfoOutlined, Favorite, StarRounded } from '@material-ui/icons';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import Coverflow from '../components/Coverflow';
+// import Coverflow from '../components/Coverflow';
 import Tilt from 'react-parallax-tilt';
-import Showing from '../components/Showing';
 import { firestore } from '../utils/firebase';
+import Slick from '../components/Slick';
 
-const VideoSec = styled.div`
-  width: 100%;
+const VideoDiv = styled.div`
   top: 0;
-  position: inherit;
+  width: 100%;
   object-fit: contain;
-  height: 100vh;
   &:after {
     content: '';
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: -20vmin;
+    right: 0;
     width: 100%;
-    height: 20vmin;
-    background: linear-gradient(to top, #2b2929, #2b2929, transparent);
-    z-index: 30;
+    height: 40vmin;
+    background: linear-gradient(to bottom, transparent, #2b2929, #2b2929);
+    /* background: #2b2929; */
   }
-  @media (max-width: 1280px) {
-    height: 0;
+  @media (max-width: 1200px) {
+    &:after {
+      height: 0vmin;
+      background: transparent;
+    }
   }
 `;
 
 const Video = styled.video`
-  position: absolute;
   top: 0;
-  overflow: hidden;
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  position: relative;
+`;
+
+const TrailerDiv = styled.div`
+  position: absolute;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  text-align: justify;
+  z-index: 100;
+  margin-left: 6vmin;
+  margin-top: -40vmin;
+  text-shadow: 2px 2px #778899;
+  max-width: 50vmin;
+  @media (max-width: 850px) {
+    margin-top: -30vmin;
+    max-width: 40vmin;
+  }
+  @media (max-width: 500px) {
+    margin-top: -35vmin;
+  }
+`;
+
+const TrailerTitle = styled.div`
+  font-size: 5vmin;
+  @media (max-width: 850px) {
+    font-size: 4vmin;
+  }
+  @media (max-width: 500px) {
+    font-size: 3vmin;
+  }
+`;
+
+const TrailerIntro = styled.div`
+  font-size: 3vmin;
+  @media (max-width: 850px) {
+    font-size: 2vmin;
+  }
+  @media (max-width: 500px) {
+    font-size: 1.5vmin;
+  }
+`;
+
+const TrailerLink = styled(Link)`
+  text-decoration: none;
+  width: 20vmin;
+  height: 6vmin;
+  color: #515151;
+`;
+
+const TrailerBtn = styled.div`
+  /* margin-top: 1vmin; */
+  width: 20vmin;
+  height: 6vmin;
+  z-index: 10;
+  margin-top: 2vmin;
+  font-size: 2.5vmin;
+  font-weight: 450;
+  color: #515151;
+  background: #62d498;
+  padding: 5px 5px;
+  border-radius: 10px;
+  text-shadow: none;
+  border: 0;
+  outline: 0;
+  line-height: 50px;
+  display: flex;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    background: #8aefba;
+    color: #fff;
+  }
+  @media (max-width: 850px) {
+    font-size: 2vmin;
+    width: 18vmin;
+    height: 5vmin;
+  }
+  @media (max-width: 500px) {
+    width: 23vmin;
+  }
+`;
+
+const InfoIcon = styled(InfoOutlined)`
+  transform: scale(1.4);
+  margin-right: 1vmin;
+  @media (max-width: 850px) {
+    transform: scale(1);
+  }
+  @media (max-width: 500px) {
+    transform: scale(0.8);
+  }
 `;
 
 const MainDiv = styled.div`
+  max-width: 1560px;
+  width: 100%;
   display: flex;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  max-width: 1500px;
-  padding: 30px 24px;
-  margin: 0 auto;
-  @media (max-width: 1280px) {
-    margin-top: 800px;
-  }
+  /* @media (min-width: 1290px) {
+    max-width: 1280px;
+  } */
+`;
+
+const IndexDiv = styled.div`
+  display: flex;
+  width: 80%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Title = styled.div`
@@ -60,84 +162,27 @@ const Title = styled.div`
   border-bottom: 8px solid #61d498;
 `;
 
-const TrailerDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  z-index: 10;
-  left: 50px;
-  top: 500px;
-  text-shadow: 2px 2px #778899;
-  max-width: 500px;
-  @media (max-width: 1280px) {
-    top: 300px;
-  }
-`;
-
-const TrailerTitle = styled.div`
-  font-size: 70px;
-  @media (max-width: 1280px) {
-    font-size: 56px;
-  }
-`;
-
-const TrailerIntro = styled.div`
-  font-size: 30px;
-  @media (max-width: 1280px) {
-    font-size: 24px;
-  }
-`;
-
-const TrailerBtn = styled.div`
-  /* margin-top: 1vmin; */
-  width: 10rem;
-  height: 3rem;
-  z-index: 10;
-  font-size: 2.5vmin;
-  font-weight: bold;
-  color: #515151;
-  text-shadow: 0px 0px;
-  background: #62d498;
-  padding: 5px 5px;
-  border-radius: 10px;
-  border: 0;
-  outline: 0;
-  line-height: 50px;
-  display: flex;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
-    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  &:hover {
-    background: #8aefba;
-  }
-`;
-
-const InfoIcon = styled(InfoOutlined)`
-  transform: scale(1.4);
-  margin-right: 10px;
-`;
-
-const ListDiv = styled.div`
+const ListSection = styled.div`
   margin-top: 10vmin;
+  display: flex;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: 50px 0px;
+  grid-gap: 10px 3px;
+  justify-items: center;
   width: 100%;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 `;
 
 const List = styled.div`
-  /* margin-left: 5vmin; */
   margin: 0 auto;
-  width: 45vmin;
-  height: 20vmin;
   border-radius: 10px;
   align-items: center;
   flex-direction: column;
   display: flex;
-  width: 45vmin;
-  height: 30vmin;
+  width: 48vmin;
+  height: 40vmin;
   cursor: pointer;
   text-align: center;
   justify-content: space-between;
@@ -147,6 +192,9 @@ const List = styled.div`
   &:hover {
     /* transform: scale(1.1); */
   }
+  @media (max-width: 1280px) {
+    height: 40vmin;
+  }
 `;
 
 const ThemeList = styled.div`
@@ -154,8 +202,14 @@ const ThemeList = styled.div`
 `;
 
 const ListImg = styled.img`
-  width: 15vmin;
-  height: 18vmin;
+  width: 16vmin;
+  height: 20vmin;
+  object-fit: cover;
+
+  @media (max-width: 1280px) {
+    width: 16vmin;
+    height: 25vmin;
+  }
 `;
 
 const ListIntro = styled.div`
@@ -166,12 +220,12 @@ const ListIntro = styled.div`
   grid-template-columns: repeat(2, 1fr);
   /* justify-content: space-evenly; */
   background: #4e524c;
-  height: 3vmin;
+  height: 5vmin;
   padding: 1vmin 0;
 `;
 
 const ListTitle = styled.div`
-  font-size: 2.2vmin;
+  font-size: 2.5vmin;
   font-weight: 450;
   /* margin-top: 20vmin; */
   align-self: center;
@@ -181,22 +235,21 @@ const ListTitle = styled.div`
 
 const CollectNum = styled.div`
   border-left: 2px solid #c5cdc0;
-  font-size: 1.8vmin;
+  font-size: 2vmin;
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  @media (max-width: 1280px) {
-    font-size: 20px;
+  @media (max-width: 500px) {
+    font-size: 1.5vmin;
   }
 `;
 
 const Love = styled(Favorite)`
-  transform: scale(1.4);
   color: #f08080;
   margin-right: 1vmin;
-  @media (max-width: 1280px) {
-    transform: scale(1.2);
+  @media (max-width: 500px) {
+    transform: scale(0.6);
   }
 `;
 
@@ -209,42 +262,103 @@ const ListProfileDiv = styled.div`
 `;
 
 const ListProfileImg = styled.img`
-  width: 3vmin;
-  height: 3vmin;
+  width: 3.5vmin;
+  height: 3.5vmin;
   margin-right: 1vmin;
 `;
 
 const ListProfileName = styled.div`
-  font-size: 1.8vmin;
+  font-size: 2vmin;
+  @media (max-width: 500px) {
+    font-size: 1.5vmin;
+  }
+`;
+
+const TiltDiv = styled(Tilt)`
+  width: 48vmin;
+  cursor: pointer;
+  margin-bottom: 3vmin;
+  /* @media (max-width: 1280px) {
+    width: 66vmin;
+  } */
+`;
+
+const CategorySection = styled.div`
+  margin-top: 10vmin;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 50px 0px;
+  width: 100%;
 `;
 
 const CardSection = styled.div`
   margin-top: 5vmin;
+  justify-items: center;
   margin-bottom: 5vmin;
+  margin-bottom: 15vmin;
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 5vmin 3px;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 500px) {
+    margin-bottom: 15vmin;
+    grid-gap: 15vmin 3px;
+  }
 `;
 
 const Star = styled(StarRounded)`
-  transform: scale(1.3);
+  transform: scale(1);
   color: gold;
   margin-right: 3px;
+  @media (max-width: 500px) {
+    transform: scale(0.6);
+  }
 `;
 
-const RecentCard = styled.div`
+const CardLink = styled(Link)`
+  text-decoration: none;
+  color: #fff;
   margin-top: 3vmin;
   display: flex;
-  width: 30vmin;
-  height: 40vmin;
+  width: 25vmin;
+  height: 35vmin;
   justify-content: center;
   align-items: center;
   position: relative;
   transition: 1.5s ease-in-out;
   transform-style: preserve-3d;
+
+  @media (max-width: 1280px) {
+    width: 25vmin;
+    height: 30vmin;
+  }
+  @media (max-width: 600px) {
+    width: 25vmin;
+    height: 30vmin;
+  }
+`;
+
+const RecentCard = styled.div`
+  margin-top: 3vmin;
+  display: flex;
+  width: 25vmin;
+  height: 35vmin;
+  position: relative;
+  transition: 0.7s ease-in-out;
+  transform-style: preserve-3d;
   &:hover {
     transform: rotateY(180deg);
+  }
+  @media (max-width: 1280px) {
+    width: 30vmin;
+    height: 35vmin;
+  }
+  @media (max-width: 600px) {
+    width: 25vmin;
+    height: 30vmin;
   }
 `;
 
@@ -290,31 +404,28 @@ const FrontTitle = styled.div`
   word-wrap: break-word;
   font-weight: 400;
   margin-top: 98%;
-`;
 
-// const FrontTitle = styled.div`
-//   transform: translateZ(10px);
-//   background: rgba(20, 20, 20, 0.9);
-//   font-size: 3vmin;
-//   width: 100%;
-//   height: 6vmin;
-//   padding: 2vmin;
-//   word-wrap: break-word;
-//   font-weight: 300;
-//   margin-top: 100%;
-// `;
+  @media (max-width: 600px) {
+    font-size: 1.5vmin;
+    height: 9vmin;
+  }
+  @media (max-width: 450px) {
+    height: 12vmin;
+  }
+`;
 
 const BackTitle = styled.div`
   font-size: 2.5vmin;
   font-weight: 450;
   margin-bottom: 1vmin;
+  margin-top: 1vmin;
 `;
 
 const RecentRate = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 1vmin;
+  /* margin-top: 1vmin; */
 `;
 
 const BackIntro = styled.div`
@@ -323,43 +434,56 @@ const BackIntro = styled.div`
   width: 93.2%;
   height: 95%;
   padding: 1vmin;
+  font-weight: 350;
+`;
+
+const BackWord = styled.p`
   overflow: hidden;
-  white-space: nowrap;
+  white-space: normal;
+  -webkit-box-orient: vertical;
   text-overflow: ellipsis;
   word-wrap: break-word;
   display: -webkit-box;
-  -webkit-line-clamp: 15;
-  -webkit-box-orient: vertical;
-  white-space: normal;
-  font-weight: 350;
-  @media (max-width: 1280px) {
-    font-size: 2vmin;
-    -webkit-line-clamp: 10;
+  -webkit-line-clamp: 8;
+  font-size: 2vmin;
+`;
+
+const CategoryWrapper = styled.div`
+  width: 40vmin;
+  height: 25vmin;
+  /* border: 1px solid var(--background-color); */
+  border-radius: 1.6rem;
+  padding: 4rem;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
+    rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+  transform: rotateX(calc(var(--rX) * 1deg)) rotateY(calc(var(--rY) * 1deg));
+  background: linear-gradient(hsla(0, 0%, 100%, 0.1), hsla(0, 0%, 100%, 0.1)),
+    url('https://imgs.gvm.com.tw/upload/gallery/20200313/71567_00.jpg');
+  background-position: var(--bX) var(--bY);
+  background-size: cover;
+  box-shadow: 0 0 3rem 0.5rem hsla(0, 0%, 0%, 0.2);
+  transition: transform 0.6s 1s;
+  /* filter: hue-rotate(20deg) saturate(140%); */
+  filter: saturate(40%);
+  &:hover {
+    filter: hue-rotate(20deg) saturate(50%);
   }
 `;
 
-const TiltDiv = styled(Tilt)`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const MyLink = styled(Link)`
+const ListLink = styled(Link)`
   text-decoration: none;
   color: #fff;
-  margin-top: 3vmin;
-  display: flex;
-  width: 30vmin;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  transition: 1.5s ease-in-out;
-  transform-style: preserve-3d;
 `;
 
 export default function Index() {
   const [showParallax, setShowParallax] = useState([]);
   const [movies, setMovies] = useState([]);
+  const [getUser, setGetUser] = useState('');
+  const [getList, setGetList] = useState('');
+
   useEffect(() => {
     AOS.init({ duration: 1200 });
   }, []);
@@ -368,7 +492,7 @@ export default function Index() {
     let isMounted = true;
     firestore
       .collection('Movies')
-      .where('date', '>', '2021/11/1')
+      .where('date', '>', '2021/11/22')
       .orderBy('date')
       .limit(8)
       .get()
@@ -405,198 +529,172 @@ export default function Index() {
   }
 
   useEffect(() => {
+    let isMounted = true;
+    firestore
+      .collection('Lists')
+      .where('listShare', '==', true)
+      .get()
+      .then((collectionSnapshot) => {
+        const data = collectionSnapshot.docs.map((doc) => {
+          return doc.data();
+        });
+        if (isMounted) setGetList(data);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
     getMovies();
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+    firestore.collection('Users').onSnapshot((collectionSnapshot) => {
+      const data = collectionSnapshot.docs.map((doc) => {
+        return doc.data();
+      });
+      if (isMounted) setGetUser(data);
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  let userArr = [];
+  let popularList = [];
+  let newList = [];
+
+  if (getList !== '') {
+    newList = getList
+      .sort(function (a, b) {
+        return a.collect.length - b.collect.length;
+      })
+      .reverse()
+      .slice(0, 4);
+  }
+
+  if (getUser && newList) {
+    newList.map((list) => {
+      const authorData = getUser.find((x) => x.uid === list.authorId);
+      userArr.push(authorData);
+      return authorData;
+    });
+  }
+
+  if (newList.length > 0 && userArr.length > 0) {
+    popularList = newList.map((item, i) => Object.assign({}, item, userArr[i]));
+  }
+
   return (
     <>
-      <VideoSec>
+      {/* <VideoSec> */}
+      <VideoDiv>
         <Video autoPlay muted loop>
           <source src={trailer} type="video/mp4" />
         </Video>
+
         <TrailerDiv>
           <TrailerTitle>駭客任務：復活</TrailerTitle>
           <TrailerIntro>
             睽違17年，2020開拍，基努李維、凱莉安摩絲回歸演出
             「尼歐」與「崔妮蒂」，延續人類與機器人的戰爭。
           </TrailerIntro>
-          <MyLink to={'/movie/gmAKlYPKrYgwSdBHuMng'}>
+          <TrailerLink to={'/movie/gmAKlYPKrYgwSdBHuMng'}>
             <TrailerBtn>
               <InfoIcon />
               更多資訊
             </TrailerBtn>
-          </MyLink>
+          </TrailerLink>
         </TrailerDiv>
-      </VideoSec>
+      </VideoDiv>
+      {/* </VideoSec> */}
       <MainDiv>
-        <Title data-aos="fade-up">網友推薦</Title>
-        <Coverflow />
-        {/* <CoverflowBg /> */}
-        {/* <MovieRate slides={movies} /> */}
-        <Title data-aos="fade-up">精選片單</Title>
+        <IndexDiv>
+          <Title data-aos="fade-up">網友推薦</Title>
+          <Slick />
+          {/* <Coverflow /> */}
+          {/* <CoverflowBg /> */}
+          {/* <MovieRate slides={movies} /> */}
+          <Title data-aos="fade-up">精選片單</Title>
 
-        <ListDiv>
-          <List>
-            <TiltDiv
-              glareEnable={true}
-              glareMaxOpacity={0.8}
-              glareColor="#ffffff"
-              glarePosition="bottom"
-              // glareBorderRadius="20px"
-            >
-              <ThemeList>
-                <ListImg
-                  src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/PSMRVeKvNsmfh8g5tUTB-756x1080.jpg"
-                  alt=""
-                ></ListImg>
-                <ListImg
-                  src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/vZUOqQeQSvy1ryr9fxjw-729x1080.jpg"
-                  alt=""
-                ></ListImg>
-                <ListImg
-                  src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/FdF8AKC2OMVSotuOHVuN-756x1080.jpg"
-                  alt=""
-                ></ListImg>
-              </ThemeList>
+          <ListSection>
+            {popularList !== '' &&
+              popularList.map((item) => {
+                return (
+                  <ListLink to={`/list/${item.listId}`} key={item.listId}>
+                    <TiltDiv
+                      glareEnable={true}
+                      glareMaxOpacity={0.8}
+                      glareColor="#ffffff"
+                      glarePosition="bottom"
+                      // glareBorderRadius="20px"
+                    >
+                      <List>
+                        <ThemeList>
+                          {item.listPosters[2] !== undefined && (
+                            <ListImg src={item.listPosters[2]} alt=""></ListImg>
+                          )}
+                          {item.listPosters[1] !== undefined && (
+                            <ListImg src={item.listPosters[1]} alt=""></ListImg>
+                          )}
+                          {item.listPosters[0] !== undefined && (
+                            <ListImg src={item.listPosters[0]} alt=""></ListImg>
+                          )}
+                        </ThemeList>
 
-              <ListTitle>好想好想出國玩片單</ListTitle>
-              <ListIntro>
-                <ListProfileDiv>
-                  <ListProfileImg
-                    src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fspider.png?alt=media&token=c399cd45-8018-4648-99b2-bbceb838ee78"
-                    alt=""
-                  />
-                  <ListProfileName>我是魯拉拉</ListProfileName>
-                </ListProfileDiv>
-                <CollectNum>
-                  <Love />
-                  430
-                </CollectNum>
-              </ListIntro>
-            </TiltDiv>
-          </List>
+                        <ListTitle>{item.listTitle}</ListTitle>
+                        <ListIntro>
+                          <ListProfileDiv>
+                            <ListProfileImg src={item.profileImg} alt="" />
+                            <ListProfileName>{item.userName}</ListProfileName>
+                          </ListProfileDiv>
+                          <CollectNum>
+                            <Love />
+                            {item.collect?.length || 0}
+                          </CollectNum>
+                        </ListIntro>
+                      </List>
+                    </TiltDiv>
+                  </ListLink>
+                );
+              })}
+          </ListSection>
 
-          <Tilt
-            glareEnable={true}
-            glareMaxOpacity={0.8}
-            glareColor="#ffffff"
-            glarePosition="bottom"
-            // glareBorderRadius="20px"
-          >
-            <List>
-              <ThemeList>
-                <ListImg
-                  src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/PSMRVeKvNsmfh8g5tUTB-756x1080.jpg"
-                  alt=""
-                ></ListImg>
-                <ListImg
-                  src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/vZUOqQeQSvy1ryr9fxjw-729x1080.jpg"
-                  alt=""
-                ></ListImg>
-                <ListImg
-                  src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/FdF8AKC2OMVSotuOHVuN-756x1080.jpg"
-                  alt=""
-                ></ListImg>
-              </ThemeList>
+          {/* <Title data-aos="fade-up">主題分類</Title>
+        <CategorySection>
+          action, drama, animation:http://img5.mtime.cn/mg/2019/06/28/122400.90180580.jpg, advanture:https://www.porticomedia.com/sites/default/files/photo_Mummy3.jpg, sci-fi:https://cdn2.ettoday.net/images/4339/4339819.jpg , comedy
+          <CategoryWrapper></CategoryWrapper>
+        </CategorySection> */}
 
-              <ListTitle>好想好想出國玩片單</ListTitle>
-              <ListIntro>
-                <ListProfileDiv>
-                  <ListProfileImg
-                    src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fspider.png?alt=media&token=c399cd45-8018-4648-99b2-bbceb838ee78"
-                    alt=""
-                  />
-                  <ListProfileName>我是魯拉拉</ListProfileName>
-                </ListProfileDiv>
-                <CollectNum>
-                  <Love />
-                  430
-                </CollectNum>
-              </ListIntro>
-            </List>
-          </Tilt>
+          <Title data-aos="fade-up">近期上映</Title>
+          <CardSection>
+            {showParallax.map((movie) => {
+              return (
+                <CardLink to={`/movie/${movie.movieId}`} key={movie.movieId}>
+                  <RecentCard>
+                    <FrontSide poster={movie.poster}>
+                      <FrontTitle>
+                        {movie.chTitle}
+                        <RecentRate>
+                          <Star /> {movie.rate}
+                        </RecentRate>
+                      </FrontTitle>
+                    </FrontSide>
 
-          <Tilt
-            glareEnable={true}
-            glareMaxOpacity={0.8}
-            glareColor="#ffffff"
-            glarePosition="bottom"
-            // glareBorderRadius="20px"
-          >
-            <List>
-              <ThemeList>
-                <ListImg
-                  src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/PSMRVeKvNsmfh8g5tUTB-756x1080.jpg"
-                  alt=""
-                ></ListImg>
-                <ListImg
-                  src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/vZUOqQeQSvy1ryr9fxjw-729x1080.jpg"
-                  alt=""
-                ></ListImg>
-                <ListImg
-                  src="https://movies.yahoo.com.tw/x/r/w420/i/o/production/movies/September2021/FdF8AKC2OMVSotuOHVuN-756x1080.jpg"
-                  alt=""
-                ></ListImg>
-              </ThemeList>
-
-              <ListTitle>好想好想出國玩片單</ListTitle>
-              <ListIntro>
-                <ListProfileDiv>
-                  <ListProfileImg
-                    src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fspider.png?alt=media&token=c399cd45-8018-4648-99b2-bbceb838ee78"
-                    alt=""
-                  />
-                  <ListProfileName>我是魯拉拉</ListProfileName>
-                </ListProfileDiv>
-                <CollectNum>
-                  <Love />
-                  430
-                </CollectNum>
-              </ListIntro>
-            </List>
-          </Tilt>
-        </ListDiv>
-
-        <Title data-aos="fade-up">近期上映</Title>
-        <CardSection>
-          {showParallax.map((movie) => {
-            return (
-              <MyLink to={`/movie/${movie.movieId}`}>
-                <RecentCard key={movie.movieId}>
-                  <FrontSide poster={movie.poster}>
-                    <FrontTitle>
-                      {movie.chTitle}
-                      <RecentRate>
-                        <Star /> {movie.rate}
-                      </RecentRate>
-                    </FrontTitle>
-                  </FrontSide>
-
-                  <BackSide poster={movie.poster}>
-                    <BackIntro>
-                      <BackTitle>劇情簡介</BackTitle>
-                      {movie.story}
-                    </BackIntro>
-                  </BackSide>
-                </RecentCard>
-              </MyLink>
-            );
-          })}
-        </CardSection>
-
-        {/* {showParallax.map((movie) => {
-          return (
-            <Showing
-              key={movie.movieId}
-              chTitle={movie.chTitle}
-              enTitle={movie.enTitle}
-              story={movie.story}
-              poster={movie.poster}
-              bgImg={movie.gallery[0]}
-              movieId={movie.movieId}
-            />
-          );
-        })} */}
+                    <BackSide poster={movie.poster}>
+                      <BackIntro>
+                        <BackTitle>劇情簡介</BackTitle>
+                        <BackWord>{movie.story}</BackWord>
+                      </BackIntro>
+                    </BackSide>
+                  </RecentCard>
+                </CardLink>
+              );
+            })}
+          </CardSection>
+        </IndexDiv>
       </MainDiv>
     </>
   );

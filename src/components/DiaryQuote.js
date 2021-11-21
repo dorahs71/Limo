@@ -24,7 +24,7 @@ const Quote = styled.div`
   margin-top: 6vmin;
   width: auto;
   padding: 0 0 0px 2px;
-  font-size: 3vmin;
+  font-size: 2.5vmin;
   background: transparent;
   resize: none;
   border: 0;
@@ -41,7 +41,7 @@ const Quote = styled.div`
     font-weight: 400;
   }
   @media (max-width: 1280px) {
-    font-size: 30px;
+    font-size: 3vmin;
   }
 `;
 
@@ -61,6 +61,9 @@ const SaveIcon = styled(Save)`
   @media (max-width: 1280px) {
     transform: scale(1.2);
   }
+  @media (max-width: 600px) {
+    transform: scale(0.8);
+  }
 `;
 
 const DeleteQuoteDiv = styled.div`
@@ -77,6 +80,9 @@ const DeleteIcon = styled(Delete)`
   }
   @media (max-width: 1280px) {
     transform: scale(1.2);
+  }
+  @media (max-width: 600px) {
+    transform: scale(0.8);
   }
 `;
 

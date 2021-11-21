@@ -5,6 +5,7 @@ import { auth, firestore } from '../utils/firebase';
 import firebase from '../utils/firebase';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import WarningAlert from './WarningAlert';
 import AOS from 'aos';
 
 const PopupDiv = styled.div`
@@ -78,6 +79,7 @@ const Input = styled.textarea`
   background: transparent;
   border-radius: 5px;
   color: #fff;
+  white-space: pre-wrap;
   resize: none;
   &:focus {
     outline: none;
@@ -117,9 +119,9 @@ const Star = styled(StarRounded)`
   margin-right: 1vmin;
   cursor: pointer;
   transition: color 0.5s;
-  &:hover {
+  /* &:hover {
     color: ${(props) => props.isHover};
-  }
+  } */
   @media (max-width: 1280px) {
     transform: scale(2);
   }
@@ -144,12 +146,15 @@ export default function NewComment({
   setTrigger,
   poster,
   chTitle,
+  rate,
+  allComment,
   showCoin,
 }) {
   const authorId = auth.currentUser?.uid;
   const [comment, setComment] = useState('');
-  const [selectedStar, setSelectedStar] = useState('5');
-  const [hoverStar, setHoverStar] = useState('');
+  const [selectedStar, setSelectedStar] = useState(5);
+  const [commentAlert, setCommentAlert] = useState(false);
+  // const [hoverStar, setHoverStar] = useState('');
 
   useEffect(() => {
     AOS.init({ duration: 300 });
@@ -162,51 +167,70 @@ export default function NewComment({
   const { movieId } = useParams();
 
   const onSubmit = () => {
-    const docRef = firestore.collection('Comments').doc();
-    docRef.set({
-      commentId: docRef.id,
-      movieId,
-      poster,
-      chTitle,
-      rate: selectedStar,
-      date: new Date(),
-      authorName: currentUser.userName,
-      authorId,
-      authorImg: currentUser.profileImg,
-      comment,
-    });
+    if (comment) {
+      const docRef = firestore.collection('Comments').doc();
+      docRef.set({
+        commentId: docRef.id,
+        movieId,
+        poster,
+        chTitle,
+        rate: selectedStar,
+        date: new Date(),
+        authorId,
+        comment,
+      });
 
-    if (currentUser.followBy !== undefined) {
-      currentUser.followBy.map((item) => {
-        firestore
-          .collection('Users')
-          .doc(item)
-          .collection('Notifications')
-          .doc()
-          .set({
+      if (currentUser.followBy !== undefined) {
+        currentUser.followBy.map((item) => {
+          const docRef = firestore
+            .collection('Users')
+            .doc(item)
+            .collection('Notifications')
+            .doc();
+
+          docRef.set({
+            notificationId: docRef.id,
             authorId,
             authorName: currentUser.userName,
             authorImg: currentUser.profileImg,
-            chTitle,
             read: false,
             date: new Date(),
-            type: 'comment',
+            link: `/profile/${authorId}/comment`,
+            message: `${currentUser.userName}在「${chTitle}」發表了新評論`,
           });
-        return item;
+          return item;
+        });
+      }
+
+      firestore
+        .collection('Users')
+        .doc(authorId)
+        .update({
+          coin: firebase.firestore.FieldValue.increment(100),
+        });
+
+      let numbers = allComment.map((x) => x.rate);
+
+      let sum = numbers.reduce(function (accumulator, current) {
+        return accumulator + current;
+      }, 0);
+
+      let newRate = (
+        (Number(rate) * 500 + sum + selectedStar) /
+        (allComment.length + 501)
+      ).toFixed(1);
+
+      firestore.collection('Movies').doc(movieId).update({
+        rate: newRate,
       });
+
+      setTrigger(false);
+      showCoin(true);
+      setComment('');
+      setSelectedStar(5);
+    } else {
+      setCommentAlert(true);
     }
-
-    firestore
-      .collection('Users')
-      .doc(authorId)
-      .update({
-        coin: firebase.firestore.FieldValue.increment(100),
-      });
-
-    setTrigger(false);
-    showCoin(true);
-    setComment('');
-    setSelectedStar('5');
   };
 
   return trigger ? (
@@ -215,6 +239,8 @@ export default function NewComment({
         <Close
           onClick={() => {
             setTrigger(false);
+            setComment('');
+            setSelectedStar(5);
           }}
         >
           <CancelIcon />
@@ -228,12 +254,12 @@ export default function NewComment({
                 <Star
                   key={rate}
                   onClick={() => setSelectedStar(rate)}
-                  onMouseEnter={() => setHoverStar(rate)}
-                  onMouseLeave={() => setHoverStar(null)}
+                  // onMouseEnter={() => setHoverStar(rate)}
+                  // onMouseLeave={() => setHoverStar(null)}
                   select={rate <= selectedStar ? '#FFD700' : '#374048'}
-                  isHover={
-                    rate <= hoverStar ? 'rgba(255, 215, 0, .6)' : '#374048'
-                  }
+                  // isHover={
+                  //   rate <= hoverStar ? 'rgba(255, 215, 0, .6)' : '#374048'
+                  // }
                 />
               ))}
             </StarDiv>
@@ -249,6 +275,11 @@ export default function NewComment({
 
         <SendBtn onClick={onSubmit}>送出評論</SendBtn>
       </NewCommentDiv>
+      <WarningAlert
+        trigger={commentAlert}
+        setTrigger={setCommentAlert}
+        message={'尚未填寫新的評論呦！'}
+      />
     </PopupDiv>
   ) : (
     ''

@@ -11,6 +11,10 @@ const Label = styled.label`
   width: 6vmin;
   height: 3vmin;
   cursor: pointer;
+  @media (max-width: 600px) {
+    width: 13vmin;
+    height: 5vmin;
+  }
 `;
 
 const Slider = styled.span`
@@ -31,6 +35,12 @@ const Slider = styled.span`
     background: #fff;
     transition: 0.4s;
   }
+  @media (max-width: 600px) {
+    &:before {
+      height: 5vmin;
+      width: 5vmin;
+    }
+  }
 `;
 
 const Toggle = styled.input`
@@ -41,13 +51,20 @@ const Toggle = styled.input`
       transform: translateX(3vmin);
     }
   }
+  @media (max-width: 600px) {
+    &:checked + ${Slider} {
+      background: #00cca3;
+      &:before {
+        transform: translateX(5vmin);
+      }
+    }
+  }
 `;
 
 export default function ListStatus({
   status,
   listId,
   authorId,
-
   reduceCoin,
   listTitle,
   showCoin,
@@ -81,21 +98,23 @@ export default function ListStatus({
 
       if (currentUser.followBy !== undefined) {
         currentUser.followBy.map((item) => {
-          firestore
+          const docRef = firestore
             .collection('Users')
             .doc(item)
             .collection('Notifications')
-            .doc()
-            .set({
-              authorId,
-              listId,
-              authorName: currentUser.userName,
-              authorImg: currentUser.profileImg,
-              read: false,
-              listTitle,
-              type: 'list',
-              date: new Date(),
-            });
+            .doc();
+
+          docRef.set({
+            notificationId: docRef.id,
+            authorId,
+            listId,
+            authorName: currentUser.userName,
+            authorImg: currentUser.profileImg,
+            read: false,
+            link: `/list/${listId}`,
+            message: `${currentUser.userName}發表了新片單「${listTitle}」`,
+            date: new Date(),
+          });
           return item;
         });
 

@@ -17,21 +17,28 @@ const Close = styled.div`
 `;
 
 const CancelIcon = styled(Cancel)`
-  transform: scale(1.1);
+  transform: scale(1.3);
   background: #333;
   border-radius: 50%;
   color: #c5cdc0;
   &:hover {
     color: #75e799;
   }
+  @media (max-width: 1280px) {
+    transform: scale(1.1);
+  }
 `;
 
 const ImgWrapper = styled.div`
-  width: 14vmin;
-  height: 14.5vmin;
+  width: 12vmin;
+  height: 12vmin;
   display: flex;
   align-items: center;
   justify-content: center;
+  @media (max-width: 1280px) {
+    width: 14vmin;
+    height: 14.5vmin;
+  }
 `;
 
 const FollowDiv = styled.div`
@@ -53,8 +60,12 @@ const FollowDiv = styled.div`
 `;
 
 const FollowImg = styled.img`
-  width: 11vmin;
-  height: 11vmin;
+  width: 9vmin;
+  height: 9vmin;
+  @media (max-width: 1280px) {
+    width: 11vmin;
+    height: 11vmin;
+  }
 `;
 
 const FollowName = styled.div`
@@ -100,7 +111,7 @@ export default function ProfileFollow({ followId }) {
   return (
     <>
       <FollowDiv>
-        <MyLink to={`/profile/${followId}`}>
+        <MyLink to={`/profile/${followId}/list`}>
           <ImgWrapper>
             <FollowImg src={getfollowData.profileImg} />
           </ImgWrapper>

@@ -8,7 +8,7 @@ import { firestore } from '../utils/firebase';
 import firebase from '../utils/firebase';
 
 const CommentContainer = styled.div`
-  width: -webkit-fill-available;
+  width: 100%;
   min-height: 16vmin;
   font-size: 2.5vmin;
   text-align: justify;
@@ -17,7 +17,7 @@ const CommentContainer = styled.div`
   display: flex;
   align-items: center;
   padding: 2vmin 3vmin;
-  margin-bottom: 3vmin;
+  margin-top: 3vmin;
 `;
 
 const ContentDiv = styled.div`
@@ -219,7 +219,7 @@ export default function ProfileComment({
         </MovieDiv>
         <ContentDiv>
           <CommentDate>
-            {moment(date.toDate()).format('YYYY-MM-DD HH:mm:ss')}
+            {moment(date?.toDate()).format('YYYY-MM-DD HH:mm:ss')}
           </CommentDate>
           <UserRate>
             <Star />

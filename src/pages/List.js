@@ -1,13 +1,15 @@
 import styled from 'styled-components';
 import ListStatus from '../components/ListStatus';
-import { Save, Favorite, DeleteOutline } from '@material-ui/icons';
+import { Save, Favorite, DeleteOutline, Edit } from '@material-ui/icons';
 import { useState, useEffect } from 'react';
 import { firestore, auth } from '../utils/firebase';
 import firebase from '../utils/firebase';
-import { useParams, Link } from 'react-router-dom';
+import { useHistory, useParams, Link } from 'react-router-dom';
 import ReduceCoinAlert from '../components/ReduceCoinAlert';
 import CoinAlert from '../components/CoinAlert';
-import ListDeleteAlert from '../components/ListDeleteAlert';
+import loading from '../images/loading.gif';
+import LoginAlert from '../components/LoginAlert';
+import ListBox from '../components/ListBox';
 
 const ListSection = styled.div`
   display: flex;
@@ -25,6 +27,9 @@ const ListContainer = styled.div`
   display: flex;
   width: 80%;
   flex-direction: column;
+  @media (max-width: 600px) {
+    min-height: 90vh;
+  }
 `;
 
 const ProfileImgDiv = styled.div`
@@ -41,6 +46,7 @@ const ProfileImgDiv = styled.div`
 const ProfileImg = styled.img`
   width: 15vmin;
   height: 15vmin;
+  object-fit: contain;
 `;
 
 const ProfileName = styled.div`
@@ -67,7 +73,17 @@ const ListIntroDiv = styled.div`
 
 const SaveIcon = styled(Save)`
   transform: scale(1.5);
-  color: #898f86;
+  cursor: pointer;
+  &:hover {
+    color: #99cfff;
+  }
+  @media (max-width: 1280px) {
+    transform: scale(1.2);
+  }
+`;
+
+const EditIcon = styled(Edit)`
+  transform: scale(1.5);
   cursor: pointer;
   &:hover {
     color: #99cfff;
@@ -120,11 +136,9 @@ const ListTitle = styled.input`
 const IntroSaveDiv = styled.div`
   width: 4vmin;
   height: 4vmin;
-  align-self: flex-end;
-  margin-top: -5%;
-  color: #898f86;
+  margin-left: 2vmin;
   cursor: pointer;
-  display: none;
+  color: #2b2929;
 `;
 
 const ListIntro = styled.textarea`
@@ -132,11 +146,11 @@ const ListIntro = styled.textarea`
   padding-top: 2vmin;
   background: transparent;
   width: 100%;
-  font-family: 'Segoe UI';
   color: #fff;
-  height: 16vmin;
-  cursor: ${(props) => (props.isAuthor ? 'text' : 'default')};
-  overflow: scroll;
+  min-height: 16vmin;
+  /* cursor: ${(props) => (props.isAuthor ? 'text' : 'default')}; */
+  /* overflow: visible; */
+  white-space: pre-wrap;
   text-align: center;
   border-radius: 5px;
   font-size: 2.8vmin;
@@ -147,18 +161,30 @@ const ListIntro = styled.textarea`
   }
   &:focus {
     outline: 0;
-    border: 1px solid
-      ${(props) => (props.isAuthor ? 'rgba(127, 255, 212, 0.7)' : '0')};
+    border: 1px solid rgba(127, 255, 212, 0.7);
   }
+`;
+
+const ReadIntro = styled.div`
+  font-size: 2.5vmin;
+  margin-top: 4vmin;
+  padding-top: 2vmin;
+  background: transparent;
+  width: 100%;
+  text-align: center;
+  white-space: pre-wrap;
+  color: #fff;
+  min-height: 16vmin;
 `;
 
 const EditIntro = styled.div`
   display: flex;
   width: 100%;
-  flex-direction: column;
+  height: auto;
+  align-items: flex-end;
   justify-content: center;
   &:hover ${IntroSaveDiv} {
-    display: block;
+    color: #898f86;
   }
 `;
 
@@ -205,25 +231,30 @@ const CollectWord = styled.div`
 `;
 
 const Status = styled.div`
-  font-size: 20px;
+  font-size: 2.5vmin;
+  @media (max-width: 600px) {
+  }
 `;
 
 const DeleteDiv = styled.div`
-  height: 2vmin;
+  height: 3vmin;
   position: absolute;
   display: none;
-  width: 2vmin;
+  width: 3vmin;
   z-index: 12;
   cursor: pointer;
   bottom: 5vmin;
 `;
 
 const DeleteIcon = styled(DeleteOutline)`
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
   transform: scale(1.5);
-  color: #777;
+  color: #333;
   z-index: 20;
   &:hover {
-    color: #edabab;
+    background: #edabab;
+    color: #fff;
   }
   @media (max-width: 1280px) {
     transform: scale(1.2);
@@ -296,6 +327,20 @@ const MyLink = styled(Link)`
   color: #fff;
 `;
 
+const Loading = styled.img`
+  width: 10vmin;
+  height: 10vmin;
+`;
+
+const LoadingDiv = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
 export default function List() {
   const [updateList, setUpdateList] = useState('');
   const [getAuthor, setGetAuthor] = useState('');
@@ -305,8 +350,11 @@ export default function List() {
   const [updateIntro, setUpdateIntro] = useState('');
   const [showCoinList, setShowCoinList] = useState(false);
   const [showReduceCoin, setShowReduceCoin] = useState(false);
-  const [removeMovieAlert, setRemoveMovieAlert] = useState(false);
 
+  const [loginAlert, setLoginAlert] = useState(false);
+  const [edit, setEdit] = useState(false);
+
+  const history = useHistory();
   const currentUserId = auth.currentUser?.uid;
   const authorId = updateList?.authorId;
   const isAuthor = authorId === currentUserId;
@@ -317,11 +365,15 @@ export default function List() {
       .collection('Lists')
       .doc(listId)
       .onSnapshot((snapshot) => {
-        const data = snapshot.data();
-        if (isMounted) {
-          setUpdateList(data);
-          setUpdateTitle(data.listTitle);
-          setUpdateIntro(data.listIntro);
+        if (snapshot.exists) {
+          const data = snapshot.data();
+          if (isMounted) {
+            setUpdateList(data);
+            setUpdateTitle(data.listTitle);
+            setUpdateIntro(data.listIntro);
+          }
+        } else {
+          history.push('/404');
         }
       });
     return () => {
@@ -368,6 +420,7 @@ export default function List() {
   };
 
   const handleUpdateListIntro = () => {
+    setEdit(false);
     firestore.collection('Lists').doc(listId).update({
       listIntro: updateIntro,
     });
@@ -376,50 +429,42 @@ export default function List() {
   const isCollected = updateList?.collect?.includes(currentUserId);
 
   const toggleCollect = () => {
-    if (isCollected) {
-      firestore
-        .collection('Lists')
-        .doc(listId)
-        .update({
-          collect: firebase.firestore.FieldValue.arrayRemove(currentUserId),
-        });
+    if (currentUserId) {
+      if (isCollected) {
+        firestore
+          .collection('Lists')
+          .doc(listId)
+          .update({
+            collect: firebase.firestore.FieldValue.arrayRemove(currentUserId),
+          });
+      } else {
+        firestore
+          .collection('Lists')
+          .doc(listId)
+          .update({
+            collect: firebase.firestore.FieldValue.arrayUnion(currentUserId),
+          });
+      }
     } else {
-      firestore
-        .collection('Lists')
-        .doc(listId)
-        .update({
-          collect: firebase.firestore.FieldValue.arrayUnion(currentUserId),
-        });
+      setLoginAlert(true);
     }
   };
 
-  const handleDeleteMovie = (id, poster) => {
-    firestore
-      .collection('Lists')
-      .doc(listId)
-      .collection('ListData')
-      .doc(id)
-      .delete()
-      .catch((error) => {
-        console.error('Error removing document: ', error);
-      });
-
-    firestore
-      .collection('Lists')
-      .doc(listId)
-      .update({
-        listPosters: firebase.firestore.FieldValue.arrayRemove(poster),
-      });
+  const handleKeyDown = (e) => {
+    e.target.style.height = '16vmin';
+    e.target.style.height = `${e.target.scrollHeight}px`;
   };
 
-  return (
+  return listData ? (
     <ListSection>
       <ListContainer>
         <ListHead>
           <ProfileContainer>
-            <ProfileImgDiv>
-              <ProfileImg src={getAuthor.profileImg} alt="" />
-            </ProfileImgDiv>
+            <MyLink to={`/profile/${getAuthor.uid}/list`}>
+              <ProfileImgDiv>
+                <ProfileImg src={getAuthor.profileImg} alt="" />
+              </ProfileImgDiv>
+            </MyLink>
             <ProfileName>{getAuthor.userName}</ProfileName>
             {isAuthor ? (
               <ToggleStatusDiv>
@@ -465,21 +510,28 @@ export default function List() {
               </CollectNum>
             </EditTitle>
             <EditIntro>
-              <ListIntro
-                isAuthor={isAuthor}
-                readOnly={isAuthor ? false : true}
-                placeholder="這個片單是關於..."
-                defaultValue={updateList.listIntro}
-                onChange={(e) => {
-                  setUpdateIntro(e.target.value);
-                }}
-              />
-              {isAuthor ? (
+              {isAuthor && edit ? (
+                <ListIntro
+                  isAuthor={isAuthor}
+                  placeholder="這個片單是關於..."
+                  defaultValue={updateList.listIntro}
+                  onKeyDown={(e) => handleKeyDown(e)}
+                  onChange={(e) => {
+                    setUpdateIntro(e.target.value);
+                  }}
+                />
+              ) : (
+                <ReadIntro>{updateList.listIntro}</ReadIntro>
+              )}
+              {isAuthor && edit && (
                 <IntroSaveDiv onClick={handleUpdateListIntro}>
                   <SaveIcon />
                 </IntroSaveDiv>
-              ) : (
-                ''
+              )}
+              {isAuthor && !edit && (
+                <IntroSaveDiv onClick={() => setEdit(true)}>
+                  <EditIcon />
+                </IntroSaveDiv>
               )}
             </EditIntro>
           </ListIntroDiv>
@@ -487,32 +539,15 @@ export default function List() {
 
         <ArrangeListDiv>
           {listData !== '' &&
-            listData.map((item) => (
-              <>
-                <Box key={item.movieId}>
-                  {isAuthor ? (
-                    <DeleteDiv onClick={() => setRemoveMovieAlert(true)}>
-                      <DeleteIcon />
-                    </DeleteDiv>
-                  ) : (
-                    ''
-                  )}
-                  <MyLink to={`/movie/${item.movieId}`}>
-                    <Poster src={item.poster} alt="" />
-                    <Overlay>
-                      <MovieTitle>{item.chTitle}</MovieTitle>
-                    </Overlay>
-                  </MyLink>
-                </Box>
-                <ListDeleteAlert
-                  id={item.movieId}
-                  poster={item.poster}
-                  trigger={removeMovieAlert}
-                  setTrigger={setRemoveMovieAlert}
-                  message={'確認要移除此電影嗎？'}
-                  remove={handleDeleteMovie}
-                />
-              </>
+            listData?.map((item) => (
+              <ListBox
+                key={item.movieId}
+                isAuthor={isAuthor}
+                movieId={item.movieId}
+                poster={item.poster}
+                listId={listId}
+                title={item.chTitle}
+              />
             ))}
         </ArrangeListDiv>
       </ListContainer>
@@ -528,6 +563,15 @@ export default function List() {
         type={'片單'}
         coin={300}
       />
+      <LoginAlert
+        trigger={loginAlert}
+        setTrigger={setLoginAlert}
+        message={'記得先登入會員才可以收藏片單喔！'}
+      />
     </ListSection>
+  ) : (
+    <LoadingDiv>
+      <Loading src={loading} alt="" />
+    </LoadingDiv>
   );
 }

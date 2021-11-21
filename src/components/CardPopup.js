@@ -21,13 +21,10 @@ const CardImg = styled.img`
   top: 30vmin;
   border-radius: 20px;
   box-shadow: rgb(0, 0, 0) 0px 20px 30px -10px;
-  /* margin: 10vmin 25vmin;
-  @media (max-width: 1280px) {
-    width: 100vmin;
-    height: 80vmin;
-    top: 10vmin;
-    margin: 10vmin 40vmin;
-  } */
+  @media (max-width: 1024px) {
+    width: 90%;
+    height: 50%;
+  }
 `;
 
 const Close = styled.div`
@@ -42,11 +39,23 @@ const Close = styled.div`
   &:hover {
     color: #75e799;
   }
+  @media (max-width: 1024px) {
+    right: 6vmin;
+    top: 23vmin;
+  }
+  @media (max-width: 1024px) {
+    right: 6vmin;
+    top: 28vmin;
+  }
 `;
 
 const CancelIcon = styled(Cancel)`
-  transform: scale(1.5);
+  transform: scale(2);
   border-radius: 50%;
+
+  @media (max-width: 600px) {
+    transform: scale(1.5);
+  }
 `;
 
 export default function CardPopup({ trigger, setTrigger, cardImg }) {

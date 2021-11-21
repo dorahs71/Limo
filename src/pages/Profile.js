@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { firestore, auth } from '../utils/firebase';
 import { useHistory, useParams } from 'react-router-dom';
 import firebase from '../utils/firebase';
@@ -25,6 +25,11 @@ import nofollow from '../images/nofollow.png';
 import nolist from '../images/nolist.png';
 import nocomment from '../images/nocomment.png';
 import DeleteAlert from '../components/DeleteAlert';
+import { Waypoint } from 'react-waypoint';
+import loading from '../images/loading.gif';
+import LogoutAlert from '../components/LogoutAlert';
+import LoginAlert from '../components/LoginAlert';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ProfileDiv = styled.div`
   width: 100%;
@@ -35,12 +40,14 @@ const ProfileDiv = styled.div`
 
 const MainProfile = styled.div`
   width: 80%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  @media (min-width: 1290px) {
-    max-width: 1280px;
+
+  @media (max-width: 600px) {
+    min-height: 95vh;
   }
 `;
 const ProfileSection = styled.div`
@@ -62,6 +69,7 @@ const ChangeWord = styled.div`
 const ProfileImg = styled.img`
   width: 15vmin;
   height: 15vmin;
+  object-fit: contain;
 `;
 
 const ProfileImgDiv = styled.div`
@@ -98,7 +106,7 @@ const ProfileWrapper = styled.div`
   }
 
   &:hover ${ProfileImgDiv} {
-    opacity: 0.25;
+    opacity: ${(props) => props.isUser};
   }
 `;
 
@@ -153,7 +161,7 @@ const ProfileIntroDiv = styled.div`
   width: 100%;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  /* justify-content: space-around; */
   margin-left: 8vmin;
 `;
 
@@ -226,6 +234,10 @@ const FansImg = styled.img`
 
 const TagDiv = styled.div`
   display: flex;
+  @media (max-width: 1024px) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 
 const Tag = styled.div`
@@ -252,18 +264,30 @@ const Tag = styled.div`
 const DiaryShowcase = styled.div`
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-gap: 1vmin 0.8vmin;
+  grid-gap: 5vmin 0.8vmin;
   padding: 5vmin 0;
   width: 100%;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 
 const ListShowcase = styled.div`
   display: grid;
   height: auto;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px 3px;
+  grid-gap: 2vmin 0vmin;
   padding: 5vmin 0;
-  width: 90%;
+  width: 100%;
+  justify-items: center;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    width: 90%;
+    grid-gap: 5vmin 0vmin;
+  }
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 `;
 
 const CommentShowcase = styled.div`
@@ -271,7 +295,7 @@ const CommentShowcase = styled.div`
   flex-direction: column;
   padding: 5vmin 0;
   text-align: center;
-  width: -webkit-fill-available;
+  width: 100%;
   align-items: center;
 `;
 
@@ -287,9 +311,18 @@ const CollectShowcase = styled.div`
   display: grid;
   height: auto;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px 3px;
+  grid-gap: 2vmin 0vmin;
   padding: 5vmin 0;
-  width: 90%;
+  width: 100%;
+  justify-items: center;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    width: 90%;
+    grid-gap: 5vmin 0vmin;
+  }
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 `;
 
 const CardShowcase = styled.div`
@@ -299,6 +332,10 @@ const CardShowcase = styled.div`
   grid-gap: 30px 3px;
   padding: 5vmin 0;
   width: 100%;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 5vmin 0vmin;
+  }
 `;
 
 const ProfileCard = styled.div`
@@ -341,6 +378,7 @@ const Space = styled.div`
 const SpaceImg = styled.img`
   width: 12vmin;
   height: 11vmin;
+  object-fit: contain;
 `;
 
 const Word = styled.div`
@@ -348,8 +386,21 @@ const Word = styled.div`
   font-size: 2.5vmin;
 `;
 
+const Loading = styled.img`
+  width: 10vmin;
+  height: 10vmin;
+`;
+
+const LoadingDiv = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
 export default function Profile() {
-  const [activeitem, setActiveitem] = useState('list');
   const [showDiary, setShowDiary] = useState('');
   const [showList, setShowList] = useState('');
   const [showShareList, setShowShareList] = useState('');
@@ -365,11 +416,29 @@ export default function Profile() {
   const [selectCard, setSelectCard] = useState('');
   const [userData, setUserData] = useState('');
   const [logoutAlert, setLogoutAlert] = useState(false);
+  const currentUser = useSelector((state) => state.currentUser);
+  const [loginAlert, setLoginAlert] = useState(false);
+
+  const activeItem = useSelector((state) => state.active);
+  const { active } = useParams();
+  const dispatch = useDispatch();
+  dispatch({ type: 'changeState', todo: active });
 
   const history = useHistory();
+  const lastPostRef = useRef();
 
-  const currentUserId = auth.currentUser?.uid;
+  const currentUserId = currentUser.uid;
   const { userId } = useParams();
+  if (
+    active !== 'list' &&
+    active !== 'comment' &&
+    active !== 'collect' &&
+    active !== 'follow' &&
+    active !== 'diary' &&
+    active !== 'card'
+  ) {
+    history.push('/404');
+  }
 
   const isUser = currentUserId === userId;
 
@@ -389,32 +458,36 @@ export default function Profile() {
 
   const isFollow = updateFollow?.follow?.includes(userId);
   const toggleFollow = () => {
-    if (isFollow) {
-      firestore
-        .collection('Users')
-        .doc(currentUserId)
-        .update({
-          follow: firebase.firestore.FieldValue.arrayRemove(userId),
-        });
-      firestore
-        .collection('Users')
-        .doc(userId)
-        .update({
-          followBy: firebase.firestore.FieldValue.arrayRemove(currentUserId),
-        });
+    if (currentUserId) {
+      if (isFollow) {
+        firestore
+          .collection('Users')
+          .doc(currentUserId)
+          .update({
+            follow: firebase.firestore.FieldValue.arrayRemove(userId),
+          });
+        firestore
+          .collection('Users')
+          .doc(userId)
+          .update({
+            followBy: firebase.firestore.FieldValue.arrayRemove(currentUserId),
+          });
+      } else {
+        firestore
+          .collection('Users')
+          .doc(currentUserId)
+          .update({
+            follow: firebase.firestore.FieldValue.arrayUnion(userId),
+          });
+        firestore
+          .collection('Users')
+          .doc(userId)
+          .update({
+            followBy: firebase.firestore.FieldValue.arrayUnion(currentUserId),
+          });
+      }
     } else {
-      firestore
-        .collection('Users')
-        .doc(currentUserId)
-        .update({
-          follow: firebase.firestore.FieldValue.arrayUnion(userId),
-        });
-      firestore
-        .collection('Users')
-        .doc(userId)
-        .update({
-          followBy: firebase.firestore.FieldValue.arrayUnion(currentUserId),
-        });
+      setLoginAlert(true);
     }
   };
 
@@ -428,7 +501,7 @@ export default function Profile() {
       .collection('Users')
       .doc(userId)
       .collection('Diaries')
-      .orderBy('date')
+      .orderBy('date', 'desc')
       .onSnapshot((collectionSnapshot) => {
         const data = collectionSnapshot.docs.map((doc) => {
           return doc.data();
@@ -446,7 +519,7 @@ export default function Profile() {
       .collection('Users')
       .doc(userId)
       .collection('Cards')
-      .orderBy('date')
+      .orderBy('date', 'desc')
       .onSnapshot((collectionSnapshot) => {
         const data = collectionSnapshot.docs.map((doc) => {
           return doc.data();
@@ -515,8 +588,12 @@ export default function Profile() {
       .collection('Users')
       .doc(userId)
       .onSnapshot((doc) => {
-        const data = doc.data();
-        if (isMounted) setShowProfile(data);
+        if (doc.exists) {
+          const data = doc.data();
+          if (isMounted) setShowProfile(data);
+        } else {
+          history.push('/404');
+        }
       });
     return () => {
       isMounted = false;
@@ -529,10 +606,13 @@ export default function Profile() {
       .collection('Comments')
       .where('authorId', '==', userId)
       .orderBy('date', 'desc')
+      .limit(5)
       .onSnapshot((collectionSnapshot) => {
         const data = collectionSnapshot.docs.map((doc) => {
           return doc.data();
         });
+        lastPostRef.current =
+          collectionSnapshot.docs[collectionSnapshot.docs.length - 1];
         if (isMounted) setShowComment(data);
       });
     return () => {
@@ -558,7 +638,7 @@ export default function Profile() {
 
   let friendData = [];
 
-  if (userData !== '') {
+  if (userData !== '' && showCard !== '') {
     showCard.map((item) => {
       const data = userData.find(({ uid }) => uid === item.senderId);
       friendData.push({
@@ -570,19 +650,28 @@ export default function Profile() {
     });
   }
 
-  return (
+  return showProfile &&
+    showDiary &&
+    showList &&
+    showShareList &&
+    showCollect &&
+    showComment ? (
     <ProfileDiv>
       <MainProfile>
         <ProfileSection>
           <ProfileContainer>
-            <ProfileWrapper>
+            <ProfileWrapper isUser={isUser ? 0.25 : 1}>
               <ProfileImgDiv>
-                <ProfileImg src={showProfile.profileImg} alt="" />
+                <ProfileImg src={showProfile?.profileImg} alt="" />
               </ProfileImgDiv>
-              <ChangeProfileBtn onClick={() => setShowChangeProfile(true)}>
-                <ChangeImg src={change} alt="" />
-                <ChangeWord>更換頭像</ChangeWord>
-              </ChangeProfileBtn>
+              {isUser ? (
+                <ChangeProfileBtn onClick={() => setShowChangeProfile(true)}>
+                  <ChangeImg src={change} alt="" />
+                  <ChangeWord>更換頭像</ChangeWord>
+                </ChangeProfileBtn>
+              ) : (
+                ''
+              )}
             </ProfileWrapper>
             {currentUserId === userId && (
               <>
@@ -600,21 +689,21 @@ export default function Profile() {
             )}
           </ProfileContainer>
           <ProfileIntroDiv>
-            <NameValue>{showProfile.userName}</NameValue>
+            <NameValue>{showProfile?.userName}</NameValue>
             <IntroInfo>
-              <IntroLine>
+              {/* <IntroLine>
                 <CakeIcon />
                 <IntroValue>
-                  {moment(showProfile.birthday?.toDate())
+                  {moment(showProfile?.birthday?.toDate())
                     .format('YYYY / MM / DD HH:mm:ss')
                     .substr(0, 15)}
                 </IntroValue>
-              </IntroLine>
+              </IntroLine> */}
               <IntroLine>
                 <FansImg src={fans} alt="" />
                 <IntroValue>
                   <CoinNum>
-                    {showProfile.followBy?.length || 0}&nbsp;&nbsp;粉絲
+                    {showProfile?.followBy?.length || 0}&nbsp;&nbsp;粉絲
                   </CoinNum>
                 </IntroValue>
               </IntroLine>
@@ -623,7 +712,7 @@ export default function Profile() {
                   <IntroLine>
                     <CoinImg src={coin} alt="" />
                     <IntroValue>
-                      <CoinNum>{showProfile.coin?.toLocaleString()}</CoinNum>
+                      <CoinNum>{showProfile?.coin?.toLocaleString()}</CoinNum>
                     </IntroValue>
                   </IntroLine>
 
@@ -636,60 +725,83 @@ export default function Profile() {
             </IntroInfo>
           </ProfileIntroDiv>
         </ProfileSection>
+
         <TagDiv>
           <Tag
-            active={activeitem === 'list'}
-            onClick={() => setActiveitem('list')}
+            active={activeItem === 'list'}
+            onClick={() => {
+              history.push(`/profile/${userId}/list`);
+              // setActiveItem('list');
+              dispatch({ type: 'changeState', todo: 'list' });
+            }}
           >
             片單
           </Tag>
 
           <Tag
-            active={activeitem === 'comment'}
-            onClick={() => setActiveitem('comment')}
+            active={activeItem === 'comment'}
+            onClick={() => {
+              history.push(`/profile/${userId}/comment`);
+              // setActiveItem('comment');
+              dispatch({ type: 'changeState', todo: 'comment' });
+            }}
           >
             評論
           </Tag>
 
           <Tag
-            active={activeitem === 'collect'}
-            onClick={() => setActiveitem('collect')}
+            active={activeItem === 'collect'}
+            onClick={() => {
+              history.push(`/profile/${userId}/collect`);
+              // setActiveItem('collect');
+              dispatch({ type: 'changeState', todo: 'collect' });
+            }}
           >
             收藏
           </Tag>
           <Tag
-            active={activeitem === 'follow'}
-            onClick={() => setActiveitem('follow')}
+            active={activeItem === 'follow'}
+            onClick={() => {
+              history.push(`/profile/${userId}/follow`);
+              // setActiveItem('follow');
+              dispatch({ type: 'changeState', todo: 'follow' });
+            }}
           >
             追蹤
           </Tag>
 
           {isUser && (
             <Tag
-              active={activeitem === 'diary'}
-              onClick={() => setActiveitem('diary')}
+              active={activeItem === 'diary'}
+              onClick={() => {
+                history.push(`/profile/${userId}/diary`);
+                dispatch({ type: 'changeState', todo: 'diary' });
+                // setActiveItem('diary');
+              }}
             >
               日誌
             </Tag>
           )}
           {isUser && (
             <Tag
-              active={activeitem === 'card'}
-              onClick={() => setActiveitem('card')}
+              active={activeItem === 'card'}
+              onClick={() => {
+                history.push(`/profile/${userId}/card`);
+                dispatch({ type: 'changeState', todo: 'card' });
+                // setActiveItem('card');
+              }}
             >
               小卡
             </Tag>
           )}
         </TagDiv>
-
-        {isUser && activeitem === 'list' && showList.length === 0 && (
+        {isUser && activeItem === 'list' && showList.length === 0 && (
           <Space>
             <SpaceImg src={nolist} alt="" />
             <Word>快將喜歡的電影加入片單吧！</Word>
           </Space>
         )}
-
-        {isUser && activeitem === 'list' && showList.length > 0 && (
+        {isUser && activeItem === 'list' && showList.length > 0 && (
           <ListShowcase>
             {showList?.map((item) => (
               <ProfileList
@@ -702,15 +814,13 @@ export default function Profile() {
             ))}
           </ListShowcase>
         )}
-
-        {!isUser && activeitem === 'list' && showShareList.length === 0 && (
+        {!isUser && activeItem === 'list' && showShareList.length === 0 && (
           <Space>
             <SpaceImg src={nolist} alt="" />
             <Word>快將喜歡的電影加入片單吧！</Word>
           </Space>
         )}
-
-        {!isUser && activeitem === 'list' && showShareList.length > 0 && (
+        {!isUser && activeItem === 'list' && showShareList.length > 0 && (
           <ListShowcase>
             {showShareList?.map((item) => (
               <ProfileList
@@ -723,22 +833,19 @@ export default function Profile() {
             ))}
           </ListShowcase>
         )}
-
-        {activeitem === 'follow' && showProfile.follow === undefined && (
+        {activeItem === 'follow' && showProfile.follow === undefined && (
           <Space>
             <SpaceImg src={nofollow} alt="" />
             <Word>你還沒有關注的對象呦！</Word>
           </Space>
         )}
-
-        {activeitem === 'follow' && showProfile.follow?.length === 0 && (
+        {activeItem === 'follow' && showProfile.follow?.length === 0 && (
           <Space>
             <SpaceImg src={nofollow} alt="" />
             <Word>你還沒有關注的對象呦！</Word>
           </Space>
         )}
-
-        {activeitem === 'follow' &&
+        {activeItem === 'follow' &&
           showProfile.follow !== '' &&
           showProfile.follow?.length > 0 && (
             <FollowShowcase>
@@ -747,14 +854,13 @@ export default function Profile() {
               ))}
             </FollowShowcase>
           )}
-
-        {activeitem === 'collect' && showCollect.length === 0 && (
+        {activeItem === 'collect' && showCollect.length === 0 && (
           <Space>
             <SpaceImg src={nocollect} alt="" />
             <Word>開始收藏喜歡的片單吧！</Word>
           </Space>
         )}
-        {activeitem === 'collect' && showCollect.length > 0 && (
+        {activeItem === 'collect' && showCollect.length > 0 && (
           <CollectShowcase>
             {showCollect?.map((item) => (
               <ProfileCollect
@@ -767,15 +873,13 @@ export default function Profile() {
             ))}
           </CollectShowcase>
         )}
-
-        {activeitem === 'comment' && showComment.length === 0 && (
+        {activeItem === 'comment' && showComment.length === 0 && (
           <Space>
             <SpaceImg src={nocomment} alt="" />
             <Word>開始分享自己對電影的看法吧！</Word>
           </Space>
         )}
-
-        {activeitem === 'comment' && showComment.length > 0 && (
+        {activeItem === 'comment' && showComment.length > 0 && (
           <CommentShowcase>
             {showComment !== '' &&
               showComment.map((item) => (
@@ -797,15 +901,13 @@ export default function Profile() {
               ))}
           </CommentShowcase>
         )}
-
-        {isUser && activeitem === 'diary' && showDiary.length === 0 && (
+        {isUser && activeItem === 'diary' && showDiary.length === 0 && (
           <Space>
             <SpaceImg src={nodiary} alt="" />
             <Word>快將喜歡的電影加入日誌吧！</Word>
           </Space>
         )}
-
-        {isUser && activeitem === 'diary' && showDiary.length > 0 && (
+        {isUser && activeItem === 'diary' && showDiary.length > 0 && (
           <DiaryShowcase>
             {showDiary !== '' &&
               showDiary.map((item) => (
@@ -818,15 +920,13 @@ export default function Profile() {
               ))}
           </DiaryShowcase>
         )}
-
-        {isUser && activeitem === 'card' && friendData.length === 0 && (
+        {isUser && activeItem === 'card' && friendData.length === 0 && (
           <Space>
             <SpaceImg src={nocard} alt="" />
             <Word>還沒收到朋友寄來的小卡呦～</Word>
           </Space>
         )}
-
-        {isUser && activeitem === 'card' && friendData.length > 0 && (
+        {isUser && activeItem === 'card' && friendData.length > 0 && (
           <CardShowcase>
             {friendData.map((friend) => (
               <ProfileCard
@@ -845,6 +945,7 @@ export default function Profile() {
             ))}
           </CardShowcase>
         )}
+
         <CardPopup
           trigger={showCardPopup}
           setTrigger={setShowCardPopup}
@@ -861,13 +962,42 @@ export default function Profile() {
           type={'留言'}
           coin={30}
         />
-        <DeleteAlert
+        <LogoutAlert
           trigger={logoutAlert}
           setTrigger={setLogoutAlert}
           message={'確認要登出LIMO嗎？'}
           remove={logout}
         />
+        <LoginAlert
+          trigger={loginAlert}
+          setTrigger={setLoginAlert}
+          message={'記得先登入會員才可以開始追蹤喔！'}
+        />
+        <Waypoint
+          onEnter={() => {
+            if (lastPostRef.current) {
+              firestore
+                .collection('Comments')
+                .where('authorId', '==', userId)
+                .orderBy('date', 'desc')
+                .startAfter(lastPostRef.current)
+                .limit(5)
+                .onSnapshot((collectionSnapshot) => {
+                  const data = collectionSnapshot.docs.map((doc) => {
+                    return doc.data();
+                  });
+                  lastPostRef.current =
+                    collectionSnapshot.docs[collectionSnapshot.docs.length - 1];
+                  setShowComment([...showComment, ...data]);
+                });
+            }
+          }}
+        />
       </MainProfile>
     </ProfileDiv>
+  ) : (
+    <LoadingDiv>
+      <Loading src={loading} alt="" />
+    </LoadingDiv>
   );
 }

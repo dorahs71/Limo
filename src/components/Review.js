@@ -1,20 +1,20 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Telegram } from '@material-ui/icons';
 import { auth, firestore } from '../utils/firebase';
 import firebase from '../utils/firebase';
 import { Link } from 'react-router-dom';
-
 import moment from 'moment';
 import { useSelector } from 'react-redux';
+import WarningAlert from './WarningAlert';
 
 const ReviewSection = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 2.5vmin;
-  width: -webkit-fill-available;
+  width: 100%;
   background: #333;
-  padding: 20px 20px;
+  padding: 2vmin 3vmin;
   box-shadow: 5px 5px 10px rgba(28, 28, 28, 1);
   align-items: center;
 `;
@@ -64,7 +64,7 @@ const Input = styled.textarea`
 const ReviewDiv = styled.div`
   background: #444;
   border-radius: 5px;
-  width: inherit;
+  width: 90%;
   margin-top: 5vmin;
   min-height: 10vmin;
   display: flex;
@@ -83,6 +83,7 @@ const UserDiv = styled.div`
 const User = styled.img`
   width: 6vmin;
   height: 6vmin;
+  object-fit: contain;
 `;
 
 const UserName = styled.div`
@@ -126,32 +127,65 @@ const MyLink = styled(Link)`
 export default function Review({ trigger, commentId, reviews, showCoin }) {
   const [newReview, setNewReview] = useState('');
   const currentUser = useSelector((state) => state.currentUser);
+  const [getUser, setGetUser] = useState('');
+  const [reviewAlert, setReviewAlert] = useState(false);
 
-  const onSubmit = () => {
-    const authorId = auth.currentUser.uid;
-
-    firestore
-      .collection('Comments')
-      .doc(commentId)
-      .update({
-        reviews: firebase.firestore.FieldValue.arrayUnion({
-          reviewDate: new Date(),
-          reviewerName: currentUser.userName || '',
-          reviewerId: currentUser.uid,
-          reviewerImg: currentUser.profileImg || '',
-          reviewContent: newReview,
-        }),
-      });
-
+  useEffect(() => {
+    let isMounted = true;
     firestore
       .collection('Users')
-      .doc(authorId)
-      .update({
-        coin: firebase.firestore.FieldValue.increment(30),
+      .get()
+      .then((collection) => {
+        const data = collection.docs.map((item) => item.data());
+        if (isMounted) setGetUser(data);
+        return data;
       });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
-    setNewReview('');
-    showCoin(true);
+  let userArr = [];
+  let reviewData = [];
+  if (reviews !== '' && getUser !== '') {
+    const reviewerId = reviews?.map((item) => item.reviewerId);
+    reviewerId.map((user) => {
+      const reviewerData = getUser?.find((x) => x.uid === user);
+      userArr.push(reviewerData);
+      return reviewerData;
+    });
+  }
+
+  if (reviews.length > 0 && userArr.length > 0) {
+    reviewData = reviews.map((item, i) => Object.assign({}, item, userArr[i]));
+  }
+
+  const onSubmit = () => {
+    if (newReview) {
+      const authorId = auth.currentUser.uid;
+      firestore
+        .collection('Comments')
+        .doc(commentId)
+        .update({
+          reviews: firebase.firestore.FieldValue.arrayUnion({
+            reviewDate: new Date(),
+            reviewerId: currentUser.uid,
+            reviewContent: newReview,
+          }),
+        });
+
+      firestore
+        .collection('Users')
+        .doc(authorId)
+        .update({
+          coin: firebase.firestore.FieldValue.increment(30),
+        });
+
+      setNewReview('');
+      showCoin(true);
+    } else {
+      setReviewAlert(true);
+    }
   };
 
   return trigger ? (
@@ -168,14 +202,14 @@ export default function Review({ trigger, commentId, reviews, showCoin }) {
         />
         <SendIcon onClick={onSubmit} />
       </InputDiv>
-      {reviews !== '' &&
-        reviews.map((item, index) => {
+      {reviewData !== '' &&
+        reviewData.reverse().map((item, index) => {
           return (
             <ReviewDiv key={index}>
               <UserDiv>
-                <MyLink to={`/profile/${item.reviewerId}`}>
-                  <User src={item.reviewerImg} alt="" />
-                  <UserName>{item.reviewerName}</UserName>
+                <MyLink to={`/profile/${item.reviewerId}/comment`}>
+                  <User src={item.profileImg} alt="" />
+                  <UserName>{item.userName}</UserName>
                 </MyLink>
               </UserDiv>
               <ReviewContentDiv>
@@ -189,6 +223,11 @@ export default function Review({ trigger, commentId, reviews, showCoin }) {
             </ReviewDiv>
           );
         })}
+      <WarningAlert
+        trigger={reviewAlert}
+        setTrigger={setReviewAlert}
+        message={'尚未填寫新的留言呦！'}
+      />
     </ReviewSection>
   ) : (
     ''

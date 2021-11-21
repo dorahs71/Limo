@@ -3,12 +3,12 @@
   flex-direction: column;
   padding: 80px;
   overflow: hidden;
-  width: 100%;
+  width: 80%;
 }
 
 .carousel {
   width: 100%;
-  margin-left: -20vmin;
+  margin-left: -18vmin;
   display: flex;
   transition: all 0.35s ease 0s;
 }
@@ -22,8 +22,8 @@
 
 .carousel-card {
   /* min-width: 30%; */
-  width: 60%;
-  height: 52vmin;
+  width: 32%;
+  height: 40vmin;
 }
 
 .carousel-card-content {
@@ -51,16 +51,15 @@
 }
 
 .carousel-card-title {
-  left: 0%;
+  left: -2.5%;
   background: rgba(10, 10, 10, 0.95);
   position: relative;
   color: #e5e5e5;
-  width: 35vmin;
+  width: 22vmin;
   text-align: center;
-  top: 90%;
   padding: 2vmin;
-  /* top: 10vmin; */
-  /* margin-left: 8px; */
+  top: 87.5%;
+  margin-left: 8px;
   font-size: 2.5vmin;
   font-weight: 400;
   transition: all 0.8s ease 0.3s;
@@ -81,7 +80,7 @@
 .button-group {
   display: flex;
   justify-content: center;
-  margin-top: 10vmin;
+  margin-top: 7vmin;
 }
 
 .button-group > * {
@@ -118,22 +117,40 @@ Media Queries
 
   .carousel {
     width: 100%;
-    margin-left: 0vmin;
+    margin-left: -20vmin;
   }
 
   .carousel-card {
-    height: 400px;
+    width: 30%;
+    height: 48vmin;
   }
   .carousel-card-title {
-    left: -1%;
-    background: rgba(20, 20, 20, 0.8);
-    width: 40vmin;
+    left: -1.3vmin;
+    background: rgba(20, 20, 20, 0.95);
+    width: 30.5vmin;
     text-align: center;
+    top: 89%;
     /* width: 287px; */
     /* top: 20px; */
-    margin-left: 8px;
+    /* margin-left: 8px; */
     font-size: 2.5vmin;
     font-weight: 500;
     transition: all 0.8s ease 0.3s;
   }
 }
+
+/* @media screen and (min-width: 1920px) {
+  .carousel-card-title {
+    left: -1.3vmin;
+    background: rgba(20, 20, 20, 0.95);
+    width: 28vmin;
+    text-align: center;
+    top: 89%;
+    /* width: 287px; */
+/* top: 20px; */
+/* margin-left: 8px; */
+/* font-size: 2.5vmin;
+    font-weight: 500;
+    transition: all 0.8s ease 0.3s;
+  }
+}   */

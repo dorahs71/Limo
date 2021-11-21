@@ -10,8 +10,8 @@ const Close = styled.div`
   position: absolute;
   display: none;
   padding: 5px 5px;
-  right: -3vmin;
-  top: -2vmin;
+  right: -2.5vmin;
+  top: -1.2vmin;
   z-index: 300;
   color: #c5cdc0;
   &:hover {
@@ -20,8 +20,11 @@ const Close = styled.div`
 `;
 
 const CancelIcon = styled(Cancel)`
-  transform: scale(1.1);
+  transform: scale(1.3);
   border-radius: 50%;
+  @media (max-width: 1280px) {
+    transform: scale(1.1);
+  }
 `;
 
 const ListDiv = styled.div`
@@ -54,6 +57,7 @@ const ListCh1 = styled.img`
   z-index: -1;
   -moz-transform: rotate(5deg);
   transform: rotate(5deg);
+  object-fit: contain;
   @media (max-width: 1280px) {
   }
 `;
@@ -64,6 +68,7 @@ const ListCh2 = styled.img`
   height: 22vmin;
   right: 50px;
   z-index: 0;
+  object-fit: contain;
   @media (max-width: 1280px) {
   }
 `;
@@ -74,6 +79,7 @@ const ListCh3 = styled.img`
   height: 22vmin;
   right: 100px;
   z-index: 1;
+  object-fit: contain;
   -moz-transform: rotate(-3deg);
   transform: rotate(-3deg);
   @media (max-width: 1280px) {
@@ -81,7 +87,7 @@ const ListCh3 = styled.img`
 `;
 
 const ListTitle = styled.div`
-  font-size: 2.5vmin;
+  font-size: 2vmin;
   margin-top: 23vmin;
 `;
 
@@ -92,6 +98,7 @@ const MyLink = styled(Link)`
 
 export default function ProfileList({ title, posters, listId, isUser }) {
   const [removeListAlert, setRemoveListAlert] = useState(false);
+
   const handleDeleteList = () => {
     firestore
       .collection('Lists')
@@ -106,17 +113,33 @@ export default function ProfileList({ title, posters, listId, isUser }) {
     <>
       <ListDiv>
         <MyLink to={`/list/${listId}`}>
-          <ThemeList>
-            {posters !== undefined && (
-              <ListCh1 src={posters[2]} alt=""></ListCh1>
-            )}
-            {posters !== undefined && (
-              <ListCh2 src={posters[1]} alt=""></ListCh2>
-            )}
-            {posters !== undefined && (
-              <ListCh3 src={posters[0]} alt=""></ListCh3>
-            )}
-          </ThemeList>
+          {posters !== undefined && (
+            <ThemeList>
+              <ListCh1
+                src={
+                  posters[2] ||
+                  'https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2FlistDefault.png?alt=media&token=a8568e96-73d5-434e-a72b-15cdad41e53e'
+                }
+                alt=""
+              ></ListCh1>
+
+              <ListCh2
+                src={
+                  posters[1] ||
+                  'https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2FlistDefault.png?alt=media&token=a8568e96-73d5-434e-a72b-15cdad41e53e'
+                }
+                alt=""
+              ></ListCh2>
+
+              <ListCh3
+                src={
+                  posters[0] ||
+                  'https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2FlistDefault.png?alt=media&token=a8568e96-73d5-434e-a72b-15cdad41e53e'
+                }
+                alt=""
+              ></ListCh3>
+            </ThemeList>
+          )}
           <ListTitle>{title}</ListTitle>
         </MyLink>
         {isUser ? (

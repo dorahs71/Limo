@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import logo from '../images/logo.png';
-import { NotificationsNone, SearchOutlined } from '@material-ui/icons';
+import { SearchOutlined } from '@material-ui/icons';
 import Login from './Login';
 import { useHistory, Link } from 'react-router-dom';
 import { firestore, auth } from '../utils/firebase';
@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import algolia from '../utils/algolia';
 import moment from 'moment';
 import 'moment/locale/zh-tw';
+import bell from '../images/bell.png';
 
 const MyLink = styled(Link)`
   text-decoration: none;
@@ -16,44 +17,105 @@ const MyLink = styled(Link)`
 
 const Logo = styled.img`
   margin-left: 30px;
-  width: 60px;
-  height: 48px;
+  width: 5vmin;
+  height: 4vmin;
+  @media (max-width: 1280px) {
+    width: 6vmin;
+    height: 5vmin;
+  }
+  @media (max-width: 600px) {
+    width: 8vmin;
+    height: 7vmin;
+  }
 `;
 
 const FunctionDiv = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-around;
 `;
 
 const SearchBtn = styled.button`
   border: 0;
-  width: 28px;
-  height: 28px;
-  font-size: 1.5rem;
+  width: 2.5vmin;
+  height: 2.5vmin;
+  font-size: 2vmin;
   background: transparent;
   cursor: pointer;
   border-radius: 50%;
-  margin-right: 3px;
+  /* margin-right: 1vmin; */
   margin-left: auto;
+  @media (max-width: 1280px) {
+    width: 3vmin;
+    height: 3vmin;
+  }
+  @media (max-width: 992px) {
+    width: 3.5vmin;
+    height: 3.5vmin;
+  }
+
+  @media (max-width: 500px) {
+    width: 2vmin;
+    height: 2vmin;
+  }
+  /* @media (max-width: 600px) {
+    width: 5vmin;
+    height: 5vmin;
+  } */
 `;
 
 const SearchIcon = styled(SearchOutlined)`
-  transform: scale(1.2);
+  margin-left: -3px;
+  transform: scale(1.1);
   color: #fff;
   margin-top: 2px;
   cursor: pointer;
+  @media (max-width: 1280px) {
+    margin-top: -1px;
+    transform: scale(1);
+  }
+  @media (max-width: 1024px) {
+    margin-top: 1px;
+    transform: scale(1);
+    margin-left: 3px;
+  }
+  @media (max-width: 992px) {
+    margin-top: 0px;
+    transform: scale(1);
+    margin-left: -6px;
+  }
+  @media (max-width: 768px) {
+    margin-left: 1px;
+  }
+  @media (max-width: 750px) {
+    margin-left: -2px;
+  }
+  @media (max-width: 600px) {
+    margin-top: -1px;
+    margin-left: -4px;
+  }
+  @media (max-width: 500px) {
+    transform: scale(0.8);
+    margin-top: -15px;
+    margin-left: -4px;
+  }
+  @media (max-width: 400px) {
+    transform: scale(0.6);
+    margin-top: -100px;
+    margin-left: -8px;
+  }
 `;
 
 const SearchBar = styled.input`
   flex-grow: 1;
   height: 30px;
   width: 100%;
-  font-size: 2.5vmin;
+  font-size: 2vmin;
   padding: 0 0.5em;
   border: 0;
   color: #fff;
   position: absolute;
-  top: 3px;
+  top: 2px;
   bottom: 0;
   left: 0;
   opacity: 0;
@@ -64,14 +126,21 @@ const SearchBar = styled.input`
   }
   ::placeholder,
   ::-webkit-input-placeholder {
-    font-size: 2.5vmin;
+    font-size: 1.7vmin;
     color: #a9a9a9;
+  }
+  @media (max-width: 1280px) {
+    font-size: 2.5vmin;
+    ::placeholder,
+    ::-webkit-input-placeholder {
+      font-size: 2.5vmin;
+    }
   }
 `;
 
 const SearchDiv = styled.div`
-  width: 40px;
-  height: 40px;
+  width: 4vmin;
+  height: 4vmin;
   display: flex;
   color: #fff;
   background: transparent;
@@ -80,13 +149,13 @@ const SearchDiv = styled.div`
   border: 2px solid #75e799;
   z-index: 0;
   border-radius: 50px;
-  margin-right: 35px;
-  padding: 3px;
+  margin-right: 2vmin;
+  padding: 3px 6px 0 0;
   transition: width 500ms ease-in-out;
   position: relative;
   overflow: hidden;
   &:hover {
-    width: 20rem;
+    width: 35vmin;
   }
   &:hover ${SearchBtn} {
     background: linear-gradient(90deg, #00c9ff 0%, #92fe9d 100%);
@@ -98,80 +167,111 @@ const SearchDiv = styled.div`
   &:hover ${SearchBar} {
     opacity: 1;
   }
+  @media (max-width: 1280px) {
+    width: 4.5vmin;
+    height: 4.5vmin;
+    &:hover {
+      width: 40vmin;
+    }
+  }
+  @media (max-width: 1024px) {
+    width: 4.2vmin;
+    height: 4.2vmin;
+  }
+  @media (max-width: 992px) {
+    width: 4.8vmin;
+    height: 4.8vmin;
+  }
+  @media (max-width: 750px) {
+    width: 5.2vmin;
+    height: 5.2vmin;
+    &:hover {
+      width: 40vmin;
+    }
+  }
+
+  @media (max-width: 600px) {
+    width: 5.8vmin;
+    height: 5.8vmin;
+  }
 `;
 
 const NotificationDiv = styled.div`
   width: 35vmin;
-  height: auto;
+  max-height: 60vmin;
   background: #333;
-  padding: 0 2vmin 0 2vmin;
   position: absolute;
-  font-weight: bold;
+  /* font-weight: bold; */
   justify-content: center;
   overflow: scroll;
   right: 30px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   top: 64px;
-  display: none;
-  &:hover {
-    display: block;
-  }
 `;
 
 const RemindDot = styled.div`
-  position: absolute;
-  text-align: center;
   background: red;
   border-radius: 50%;
-  width: 15px;
-  height: 15px;
-  bottom: 3vmin;
-  right: 11vmin;
-`;
-
-const BellIcon = styled(NotificationsNone)`
-  transform: scale(1.3);
-  margin-right: 25px;
-  cursor: pointer;
-`;
-
-const BellDiv = styled.div`
-  display: block;
-  padding: 3vmin 0 3vmin 0;
-  &:hover ${NotificationDiv} {
-    display: block;
+  width: 1vmin;
+  height: 1vmin;
+  align-self: center;
+  margin-right: 1vmin;
+  margin-top: -1vmin;
+  z-index: 5;
+  @media (max-width: 1280px) {
+    width: 1.5vmin;
+    height: 1.5vmin;
   }
 `;
 
+const BellImg = styled.img`
+  width: 2.8vmin;
+  height: 2.8vmin;
+  margin-right: 2.5vmin;
+  @media (max-width: 1280px) {
+    margin-right: 2.7vmin;
+    width: 3.5vmin;
+    height: 3.5vmin;
+  }
+  @media (max-width: 600px) {
+    width: 5vmin;
+    height: 5vmin;
+  }
+`;
+
+const BellDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  cursor: pointer;
+`;
+
 const AlertListBlock = styled.div`
-  width: 100%;
-  height: 15vmin;
-  border-bottom: 1px rgba(255, 255, 255, 0.7) solid;
+  width: 80%;
+  height: 8vmin;
+  padding: 2vmin;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  &:not(:last-of-type) {
+    border-bottom: 1px rgba(255, 255, 255, 0.7) solid;
+  }
+  &:hover {
+    background: #777;
+  }
 `;
 
-const AlertCommentBlock = styled.div`
-  width: 100%;
-  height: 15vmin;
-  border-bottom: 1px rgba(255, 255, 255, 0.7) solid;
+const NoAlert = styled.div`
+  width: 80%;
+  height: 2vmin;
+  padding: 2vmin;
   display: flex;
-  align-items: center;
+  text-align: center;
 `;
 
-// const AlertReviewBlock = styled.div`
-//   width: 100%;
-//   height: 15vmin;
-//   border-bottom: 1px rgba(255, 255, 255, 0.7) solid;
-//   display: flex;
-//   align-items: center;
-// `;
-
-const AlertCardBlock = styled.div`
-  width: 100%;
-  height: 15vmin;
-  border-bottom: 1px rgba(255, 255, 255, 0.7) solid;
+const AlertDiv = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
 `;
 
 const AlertProfile = styled.img`
@@ -179,42 +279,29 @@ const AlertProfile = styled.img`
   height: 5vmin;
 `;
 
-const AlertMessageDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-left: 1vmin;
-`;
-
 const AlertMessage = styled.div`
+  width: 80%;
+  text-align: justify;
+  font-weight: 400;
+  margin-left: 1vmin;
   font-size: 2vmin;
   color: rgba(255, 255, 255, 0.7);
+  @media (max-width: 1280px) {
+    font-size: 2.2vmin;
+    font-weight: 500;
+  }
 `;
 
 const AlertTime = styled.div`
-  margin-top: 3vmin;
-  font-size: 15px;
+  margin-top: 0.5vmin;
+  font-size: 1.8vmin;
+  font-weight: 400;
+  display: flex;
+  justify-content: flex-end;
   color: rgba(255, 255, 255, 0.7);
-`;
-
-const InfoDiv = styled.div`
-  position: absolute;
-  font-weight: bold;
-  right: 30px;
-  top: 70px;
-  width: 12rem;
-  height: auto;
-  display: none;
-  flex-direction: column;
-  justify-content: space-around;
-  text-align: center;
-  font-size: 18px;
-  padding: 1vmin 0;
-  background: linear-gradient(180deg, #444, #000);
-  box-shadow: 2px 2px 10px 2px #00bfa5;
-  border-radius: 30px;
-  &:hover {
-    display: block;
+  @media (max-width: 1280px) {
+    font-size: 2.2vmin;
+    font-weight: 500;
   }
 `;
 
@@ -227,25 +314,27 @@ const ProfilePic = styled.img`
     width: 4vmin;
     height: 4.5vmin;
   }
+  @media (max-width: 600px) {
+    width: 5.5vmin;
+    height: 6vmin;
+  }
 `;
 
 const ProfileDiv = styled.div`
   display: block;
   margin-right: 30px;
   padding: 3vmin 0 3vmin 0;
-  &:hover ${InfoDiv} {
-    display: flex;
-  }
 `;
 
 const LoginDiv = styled.div`
   cursor: pointer;
-  font-size: 18px;
+  font-size: 2vmin;
   font-weight: bold;
   margin-right: 30px;
 `;
 
 const FooterDiv = styled.div`
+  width: 100%;
   background: #1b1919;
   bottom: 0;
   left: 0;
@@ -263,9 +352,9 @@ export const Nav = () => {
   const [hasUser, setHasUser] = useState(null);
   const [notification, setNotification] = useState('');
   const [keyword, setKeyword] = useState('');
+  const [showNotification, setShowNotification] = useState(false);
   const history = useHistory();
   const currentUser = useSelector((state) => state.currentUser);
-  // const keyword = useSelector((state) => state.keyword);
 
   const dispatch = useDispatch();
 
@@ -302,6 +391,7 @@ export const Nav = () => {
       .doc(currentUserId)
       .collection('Notifications')
       .orderBy('date', 'desc')
+      .limit(10)
       .onSnapshot((collection) => {
         const data = collection.docs.map((doc) => {
           return doc.data();
@@ -319,32 +409,53 @@ export const Nav = () => {
         return hit;
       });
       dispatch({ type: 'getSearch', todo: searchResult });
-      // history.push('/search');
       history.push(`/search/${keyword || undefined}`);
     });
   };
 
   const keypressSearchData = (e) => {
-    if (e.key === 'Enter') {
+    if (e.keyCode === 13) {
       algolia.search(keyword).then((result) => {
         const searchResult = result.hits.map((hit) => {
           return hit;
         });
         dispatch({ type: 'getSearch', todo: searchResult });
-        history.push('/search');
+        history.push(`/search/${keyword || undefined}`);
       });
     }
   };
 
-  let listData = [];
-  let cardData = [];
-  let commentData = [];
-
+  let notifyList = '';
+  let newNotify = [];
   if (notification !== '') {
-    listData = notification.filter((x) => x.type === 'list');
-    cardData = notification.filter((x) => x.type === 'card');
-    commentData = notification.filter((x) => x.type === 'comment');
+    notifyList = notification.filter((x) => x.read === false);
+    notifyList.map((item) => {
+      const data = item.notificationId;
+      newNotify.push(data);
+      return data;
+    });
   }
+
+  const toggleShowNotification = () => {
+    if (showNotification) {
+      setShowNotification(false);
+    } else {
+      setShowNotification(true);
+      if (newNotify) {
+        newNotify.map((item) => {
+          firestore
+            .collection('Users')
+            .doc(currentUserId)
+            .collection('Notifications')
+            .doc(item)
+            .update({
+              read: true,
+            });
+          return item;
+        });
+      }
+    }
+  };
 
   return (
     <>
@@ -358,74 +469,45 @@ export const Nav = () => {
             placeholder="請輸入電影名、演員、標籤"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={(e) => keypressSearchData(e)}
           />
-          <SearchBtn onClick={getSearchData} onKeyPress={keypressSearchData}>
+          <SearchBtn onClick={getSearchData}>
             <SearchIcon />
           </SearchBtn>
         </SearchDiv>
-        {hasUser ? (
+        {currentUserId ? (
           <>
-            <BellDiv>
-              <BellIcon />
-              <RemindDot />
-              <NotificationDiv>
-                {listData?.map((item) => (
-                  <AlertListBlock>
-                    <AlertProfile src={item.authorImg} alt="" />
-                    <AlertMessageDiv>
-                      <AlertMessage>
-                        {item.authorName}發表新片單「{item.listTitle}」
-                      </AlertMessage>
-                      <AlertTime>
-                        {moment(item.date.toDate()).fromNow()}
-                      </AlertTime>
-                    </AlertMessageDiv>
-                  </AlertListBlock>
-                ))}
-                {commentData?.map((item) => (
-                  <AlertCommentBlock>
-                    <AlertProfile src={item.authorImg} alt="" />
-                    <AlertMessageDiv>
-                      <AlertMessage>
-                        {item.authorName}在電影「{item.chTitle}」中發表新評論
-                      </AlertMessage>
-                      <AlertTime>
-                        {moment(item.date.toDate()).fromNow()}
-                      </AlertTime>
-                    </AlertMessageDiv>
-                  </AlertCommentBlock>
-                ))}
-                {/* <AlertReviewBlock>
-                  <AlertProfile src="https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2Fbaby.png?alt=media&token=e38c438f-7632-45e2-aadc-ea2fd82f6956" />
-                  <AlertMessage>
-                    甜茶茶在電影「蠟筆小新」中您的評論裡發表新留言
-                  </AlertMessage>
-                </AlertReviewBlock> */}
-                {cardData?.map((item) => (
-                  <AlertCardBlock>
-                    <AlertProfile src={item.authorImg} alt="" />
-                    <AlertMessageDiv>
-                      <AlertMessage>
-                        {item.authorName}送給你一張新卡片
-                      </AlertMessage>
-                      <AlertTime>
-                        {moment(item.date.toDate()).fromNow()}
-                      </AlertTime>
-                    </AlertMessageDiv>
-                  </AlertCardBlock>
-                ))}
-              </NotificationDiv>
+            <BellDiv onClick={toggleShowNotification}>
+              <BellImg src={bell} alt="" />
+              {notifyList?.length > 0 && <RemindDot />}
             </BellDiv>
+            {showNotification ? (
+              <NotificationDiv>
+                {notification !== '' &&
+                  notification?.map((item) => (
+                    <AlertListBlock>
+                      <MyLink to={item.link}>
+                        <AlertDiv>
+                          <AlertProfile src={item.authorImg} alt="" />
+                          <AlertMessage>{item.message}</AlertMessage>
+                        </AlertDiv>
+                        <AlertTime>
+                          {moment(item.date.toDate()).fromNow()}
+                        </AlertTime>
+                      </MyLink>
+                    </AlertListBlock>
+                  ))}
+                {notification.length === 0 && (
+                  <NoAlert>您尚未有新的通知呦！</NoAlert>
+                )}
+              </NotificationDiv>
+            ) : (
+              ''
+            )}
             <ProfileDiv>
-              <MyLink to={`/profile/${currentUserId}`}>
+              <MyLink to={`/profile/${currentUserId}/list`}>
                 <ProfilePic src={currentUser?.profileImg} />
               </MyLink>
-              {/* <InfoDiv>
-                <div>暱稱：{currentUser?.userName}</div>
-                <div>日誌：30</div>
-                <div>片單：30</div>
-                <div>評論：30</div>
-              </InfoDiv> */}
             </ProfileDiv>
           </>
         ) : (

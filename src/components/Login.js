@@ -1,12 +1,13 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import firebase from '../utils/firebase';
-import { auth, createUserDoc } from '../utils/firebase';
+import { auth, firestore } from '../utils/firebase';
 import googleLogo from '../images/google.png';
-import fbLogo from '../images/fb.png';
+// import fbLogo from '../images/fb.png';
 import { Cancel } from '@material-ui/icons';
-
 import { useHistory } from 'react-router-dom';
+import WarningAlert from './WarningAlert';
+// import AOS from 'aos';
 
 const PopupDiv = styled.div`
   width: 100%;
@@ -20,28 +21,26 @@ const PopupDiv = styled.div`
 const LoginDiv = styled.div`
   display: flex;
   flex-direction: column;
-  font-size: 25px;
-  width: 50vmin;
-  height: 80vmin;
+  font-size: 2.5vmin;
+  width: 55vmin;
+  height: 70vmin;
   padding: 2vmin 20px;
   position: relative;
   background: #343939;
   opacity: 0.8;
   top: 10vmin;
   margin: 0 auto;
-  justify-content: center;
   align-items: center;
 `;
 
 const InputDiv = styled.div`
   margin-top: 3vmin;
-  font-size: 20px;
+  font-size: 2.5vmin;
   display: flex;
   align-items: center;
   justify-content: space-between;
   @media (max-width: 1280px) {
     margin-top: 20px;
-    font-size: 18px;
   }
 `;
 
@@ -70,7 +69,7 @@ const Button = styled.div`
   background: transparent;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 2.5vmin;
   text-align: center;
   line-height: 3rem;
   font-weight: 400;
@@ -91,21 +90,21 @@ const GoogleBtn = styled.div`
   margin-top: 60px;
   background: #fff;
   width: 95%;
-  height: 3rem;
+  height: 4vmin;
   padding: 5px 5px;
-  font-size: 23px;
+  font-size: 2.5vmin;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
   color: #333;
-  line-height: 3rem;
+  line-height: 4vmin;
   display: flex;
   align-items: center;
   cursor: pointer;
-  @media (max-width: 1280px) {
+  /* @media (max-width: 1280px) {
     height: 2rem;
     font-size: 18px;
     line-height: 2rem;
     margin-top: 40px;
-  }
+  } */
 `;
 
 const GoogleText = styled.div`
@@ -115,39 +114,40 @@ const GoogleText = styled.div`
 
 const GoogleLogo = styled.img`
   display: block;
-  width: 5vmin;
-  height: 5vmin;
-  margin-left: 9.5vmin;
-  @media (max-width: 1280px) {
+  margin-top: -0.5vmin;
+  width: 4.5vmin;
+  height: 4.5vmin;
+  margin-left: 4vmin;
+  /* @media (max-width: 1280px) {
     width: 36px;
     height: 40px;
     margin-left: 40px;
-  }
+  } */
 `;
-const FbText = styled.div`
-  display: block;
-  margin-left: 5px;
-`;
+// const FbText = styled.div`
+//   display: block;
+//   margin-left: 5px;
+// `;
 
-const FbLogo = styled.img`
-  display: block;
-  width: 4.5vmin;
-  height: 4vmin;
-  margin-left: 10vmin;
-  @media (max-width: 1280px) {
-    width: 35px;
-    height: 30px;
-    margin-left: 40px;
-  }
-`;
+// const FbLogo = styled.img`
+//   display: block;
+//   width: 4.5vmin;
+//   height: 4vmin;
+//   margin-left: 10vmin;
+//   @media (max-width: 1280px) {
+//     width: 35px;
+//     height: 30px;
+//     margin-left: 40px;
+//   }
+// `;
 
-const FbBtn = styled(GoogleBtn)`
-  background: #4a66ad;
-  color: #fff;
-  @media (max-width: 1280px) {
-    margin-top: 30px;
-  }
-`;
+// const FbBtn = styled(GoogleBtn)`
+//   background: #4a66ad;
+//   color: #fff;
+//   @media (max-width: 1280px) {
+//     margin-top: 30px;
+//   }
+// `;
 
 const Title = styled.div`
   font-size: 4vmin;
@@ -155,7 +155,6 @@ const Title = styled.div`
   color: #fff;
   width: 16vmin;
   border-bottom: 4px solid #75e799;
-  align-self: center;
   margin: 0 auto;
   text-align: center;
 `;
@@ -249,30 +248,95 @@ export default function Login({ trigger, setTrigger }) {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [showError, setShowError] = useState('');
+  const [profileArr, setProfileArr] = useState('');
+  const [confirmAlert, setConfirmAlert] = useState(false);
   const history = useHistory();
+
+  // useEffect(() => {
+  //   AOS.init({ duration: 100 });
+  // }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    firestore
+      .collection('ProfileImages')
+      .doc('Change')
+      .get()
+      .then((doc) => {
+        if (isMounted) setProfileArr(doc.data().images);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+  function getRandom(x) {
+    return Math.floor(Math.random() * x);
+  }
+
+  let num = getRandom(9);
+  const imgUrl = profileArr[num]?.imgUrl;
+
+  const createUserDoc = async (user, userName) => {
+    if (!user) return;
+
+    auth.currentUser.updateProfile({
+      displayName: userName,
+      photoURL: imgUrl,
+    });
+    const userRef = firestore.doc(`Users/${user.uid}`);
+    const { email, uid } = user;
+    const snapshot = await userRef.get();
+    if (!snapshot.exists) {
+      try {
+        userRef.set({
+          email,
+          uid,
+          birthday: new Date(),
+          profileImg: imgUrl,
+
+          changeImg: [imgUrl],
+          userName,
+          coin: 0,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const googleCreateUserDoc = async (doc) => {
+    if (doc.additionalUserInfo.isNewUser) {
+      auth.currentUser.updateProfile({
+        photoURL: imgUrl,
+      });
+      const userRef = firestore.doc(`Users/${doc.user.uid}`);
+      const { email, uid, displayName } = doc.user;
+      const snapshot = await userRef.get();
+      if (!snapshot.exists) {
+        try {
+          userRef.set({
+            email,
+            uid,
+            birthday: new Date(),
+            profileImg: imgUrl,
+            changeImg: [imgUrl],
+            userName: displayName,
+            coin: 0,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+  };
 
   const googleProvider = new firebase.auth.GoogleAuthProvider();
   const googleLogin = () => {
     auth
       .signInWithPopup(googleProvider)
-      .then((user) => {
-        console.log(user);
+      .then((doc) => {
+        googleCreateUserDoc(doc);
         setTrigger(false);
-        // createUserDoc(user, userName);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  var fbProvider = new firebase.auth.FacebookAuthProvider();
-  const fbLogin = () => {
-    auth
-      .signInWithPopup(fbProvider)
-      .then((user) => {
-        console.log(user);
-        setTrigger(false);
-        // createUserDoc(user, userName);
       })
       .catch((error) => {
         console.log(error);
@@ -281,35 +345,37 @@ export default function Login({ trigger, setTrigger }) {
 
   const onSubmit = () => {
     if (activeItem === 'register') {
-      setShowError('');
-      auth
-        .createUserWithEmailAndPassword(email, password)
-        .then(({ user }) => {
-          createUserDoc(user, userName);
-          history.push('/');
-          setTrigger(false);
-        })
-        .catch((error) => {
-          switch (error.code) {
-            case 'auth/email-already-in-use':
-              setShowError('這個信箱已經註冊囉');
-              break;
-            case 'auth/invalid-email':
-              setShowError('請輸入有效的email');
-              break;
-            case 'auth/weak-password':
-              setShowError('密碼要輸入至少六位喔');
-              break;
-            default:
-          }
-        });
+      if (password === confirm) {
+        setShowError('');
+        auth
+          .createUserWithEmailAndPassword(email, password)
+          .then(({ user }) => {
+            createUserDoc(user, userName);
+            history.push('/');
+            setTrigger(false);
+          })
+          .catch((error) => {
+            switch (error.code) {
+              case 'auth/email-already-in-use':
+                setShowError('這個信箱已經註冊囉');
+                break;
+              case 'auth/invalid-email':
+                setShowError('請輸入有效的email');
+                break;
+              case 'auth/weak-password':
+                setShowError('密碼要輸入至少六位喔');
+                break;
+              default:
+            }
+          });
+      } else {
+        setConfirmAlert(true);
+      }
     } else if (activeItem === 'login') {
       setShowError('');
       auth
         .signInWithEmailAndPassword(email, password)
         .then((data) => {
-          console.log(data);
-          // history.push('/');
           setTrigger(false);
         })
         .catch((error) => {
@@ -335,6 +401,11 @@ export default function Login({ trigger, setTrigger }) {
         <Close
           onClick={() => {
             setTrigger(false);
+            setShowError('');
+            setEmail('');
+            setPassword('');
+            setConfirm('');
+            setUserName('');
           }}
         >
           <CancelIcon />
@@ -366,17 +437,18 @@ export default function Login({ trigger, setTrigger }) {
             <Seperator />
             <GoogleBtn onClick={googleLogin}>
               <GoogleLogo src={googleLogo} alt="" />
-              <GoogleText>以Google身份登入</GoogleText>
+              <GoogleText>以Google身份註冊和登入</GoogleText>
             </GoogleBtn>
-            <FbBtn onClick={fbLogin}>
+            {/* <FbBtn onClick={fbLogin}>
               <FbLogo src={fbLogo} alt="" />
               <FbText>以Facebook身份登入</FbText>
-            </FbBtn>
+            </FbBtn> */}
             <ChangeBtn
               onClick={() => {
                 setActiveItem('register');
                 setEmail('');
                 setPassword('');
+                setShowError('');
               }}
             >
               想加入LIMO嗎？快來註冊!
@@ -433,6 +505,7 @@ export default function Login({ trigger, setTrigger }) {
                 setPassword('');
                 setConfirm('');
                 setUserName('');
+                setShowError('');
               }}
             >
               已經是LIMO會員了嗎？歡迎登入!
@@ -440,6 +513,11 @@ export default function Login({ trigger, setTrigger }) {
           </Content>
         )}
       </LoginDiv>
+      <WarningAlert
+        trigger={confirmAlert}
+        setTrigger={setConfirmAlert}
+        message={'您的密碼與確認密碼欄位不一致，請再確認'}
+      />
     </PopupDiv>
   ) : (
     ''

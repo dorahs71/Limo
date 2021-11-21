@@ -167,9 +167,7 @@ export default function AddToList({
   const addList = () => {
     const uid = auth.currentUser.uid;
 
-    if (newList === '') {
-      setListNameAlert(true);
-    } else {
+    if (newList) {
       const docRef = firestore.collection('Lists').doc();
       docRef
         .set({
@@ -178,8 +176,11 @@ export default function AddToList({
           listTitle: newList,
           date: new Date(),
           listShare: false,
+          collect: [],
         })
         .then(setNewList(''));
+    } else {
+      setListNameAlert(true);
     }
   };
 
@@ -206,6 +207,8 @@ export default function AddToList({
               });
               setSelectListData(data);
             });
+        } else {
+          setSelectListData('');
         }
       });
   };
@@ -229,6 +232,13 @@ export default function AddToList({
         .doc(selectListId)
         .update({
           listPosters: firebase.firestore.FieldValue.arrayUnion(movie.poster),
+        });
+
+      firestore
+        .collection('Movies')
+        .doc(movieId)
+        .update({
+          list: firebase.firestore.FieldValue.arrayUnion(selectListId),
         });
 
       firestore

@@ -24,13 +24,18 @@ const CardDiv = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 2.5vmin;
-  width: 80%;
+  max-width: 1200px;
   height: 87%;
   padding: 20px 20px;
   position: relative;
   top: 5vmin;
   margin: 0 auto;
   align-items: center;
+  @media (max-width: 1280px) {
+    top: 15vmin;
+    max-width: 900px;
+    height: 80%;
+  }
 `;
 
 const Close = styled.div`
@@ -61,6 +66,7 @@ const TextFunction = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-left: 5vmin;
 `;
 
 const AddText = styled(TextFields)`
@@ -115,6 +121,7 @@ const PictureDiv = styled.div`
 const Picture = styled.img`
   width: 22vmin;
   height: 18vmin;
+  object-fit: contain;
 `;
 
 const EditDiv = styled.div`
@@ -152,15 +159,19 @@ const SendButton = styled.div`
   text-align: center;
   line-height: 6vmin;
   cursor: pointer;
-  margin-left: 5vmin;
+  /* margin-left: 5vmin; */
   &:hover {
     background: #75e799;
+  }
+
+  @media (max-width: 1280px) {
+    margin-left: 5vmin;
   }
 `;
 
 const ImgWrapper = styled.div`
-  width: 12vmin;
-  height: 12.5vmin;
+  width: 10vmin;
+  height: 10.5vmin;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,14 +194,13 @@ const FollowDiv = styled.div`
 `;
 
 const FollowImg = styled.img`
-  width: 10vmin;
-  height: 10vmin;
+  width: 8vmin;
+  height: 8vmin;
 `;
 
 const FollowName = styled.div`
-  font-size: 2.5vmin;
+  font-size: 2vmin;
   text-align: center;
-  margin-top: 0.5vmin;
 `;
 
 export default function Card({
@@ -201,19 +211,19 @@ export default function Card({
   setSendCardAlert,
 }) {
   const [canvas, setCanvas] = useState('');
-  const [addOverlay, setAddOverlay] = useState(true);
-  const [color, setColor] = useState('#000');
+  // const [addOverlay, setAddOverlay] = useState(true);
+  // const [color, setColor] = useState('#000');
   const [userData, setUserData] = useState('');
   const [selectFriend, setSelectFriend] = useState('');
   const currentUser = useSelector((state) => state.currentUser);
 
-  const currentUserId = auth.currentUser?.uid;
+  const currentUserId = currentUser.uid;
 
   useEffect(() => {
     let isMounted = true;
     if (isMounted) {
       setCanvas(initCanvas());
-      setAddOverlay(true);
+      // setAddOverlay(true);
     }
     return () => {
       isMounted = false;
@@ -238,10 +248,11 @@ export default function Card({
 
   let friendData = [];
 
-  if (trigger) {
-    const friendList = currentUser.follow.filter((element) =>
-      currentUser.followBy.includes(element)
+  if (trigger && currentUser.follow !== undefined) {
+    const friendList = currentUser?.follow.filter((element) =>
+      currentUser?.followBy?.includes(element)
     );
+
     friendList.map((item) => {
       const data = userData?.find(({ uid }) => uid === item);
       friendData.push(data);
@@ -251,13 +262,25 @@ export default function Card({
 
   const initCanvas = () =>
     new fabric.Canvas('canvas', {
-      width: 580,
-      height: 450,
+      width: 700,
+      height: 550,
     });
 
-  if (canvas !== '') {
+  let imgURL = '';
+
+  if (canvas !== '' && imgURL === '' && selectFriend === '') {
+    let overlayRect = new fabric.Rect({
+      width: canvas?.get('width'),
+      height: canvas?.get('height'),
+      selectable: false,
+      fill: 'rgb(255, 255, 255, 0.3)',
+    });
+
+    canvas.add(overlayRect);
+
+    imgURL = poster;
     fabric.Image.fromURL(
-      poster,
+      imgURL,
       function (img) {
         canvas.setBackgroundImage(img, canvas.renderAll?.bind(canvas), {
           scaleX: canvas.width / img.width,
@@ -280,7 +303,7 @@ export default function Card({
     //   canvas.add(overlayRect);
     //   setAddOverlay(false);
     // }
-    const imgURL = e.target.src;
+    imgURL = e.target.src;
     fabric.Image.fromURL(
       imgURL,
       function (img) {
@@ -310,9 +333,11 @@ export default function Card({
     }
   }
 
+  let color = '#000';
+
   const handleTextColor = (e) => {
     if (trigger && e.target !== null) {
-      setColor(e.target.value);
+      color = e.target.value;
       canvas.getActiveObject()?.set('fill', color);
       canvas.renderAll();
     }
@@ -351,9 +376,11 @@ export default function Card({
           });
         });
         notificationRef.set({
+          notificationId: notificationRef.id,
           authorId: currentUserId,
           authorName: currentUser.userName,
           authorImg: currentUser.profileImg,
+          link: `/profile/${selectFriend}/card`,
           message: `${currentUser.userName}送給你一張新小卡`,
           read: false,
           date: new Date(),

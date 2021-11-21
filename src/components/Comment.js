@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 import { firestore, auth } from '../utils/firebase';
 import firebase from '../utils/firebase';
-import { useParams, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { StarRounded, Forum, EmojiEmotions } from '@material-ui/icons';
 import Review from '../components/Review';
 import { useState, useEffect } from 'react';
 import moment from 'moment';
 
 const CommentContainer = styled.div`
-  width: -webkit-fill-available;
+  width: 100%;
   min-height: 16vmin;
   font-size: 2.5vmin;
   text-align: justify;
@@ -30,6 +30,7 @@ const UserDiv = styled.div`
 const User = styled.img`
   width: 6vmin;
   height: 6vmin;
+  object-fit: contain;
 `;
 
 const UserName = styled.div`
@@ -49,6 +50,7 @@ const ContentDiv = styled.div`
 const CommentContent = styled.div`
   margin-top: 5px;
   align-self: flex-start;
+  white-space: pre-wrap;
 `;
 
 const UserRate = styled.div`
@@ -186,7 +188,7 @@ export default function Comment({
     <>
       <CommentContainer>
         <UserDiv>
-          <MyLink to={`/profile/${authorId}`}>
+          <MyLink to={`/profile/${authorId}/comment`}>
             <User src={getAuthor.profileImg} />
             <UserName>{getAuthor.userName}</UserName>
           </MyLink>

@@ -11,8 +11,8 @@ const Close = styled.div`
   position: absolute;
   display: none;
   padding: 5px 5px;
-  right: -3vmin;
-  top: -2vmin;
+  right: -2.5vmin;
+  top: -0.8vmin;
   z-index: 300;
   color: #c5cdc0;
   &:hover {
@@ -82,7 +82,7 @@ const ListCh3 = styled.img`
 `;
 
 const ListTitle = styled.div`
-  font-size: 2.5vmin;
+  font-size: 2vmin;
   margin-top: 23vmin;
 `;
 
@@ -107,17 +107,33 @@ export default function ProfileCollect({ title, posters, listId, isUser }) {
     <>
       <ListDiv>
         <MyLink to={`/list/${listId}`}>
-          <ThemeList>
-            {posters !== undefined && (
-              <ListCh1 src={posters[2]} alt=""></ListCh1>
-            )}
-            {posters !== undefined && (
-              <ListCh2 src={posters[1]} alt=""></ListCh2>
-            )}
-            {posters !== undefined && (
-              <ListCh3 src={posters[0]} alt=""></ListCh3>
-            )}
-          </ThemeList>
+          {posters !== undefined && (
+            <ThemeList>
+              <ListCh1
+                src={
+                  posters[2] ||
+                  'https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2FlistDefault.png?alt=media&token=a8568e96-73d5-434e-a72b-15cdad41e53e'
+                }
+                alt=""
+              ></ListCh1>
+
+              <ListCh2
+                src={
+                  posters[1] ||
+                  'https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2FlistDefault.png?alt=media&token=a8568e96-73d5-434e-a72b-15cdad41e53e'
+                }
+                alt=""
+              ></ListCh2>
+
+              <ListCh3
+                src={
+                  posters[0] ||
+                  'https://firebasestorage.googleapis.com/v0/b/limo-movie.appspot.com/o/images%2FlistDefault.png?alt=media&token=a8568e96-73d5-434e-a72b-15cdad41e53e'
+                }
+                alt=""
+              ></ListCh3>
+            </ThemeList>
+          )}
           <ListTitle>{title}</ListTitle>
         </MyLink>
         {isUser ? (
