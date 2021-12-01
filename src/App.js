@@ -1,5 +1,5 @@
-import { Nav, Footer } from './components/Nav';
-import { useState } from 'react';
+import { Nav, Footer } from './components/Nav/Nav';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Index from './pages/Index';
@@ -8,8 +8,10 @@ import Profile from './pages/Profile';
 import Diary from './pages/Diary';
 import List from './pages/List';
 import Search from './pages/Search';
-import ScrollToTop from './components/ScrollToTop';
+import ScrollToTop from './components/Common/ScrollToTop';
 import NotFound from './pages/NotFound';
+import { getAllUsers } from './utils/firebase';
+import { useDispatch } from 'react-redux';
 
 const MainDiv = styled.div`
   display: flex;
@@ -24,7 +26,7 @@ const NavDiv = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
-  height: 10vmin;
+  height: 6vmin;
   color: #fff;
   z-index: 1000;
   background: #1b1919;
@@ -32,19 +34,31 @@ const NavDiv = styled.div`
   justify-content: space-between;
   align-items: center;
   box-shadow: 1px 4px 5px -1px rgba(27, 25, 25, 0.56);
+  @media (max-width: 1280px) {
+    height: 8vmin;
+  }
+  @media (max-width: 768px) {
+    height: 10vmin;
+  }
 `;
 
 const StartNav = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
-  height: 10vmin;
+  height: 6vmin;
   color: #fff;
   z-index: 1000;
   background: linear-gradient(to top, transparent 0%, rgb(34, 32, 32, 0.3) 50%);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (max-width: 1280px) {
+    height: 8vmin;
+  }
+  @media (max-width: 768px) {
+    height: 10vmin;
+  }
 `;
 
 export default function App() {
@@ -54,6 +68,11 @@ export default function App() {
     setIsScrolled(window.pageYOffset === 0 ? false : true);
     return () => (window.onscroll = null);
   };
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getAllUsers(dispatch);
+  }, []);
 
   return (
     <MainDiv>
