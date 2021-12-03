@@ -62,16 +62,16 @@ export const Footer = () => {
 };
 
 const Logo = styled.img`
-  margin-left: 30px;
-  width: 5vmin;
-  height: 4vmin;
-  @media (max-width: 1280px) {
-    width: 6vmin;
-    height: 5vmin;
+  margin-left: 1.5vw;
+  width: 2.5vw;
+  height: 2.5vw;
+  @media (max-width: 768px) {
+    width: 3vw;
+    height: 3vw;
   }
   @media (max-width: 600px) {
-    width: 8vmin;
-    height: 7vmin;
+    width: 5vw;
+    height: 5vw;
   }
 `;
 
@@ -86,23 +86,24 @@ const MyLink = styled(Link)`
 `;
 
 const ProfilePic = styled.img`
-  width: 3vmin;
-  height: 3.2vmin;
+  width: 2.2vw;
+  height: 2.2vw;
   margin-top: 2px;
   cursor: pointer;
-  @media (max-width: 1280px) {
-    width: 4vmin;
-    height: 4.5vmin;
+
+  @media (max-width: 768px) {
+    width: 3vw;
+    height: 3vw;
   }
   @media (max-width: 600px) {
-    width: 5.5vmin;
-    height: 6vmin;
+    width: 4.5vw;
+    height: 4.5vw;
   }
 `;
 
 const ProfileDiv = styled.div`
   display: block;
-  margin-right: 30px;
+  margin-right: 1.5vw;
   padding: 3vmin 0 3vmin 0;
 `;
 
@@ -110,7 +111,7 @@ const LoginDiv = styled.div`
   cursor: pointer;
   font-size: 2vmin;
   font-weight: bold;
-  margin-right: 30px;
+  margin-right: 1.5vw;
   &:hover {
     color: #75e799;
   }
@@ -123,9 +124,12 @@ const FooterDiv = styled.div`
   left: 0;
   display: block;
   text-align: center;
-  font-size: 16px;
+  font-size: 1vw;
   margin: 0;
   height: 40px;
   line-height: 40px;
   box-shadow: 1px -8px 13px -6px rgba(27, 25, 25, 0.66);
+  @media (max-width: 1024px) {
+    font-size: 2vw;
+  }
 `;

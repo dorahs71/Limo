@@ -1,6 +1,9 @@
 import algoliasearch from 'algoliasearch';
 
-const client = algoliasearch('CORYYY7FXZ', 'd19752ba68789ab108e07f62142d0c73');
+const client = algoliasearch(
+  'CORYYY7FXZ',
+  process.env.REACT_APP_SEARCH_ONLY_API_KEY
+);
 
 const algolia = client.initIndex('limo');
 

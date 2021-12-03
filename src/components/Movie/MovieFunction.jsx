@@ -9,13 +9,13 @@ export default function MovieFunction({
   movieId,
   currentUser,
   eachMovie,
-  listName,
   setShowCard,
   setListName,
   setLoginAlert,
   setAddDiaryAlert,
   setOwnDiaryAlert,
   setShowAddToList,
+  setMobileAlert,
 }) {
   const handleAddDiary = () => {
     if (currentUser) {
@@ -29,6 +29,18 @@ export default function MovieFunction({
       } else {
         addDiary(currentUser.uid, movieId, eachMovie.poster, eachMovie.chTitle);
         setAddDiaryAlert(true);
+      }
+    } else {
+      setLoginAlert(true);
+    }
+  };
+
+  const handleSendCard = () => {
+    if (currentUser) {
+      if (window.screen.width <= 768) {
+        setMobileAlert(true);
+      } else {
+        setShowCard(true);
       }
     } else {
       setLoginAlert(true);
@@ -62,15 +74,7 @@ export default function MovieFunction({
           <DiaryInfo>加入日誌</DiaryInfo>
         </DiaryInfoDiv>
         <CardInfoDiv>
-          <AddCard
-            onClick={() => {
-              if (currentUser) {
-                setShowCard(true);
-              } else {
-                setLoginAlert(true);
-              }
-            }}
-          >
+          <AddCard onClick={handleSendCard}>
             <IconImg src={card} alt="" />
           </AddCard>
           <CardInfo>寄送小卡</CardInfo>
@@ -87,7 +91,8 @@ export default function MovieFunction({
 }
 
 const CardInfo = styled.div`
-  width: 130%;
+  font-size: 1.2vw;
+  width: 150%;
   color: #fff;
   padding: 5px;
   font-weight: 500;
@@ -98,7 +103,8 @@ const CardInfo = styled.div`
 `;
 
 const ListInfo = styled.div`
-  width: 130%;
+  font-size: 1.2vw;
+  width: 150%;
   color: #fff;
   padding: 5px;
   font-weight: 500;
@@ -109,7 +115,8 @@ const ListInfo = styled.div`
 `;
 
 const DiaryInfo = styled.div`
-  width: 130%;
+  font-size: 1.2vw;
+  width: 150%;
   font-weight: 500;
   color: #fff;
   padding: 5px;

@@ -12,9 +12,10 @@ export const SectionDiv = styled.div`
 
 export const Title = styled.div`
   margin-top: 10vmin;
-  font-size: 4.5vmin;
+  font-size: 3vw;
   font-weight: 700;
-  width: 20vmin;
+  width: 15vw;
+  text-align: center;
   border-bottom: 8px solid #61d498;
 `;
 
@@ -35,6 +36,10 @@ export const FunctionBtn = styled.div`
   cursor: pointer;
   &:hover {
     color: #75e799;
+  }
+  @media (max-width: 600px) {
+    flex-direction: column;
+    padding: 1vh 1vw;
   }
 `;
 
@@ -90,6 +95,9 @@ export const PopupDiv = styled.div`
 export const CancelIcon = styled(Cancel)`
   transform: scale(1.5);
   border-radius: 50%;
+  @media (max-width: 600px) {
+    transform: scale(0.8);
+  }
 `;
 
 export const AlertWindow = styled.div`

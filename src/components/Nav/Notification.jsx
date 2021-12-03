@@ -99,24 +99,23 @@ const RemindDot = styled.div`
 `;
 
 const BellImg = styled.img`
-  width: 2.8vmin;
-  height: 2.8vmin;
-  margin-right: 2.5vmin;
-  @media (max-width: 1280px) {
-    margin-right: 2.7vmin;
-    width: 3.5vmin;
-    height: 3.5vmin;
+  width: 2vw;
+  height: 2vw;
+  margin-right: 1.5vw;
+
+  @media (max-width: 768px) {
+    width: 2.8vw;
+    height: 2.8vw;
   }
   @media (max-width: 600px) {
-    width: 5vmin;
-    height: 5vmin;
+    width: 4vw;
+    height: 4vw;
   }
 `;
 
 const BellDiv = styled.div`
   display: flex;
   flex-direction: column;
-
   cursor: pointer;
 `;
 

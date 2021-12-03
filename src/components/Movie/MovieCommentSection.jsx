@@ -78,4 +78,8 @@ const ChatIcon = styled(Chat)`
   @media (max-width: 1280px) {
     transform: scale(0.9);
   }
+  @media (max-width: 600px) {
+    margin-top: -3.5vh;
+    visibility: hidden;
+  }
 `;

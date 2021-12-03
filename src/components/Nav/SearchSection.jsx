@@ -48,105 +48,93 @@ export default function SearchSection({ dispatch }) {
 
 const SearchBtn = styled.button`
   border: 0;
-  width: 2.5vmin;
-  height: 2.5vmin;
+  width: 1.8vw;
+  height: 1.8vw;
   font-size: 2vmin;
   background: transparent;
   cursor: pointer;
   border-radius: 50%;
   margin-left: auto;
-  @media (max-width: 1280px) {
-    width: 3vmin;
-    height: 3vmin;
-  }
-  @media (max-width: 992px) {
-    width: 3.5vmin;
-    height: 3.5vmin;
-  }
-
-  @media (max-width: 500px) {
-    width: 2vmin;
-    height: 2vmin;
-  }
+  margin-top: -0.1vw;
 `;
 
 const SearchIcon = styled(SearchOutlined)`
-  margin-left: -3px;
-  transform: scale(1.1);
+  transform: scale(1.5);
+  margin: 0.3vw 0 0 0.1vw;
   color: #fff;
-  margin-top: 2px;
   cursor: pointer;
+  @media (max-width: 1560px) {
+    transform: scale(1.3);
+    margin: 0.1vw 0 0 0;
+  }
   @media (max-width: 1280px) {
-    margin-top: -1px;
     transform: scale(1);
+    margin-left: -0.3vw;
   }
   @media (max-width: 1024px) {
-    margin-top: 1px;
-    transform: scale(1);
-    margin-left: 3px;
-  }
-  @media (max-width: 992px) {
-    margin-top: 0px;
-    transform: scale(1);
-    margin-left: -6px;
+    transform: scale(0.9);
+    margin-top: -0.3vw;
+    margin-left: -0.5vw;
   }
   @media (max-width: 768px) {
-    margin-left: 1px;
-  }
-  @media (max-width: 750px) {
-    margin-left: -2px;
+    transform: scale(0.8);
+    margin-top: -0.7vw;
+    margin-left: -0.8vw;
   }
   @media (max-width: 600px) {
-    margin-top: -1px;
-    margin-left: -4px;
+    transform: scale(0.7);
+    margin-top: -1vw;
+    margin-left: -2vw;
   }
   @media (max-width: 500px) {
-    transform: scale(0.8);
-    margin-top: -15px;
-    margin-left: -4px;
-  }
-  @media (max-width: 400px) {
-    transform: scale(0.6);
-    margin-top: -100px;
-    margin-left: -8px;
+    transform: scale(0.7);
+    margin-top: -2vw;
+    margin-left: -2vw;
   }
 `;
 
 const SearchBar = styled.input`
   flex-grow: 1;
-  height: 30px;
+  height: 2vw;
   width: 100%;
-  font-size: 2vmin;
+  top: 0vw;
+  font-size: 1.2vw;
   padding: 0 0.5em;
   border: 0;
   color: #fff;
   position: absolute;
-  top: 2px;
   bottom: 0;
   left: 0;
   opacity: 0;
-  line-height: calc(40px - 3px);
+  line-height: 1.2vw;
   background: transparent;
   &:focus {
     outline: 0;
   }
   ::placeholder,
   ::-webkit-input-placeholder {
-    font-size: 1.7vmin;
     color: #a9a9a9;
   }
   @media (max-width: 1280px) {
-    font-size: 2.5vmin;
-    ::placeholder,
-    ::-webkit-input-placeholder {
-      font-size: 2.5vmin;
-    }
+    top: 0.2vw;
+  }
+  @media (max-width: 768px) {
+    font-size: 1.7vw;
+    line-height: 1.7vw;
+    top: 0.3vw;
+    opacity: 1;
+  }
+  @media (max-width: 600px) {
+    font-size: 10px;
+    opacity: 1;
+    top: 0.9vw;
+    line-height: 10px;
   }
 `;
 
 const SearchDiv = styled.div`
-  width: 4vmin;
-  height: 4vmin;
+  width: 2.5vw;
+  height: 2.5vw;
   display: flex;
   color: #fff;
   background: transparent;
@@ -155,48 +143,41 @@ const SearchDiv = styled.div`
   border: 2px solid #75e799;
   z-index: 0;
   border-radius: 50px;
-  margin-right: 2vmin;
+  margin-right: 1.5vw;
   padding: 3px 6px 0 0;
   transition: width 500ms ease-in-out;
   position: relative;
   overflow: hidden;
   &:hover {
-    width: 35vmin;
-  }
-  &:hover ${SearchBtn} {
-    background: linear-gradient(90deg, #00c9ff 0%, #92fe9d 100%);
+    width: 25vw;
   }
   &:hover ${SearchIcon} {
-    color: #333;
+    color: #fff;
     transition: color 150ms ease-in-out;
   }
   &:hover ${SearchBar} {
     opacity: 1;
   }
   @media (max-width: 1280px) {
-    width: 4.5vmin;
-    height: 4.5vmin;
-    &:hover {
-      width: 40vmin;
-    }
+    width: 2.8vw;
+    height: 2.8vw;
   }
   @media (max-width: 1024px) {
-    width: 4.2vmin;
-    height: 4.2vmin;
+    width: 3vw;
+    height: 3vw;
   }
-  @media (max-width: 992px) {
-    width: 4.8vmin;
-    height: 4.8vmin;
-  }
-  @media (max-width: 750px) {
-    width: 5.2vmin;
-    height: 5.2vmin;
+  @media (max-width: 768px) {
+    width: 25vw;
+    height: 3.5vw;
     &:hover {
-      width: 40vmin;
+      width: 25vw;
     }
   }
   @media (max-width: 600px) {
-    width: 5.8vmin;
-    height: 5.8vmin;
+    width: 45vw;
+    height: 5vw;
+    &:hover {
+      width: 45vw;
+    }
   }
 `;

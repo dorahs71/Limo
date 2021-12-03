@@ -49,5 +49,5 @@ const IndexDiv = styled.div`
 
 const IndexTitle = styled(Title)`
   margin-top: 5vmin;
-  width: 18vmin;
+  width: 15vw;
 `;

@@ -143,20 +143,20 @@ const BackSide = styled.div`
 const FrontTitle = styled.div`
   transform: translateZ(10px);
   background: rgba(20, 20, 20, 0.9);
-  font-size: 2vmin;
+  font-size: 1.2vw;
   width: 100%;
   height: 7vmin;
   padding: 2vmin;
   word-wrap: break-word;
   font-weight: 400;
   margin-top: 98%;
+  @media (max-width: 1024px) {
+    font-size: 2vw;
+  }
 
   @media (max-width: 600px) {
-    font-size: 1.5vmin;
-    height: 9vmin;
   }
   @media (max-width: 450px) {
-    height: 12vmin;
   }
 `;
 

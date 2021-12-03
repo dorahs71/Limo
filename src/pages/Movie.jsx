@@ -46,6 +46,7 @@ export default function Movie() {
   const [addListAlert, setAddListAlert] = useState(false);
   const [sendCardAlert, setSendCardAlert] = useState(false);
   const [loginAlert, setLoginAlert] = useState(false);
+  const [mobileAlert, setMobileAlert] = useState(false);
   const currentUser = useSelector((state) => state.currentUser);
 
   const history = useHistory();
@@ -134,6 +135,7 @@ export default function Movie() {
                 setOwnDiaryAlert={setOwnDiaryAlert}
                 setSendCardAlert={setSendCardAlert}
                 setAddListAlert={setAddListAlert}
+                setMobileAlert={setMobileAlert}
               />
             </IntroDiv>
           </MovieIntro>
@@ -213,6 +215,11 @@ export default function Movie() {
         trigger={ownDiaryAlert}
         setTrigger={setOwnDiaryAlert}
         message={'這部電影已經加入日誌囉!'}
+      />
+      <WarningAlert
+        trigger={mobileAlert}
+        setTrigger={setMobileAlert}
+        message={'很抱歉，送小卡功能僅限電腦介面使用!'}
       />
       <SuccessAlert
         trigger={addDiaryAlert}

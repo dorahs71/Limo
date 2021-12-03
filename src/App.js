@@ -26,7 +26,7 @@ const NavDiv = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
-  height: 6vmin;
+  height: 4vw;
   color: #fff;
   z-index: 1000;
   background: #1b1919;
@@ -34,11 +34,11 @@ const NavDiv = styled.div`
   justify-content: space-between;
   align-items: center;
   box-shadow: 1px 4px 5px -1px rgba(27, 25, 25, 0.56);
-  @media (max-width: 1280px) {
-    height: 8vmin;
-  }
   @media (max-width: 768px) {
-    height: 10vmin;
+    height: 5vw;
+  }
+  @media (max-width: 600px) {
+    height: 10vw;
   }
 `;
 
@@ -46,18 +46,18 @@ const StartNav = styled.div`
   position: fixed;
   top: 0;
   width: 100%;
-  height: 6vmin;
+  height: 4vw;
   color: #fff;
   z-index: 1000;
   background: linear-gradient(to top, transparent 0%, rgb(34, 32, 32, 0.3) 50%);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  @media (max-width: 1280px) {
-    height: 8vmin;
-  }
   @media (max-width: 768px) {
-    height: 10vmin;
+    height: 5vw;
+  }
+  @media (max-width: 600px) {
+    height: 10vw;
   }
 `;
 

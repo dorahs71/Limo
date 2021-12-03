@@ -154,7 +154,11 @@ const Recomment = styled(Forum)`
   transform: scale(1.2);
   margin-right: 0.5vmin;
   @media (max-width: 1280px) {
-    transform: scale(1);
+    transform: scale(0.9);
+  }
+  @media (max-width: 600px) {
+    margin-right: 0;
+    transform: scale(0.7);
   }
 `;
 
@@ -171,7 +175,11 @@ const Smile = styled(EmojiEmotions)`
   transform: scale(1.2);
   margin-right: 0.5vmin;
   @media (max-width: 1280px) {
-    transform: scale(1);
+    transform: scale(0.9);
+  }
+  @media (max-width: 600px) {
+    margin-right: 0;
+    transform: scale(0.7);
   }
 `;
 
@@ -189,7 +197,11 @@ const Star = styled(StarRounded)`
   color: gold;
   margin-right: 1vmin;
   @media (max-width: 1280px) {
-    transform: scale(1);
+    transform: scale(0.9);
+  }
+  @media (max-width: 600px) {
+    margin-right: 0;
+    transform: scale(0.75);
   }
 `;
 

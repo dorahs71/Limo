@@ -29,14 +29,14 @@ export const Input = styled.input`
 `;
 
 export const Button = styled.div`
-  margin-top: 30px;
+  margin-top: 3vw;
   height: 3rem;
   padding: 5px 5px;
   border-radius: 5px;
   background: transparent;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
   cursor: pointer;
-  font-size: 2.5vmin;
+  font-size: 2vw;
   text-align: center;
   line-height: 3rem;
   font-weight: 400;
@@ -48,13 +48,12 @@ export const Button = styled.div`
   }
   @media (max-width: 1280px) {
     height: 2rem;
-    font-size: 18px;
     line-height: 2rem;
   }
 `;
 
 export const GoogleBtn = styled.div`
-  margin-top: 60px;
+  margin-top: 3vw;
   background: #fff;
   width: 95%;
   height: 4vmin;
@@ -66,19 +65,21 @@ export const GoogleBtn = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
+  @media (max-width: 375px) {
+    width: 100%;
+  }
 `;
 
 export const GoogleText = styled.div`
   display: block;
-  margin-left: 5px;
 `;
 
 export const GoogleLogo = styled.img`
   display: block;
-  margin-top: -0.5vmin;
+  margin-top: -0.5vw;
   width: 4.5vmin;
   height: 4.5vmin;
-  margin-left: 4vmin;
+  margin-left: 2vw;
 `;
 
 export const Title = styled.div`

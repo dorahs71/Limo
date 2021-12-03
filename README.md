@@ -1,12 +1,14 @@
 # Limo
 
+<div align='center'><a href='https://limo-movie.web.app/'><img width='120px' src='readmeFile/logo.png'/></a></div>
+
 <br/>
 
 A unique movie review platform, encouraging users to share movie reviews, theme lists and film still cards with customized messages!
 
 ## 🎦 Introduction
 
-[LIMO >>](https://limo-movie.web.app/)
+Website Link : [LIMO >>](https://limo-movie.web.app/)
 
 - Rate and share movie reviews for what you watch!
 - Create your own movie theme list to collect your favorite movies!
@@ -18,7 +20,7 @@ You can register a new account or use default test account as below:
 - Account: test@limo.com
 - Password: test123
 
-## ▶️ Techniques
+## ⏪ Techniques
 
 - Front-End Fundamental
   - HTML / CSS / JavaScript
@@ -46,23 +48,32 @@ You can register a new account or use default test account as below:
   - react-waypoint
   - styled-components
 - Other
-  - CI / CD: GitHub Actions
   - Lint Tool: ESLint / Prettier
-  - Version Control : Git / GitHub
   - Unit Test: Jest
 
 ## ⏸ Flow Chart
 
-## Features
+<img src= "readmeFile/userflow.png" width=100%/>
 
-## Future Features
+## ▶️ Features
 
-- Build back-end Sever to crawl latest movie data weekly.
+- #### Landing page and add review
+  ![Landing page and add review](/readmeFile/intro.gif)
+- #### Send film still card
+  ![Send film still card](/readmeFile/sendCard.gif)
+- #### Instant notification 
+  ![Instant notification ](/readmeFile/notification.gif)
+- #### Change profile image
+  ![Change profile image](/readmeFile/changeProfile.gif)
+
+## ⏩ Future Features
+
+- Build cloud function to crawl latest movie data weekly.
 - Create search API to scrawl data instantly based on users' search keyword.
 - Add movie quizes for users to challenge and earn coins.
 - Upload more profile images for users to choose.
 
-## Contact 
+## ⏯ Contact 
 
 - Author: Dora Hsieh
 - E-mail: <fly9687@gmail.com>

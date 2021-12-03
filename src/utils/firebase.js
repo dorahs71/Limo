@@ -1,4 +1,5 @@
 import firebase from 'firebase/app';
+import { handlePopularList } from './filter';
 
 import 'firebase/auth';
 import 'firebase/firestore';
@@ -992,5 +993,18 @@ export const getProfileImg = (setProfileArr) => {
     .get()
     .then((doc) => {
       setProfileArr(doc.data().images);
+    });
+};
+
+export const getPopularList = (allUser, setPopularList) => {
+  firestore
+    .collection('Lists')
+    .where('listShare', '==', true)
+    .orderBy('date', 'desc')
+    .onSnapshot((collectionSnapshot) => {
+      const data = collectionSnapshot.docs.map((doc) => {
+        return doc.data();
+      });
+      setPopularList(handlePopularList(data, allUser));
     });
 };

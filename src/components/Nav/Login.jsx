@@ -96,6 +96,9 @@ const LoginDiv = styled.div`
   background: #343939;
   opacity: 0.8;
   align-items: center;
+  @media (max-width: 768px) {
+    height: 55vh;
+  }
 `;
 
 const Close = styled.div`

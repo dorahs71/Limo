@@ -115,37 +115,28 @@ const Close = styled.div`
 `;
 
 const PollDiv = styled.div`
-  width: 120vmin;
-  height: 75vmin;
+  width: 60vw;
+  height: 75vh;
   position: relative;
   display: flex;
-  font-size: 2.5vmin;
+  font-size: 2.3vmin;
   flex-direction: column;
   border-radius: 5vmin;
-  margin-top: -40vh;
-  @media (max-width: 1280px) {
-    top: 80px;
-  }
-  @media (max-width: 1024px) {
-    width: 80vmin;
-    height: 60vmin;
-  }
 `;
 
 const InputDiv = styled.div`
   display: flex;
-  margin-top: 5vmin;
+  margin-top: 5vh;
   align-items: center;
   justify-content: center;
-  padding: 4vmin;
+  padding: 2vmin;
   background: #c5cdc0;
   border-radius: 10px;
   @media (max-width: 1280px) {
-    margin-top: 2vmin;
+    /* margin-top: 2vmin; */
   }
-  @media (max-width: 1024px) {
-    font-size: 3vmin;
-    width: 90%;
+  @media (max-width: 600px) {
+    margin-top: 3vh;
   }
 `;
 
@@ -173,12 +164,9 @@ const AddQuoteBtn = styled.div`
   &:hover {
     background: #75e799;
   }
-  @media (max-width: 1280px) {
-    width: 12vmin;
-  }
-  @media (max-width: 1280px) {
-    width: 12vmin;
-    font-size: 2vmin;
+  @media (max-width: 600px) {
+    width: 10vw;
+    font-size: 10px;
   }
 `;
 

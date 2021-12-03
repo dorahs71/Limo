@@ -28,7 +28,7 @@ export default function Slick() {
   return (
     <>
       <SlickDiv>
-        <Slider
+        <DesktopSlider
           className="center"
           centerMode={true}
           infinite={true}
@@ -37,8 +37,8 @@ export default function Slick() {
           swipeToSlide={true}
         >
           {movies.map((movie) => (
-            <>
-              <div className="introDiv" key={movie.movieId}>
+            <div key={movie.movieId}>
+              <div className="introDiv">
                 <div className="title">{movie.chTitle}</div>
                 <RateDiv>
                   <Star /> {movie.rate}
@@ -47,9 +47,24 @@ export default function Slick() {
               <MyLink to={`/movie/${movie.movieId}`}>
                 <img key={movie.movieId} src={movie.poster} alt="" />
               </MyLink>
-            </>
+            </div>
           ))}
-        </Slider>
+        </DesktopSlider>
+        <MobileFlex>
+          {movies.map((movie) => (
+            <MobileMovie key={movie.movieId}>
+              <div className="introDiv">
+                <div className="title">{movie.chTitle}</div>
+                <RateDiv>
+                  <Star /> {movie.rate}
+                </RateDiv>
+              </div>
+              <MyLink to={`/movie/${movie.movieId}`}>
+                <img key={movie.movieId} src={movie.poster} alt="" />
+              </MyLink>
+            </MobileMovie>
+          ))}
+        </MobileFlex>
       </SlickDiv>
       <ButtonDiv>
         <Button onClick={goBack}>
@@ -65,12 +80,53 @@ export default function Slick() {
 
 const SlickDiv = styled.div`
   width: 100%;
-  margin-left: 8vmin;
+  margin-left: 5vw;
   overflow: hidden;
-  height: auto;
+  height: 25vw;
   margin-top: 5vmin;
+  @media (max-width: 1560px) {
+    margin-left: 8vw;
+  }
   @media (max-width: 1280px) {
-    margin-left: 14vmin;
+    margin-left: 8vw;
+  }
+  @media (max-width: 1024px) {
+    margin-left: 8vw;
+    height: 28vw;
+  }
+  @media (max-width: 768px) {
+    overflow: scroll;
+    margin-top: 0;
+    margin-left: 0;
+    height: 45vw;
+  }
+  @media (max-width: 500px) {
+    height: 55vw;
+  }
+`;
+
+const DesktopSlider = styled(Slider)`
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const MobileFlex = styled.div`
+  display: none;
+  @media (max-width: 768px) {
+    display: flex;
+    align-items: center;
+  }
+`;
+
+const MobileMovie = styled.div`
+  display: none;
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: 2vw;
   }
 `;
 
@@ -80,6 +136,7 @@ const RateDiv = styled.div`
 `;
 
 const Star = styled(StarRounded)`
+  transform: scale(0.8);
   color: gold;
 `;
 
@@ -88,6 +145,9 @@ const ButtonDiv = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const Button = styled.div`

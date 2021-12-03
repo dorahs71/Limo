@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { PopupDiv, CancelIcon, SendBtn } from '../Common/Common.style';
 import CardFriendDiv from './CardFriendDiv';
 import EditCardText from './EditCardText';
+import WarningAlert from '../Common/WarningAlert';
 
 export default function Card({
   trigger,
@@ -17,31 +18,31 @@ export default function Card({
   const [canvas, setCanvas] = useState('');
   const [selectFriend, setSelectFriend] = useState('');
   const [addOverlay, setAddOverlay] = useState(false);
+  const [friendAlert, setFriendAlert] = useState(false);
   const currentUser = useSelector((state) => state.currentUser);
   const currentUserId = currentUser.uid;
 
+  let imgURL = '';
+
   useEffect(() => {
     setCanvas(initCanvas());
+    setAddOverlay(true);
   }, [trigger]);
 
   const initCanvas = () =>
     new fabric.Canvas('canvas', {
-      width: 650,
-      height: 450,
+      width: 600,
+      height: 420,
     });
 
-  let imgURL = '';
-
-  if (canvas !== '' && imgURL === '' && selectFriend === '') {
+  if (addOverlay && canvas !== '' && imgURL === '' && selectFriend === '') {
     let overlayRect = new fabric.Rect({
-      width: canvas?.get('width'),
-      height: canvas?.get('height'),
+      width: canvas.get('width'),
+      height: canvas.get('height'),
       selectable: false,
       fill: 'rgb(255, 255, 255, 0.3)',
     });
-
     canvas.add(overlayRect);
-    // setAddOverlay(true);
 
     imgURL = poster;
     fabric.Image.fromURL(
@@ -54,6 +55,7 @@ export default function Card({
       },
       { crossOrigin: 'anonymous' }
     );
+    setAddOverlay(false);
   }
 
   function backchange(e) {
@@ -71,11 +73,15 @@ export default function Card({
   }
 
   const sendCard = () => {
-    const image = canvas.toDataURL();
-    let name = currentUserId + '/' + new Date().getTime() + '.png';
-    handleSendCard(name, selectFriend, image, currentUser);
-    setTrigger(false);
-    setSendCardAlert(true);
+    if (!selectFriend) {
+      setFriendAlert(true);
+    } else {
+      const image = canvas.toDataURL();
+      let name = currentUserId + '/' + new Date().getTime() + '.png';
+      handleSendCard(name, selectFriend, image, currentUser);
+      setTrigger(false);
+      setSendCardAlert(true);
+    }
   };
 
   return (
@@ -115,6 +121,11 @@ export default function Card({
             <SendButton onClick={sendCard}>發送卡片</SendButton>
           </SendDiv>
         </CardDiv>
+        <WarningAlert
+          trigger={friendAlert}
+          setTrigger={setFriendAlert}
+          message={'尚未指定送小卡的朋友喔！'}
+        />
       </PopupDiv>
     )
   );

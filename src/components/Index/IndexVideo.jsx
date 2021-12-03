@@ -48,20 +48,20 @@ const TrailerDiv = styled.div`
   text-align: justify;
   z-index: 100;
   margin-left: 6vmin;
-  margin-top: -40vmin;
-  max-width: 50vmin;
+  margin-top: -25vw;
+  max-width: 40vw;
   font-weight: 600;
   @media (max-width: 850px) {
     margin-top: -30vmin;
     max-width: 40vmin;
   }
   @media (max-width: 500px) {
-    margin-top: -35vmin;
+    margin-top: -35vw;
   }
 `;
 
 const TrailerTitle = styled.div`
-  font-size: 5vmin;
+  font-size: 3vw;
   @media (max-width: 850px) {
     font-size: 4vmin;
   }
@@ -71,7 +71,7 @@ const TrailerTitle = styled.div`
 `;
 
 const TrailerIntro = styled.div`
-  font-size: 3vmin;
+  font-size: 2vw;
   @media (max-width: 850px) {
     font-size: 2vmin;
   }
@@ -88,12 +88,11 @@ const TrailerLink = styled(Link)`
 `;
 
 const TrailerBtn = styled.div`
-  /* margin-top: 1vmin; */
-  width: 20vmin;
+  width: 15vw;
   height: 6vmin;
   z-index: 10;
   margin-top: 2vmin;
-  font-size: 2.5vmin;
+  font-size: 1.5vw;
   font-weight: 450;
   color: #515151;
   background: #62d498;

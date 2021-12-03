@@ -131,7 +131,10 @@ const OneList = styled.div`
 const ListIntro = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 5vmin 5vmin 0 0;
+  margin: 7vh 5vmin 0 0;
+  @media (max-width: 600px) {
+    margin: 5vh 5vmin 0 0;
+  }
 `;
 
 const ListTitle = styled.div`
@@ -175,5 +178,9 @@ const ListWrapper = styled.div`
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 3vmin 3vmin;
+  }
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 3vh 3vw;
   }
 `;

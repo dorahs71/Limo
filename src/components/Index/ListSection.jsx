@@ -4,48 +4,15 @@ import { Link } from 'react-router-dom';
 import Tilt from 'react-parallax-tilt';
 import { Favorite } from '@material-ui/icons';
 import { useSelector } from 'react-redux';
-import { getOrderedData } from '../../utils/firebase';
+import { getPopularList } from '../../utils/firebase';
 
 export default function ListSection() {
-  const [movieList, setMovieList] = useState('');
+  const [popularList, setPopularList] = useState([]);
   const allUser = useSelector((state) => state.allUser);
 
   useEffect(() => {
-    const unsubscribe = getOrderedData(
-      'Lists',
-      'listShare',
-      true,
-      setMovieList
-    );
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  let userArr = [];
-  let popularList = [];
-  let newList = [];
-
-  if (movieList !== '') {
-    newList = movieList
-      .sort(function (a, b) {
-        return a.collect.length - b.collect.length;
-      })
-      .reverse()
-      .slice(0, 4);
-  }
-
-  if (allUser && newList) {
-    newList.map((list) => {
-      const authorData = allUser.find((x) => x.uid === list.authorId);
-      userArr.push(authorData);
-      return authorData;
-    });
-  }
-
-  if (newList.length > 0 && userArr.length > 0) {
-    popularList = newList.map((item, i) => Object.assign({}, item, userArr[i]));
-  }
+    getPopularList(allUser, setPopularList);
+  }, [allUser]);
 
   return (
     <ListSectionDiv>
@@ -111,24 +78,25 @@ const List = styled.div`
   align-items: center;
   flex-direction: column;
   display: flex;
-  width: 42vmin;
-  height: 40vmin;
+  width: 30vw;
+  height: 23vw;
   cursor: pointer;
   text-align: center;
   justify-content: space-between;
   background: rgba(223, 223, 223, 0.9);
   box-shadow: 1vmin 1vmin 2vmin rgba(20, 19, 19, 1);
-  @media (max-width: 1280px) {
-    width: 54vmin;
+  @media (max-width: 1024px) {
+    width: 45vw;
+    height: 35vw;
   }
 `;
 
 const TiltDiv = styled(Tilt)`
-  width: 42vmin;
+  width: 30vw;
   cursor: pointer;
   margin-bottom: 3vmin;
-  @media (max-width: 1280px) {
-    width: 54vmin;
+  @media (max-width: 1024px) {
+    width: 45vw;
   }
 `;
 
@@ -137,13 +105,12 @@ const ThemeList = styled.div`
 `;
 
 const ListImg = styled.img`
-  width: 14vmin;
-  height: 20vmin;
+  width: 10vw;
+  height: 14vw;
   object-fit: cover;
-
-  @media (max-width: 1280px) {
-    width: 18vmin;
-    height: 26vmin;
+  @media (max-width: 1024px) {
+    width: 15vw;
+    height: 20vw;
   }
 `;
 
