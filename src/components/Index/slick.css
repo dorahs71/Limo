@@ -1,0 +1,109 @@
+.slick-slide {
+  opacity: 0.5;
+  cursor: default;
+}
+
+img {
+  width: 9vw;
+  height: 13vw;
+  object-fit: cover;
+}
+
+.slick-center {
+  margin-right: -1.5vw;
+  z-index: 400;
+  width: 12vw;
+  height: 20vw;
+  -webkit-transform: scale(1.5);
+  -moz-transform: scale(1.5);
+  transform: scale(1.5);
+  opacity: 1;
+  cursor: pointer;
+  margin-bottom: 5vw;
+}
+
+.slick-center > div > img {
+  object-fit: contain;
+  z-index: 100;
+}
+
+.introDiv {
+  margin-top: 3.5vw;
+  margin-bottom: 1vmin;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 3vw;
+  font-size: 1vw;
+  z-index: 40;
+}
+
+.title {
+  font-weight: 450;
+}
+
+.slick-slide > div > .introDiv {
+  opacity: 0;
+}
+
+.slick-center > div > .introDiv {
+  opacity: 1;
+  display: flex;
+  transform: scale(0.9);
+  margin-right: 6vmin;
+}
+
+@media screen and (max-width: 1560px) {
+  .introDiv {
+    margin-right: 5.5vw;
+  }
+  .slick-center {
+    margin-right: -3vw;
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  .introDiv {
+    margin-right: 5.5vw;
+  }
+  .slick-center {
+    margin-right: -3vw;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  img {
+    height: 14vw;
+    object-fit: cover;
+  }
+  .introDiv {
+    margin-top: 4vw;
+    font-size: 1vw;
+  }
+  .slick-center {
+    margin-right: -2.5vw;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  img {
+    width: 17vw;
+    height: 25vw;
+    object-fit: cover;
+  }
+  .introDiv {
+    margin-top: 2vw;
+    width: 100%;
+    margin-left: 3vw;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  img {
+    width: 23vw;
+    height: 33vw;
+    object-fit: cover;
+  }
+}
