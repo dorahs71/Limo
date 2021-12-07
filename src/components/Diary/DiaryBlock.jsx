@@ -129,6 +129,7 @@ const CalendarIcon = styled(CalendarToday)`
   @media (max-width: 375px) {
     transform: scale(2.5);
     top: 0vmin;
+    margin-left: 1vw;
   }
 `;
 
@@ -222,7 +223,6 @@ const EditDiary = styled.div`
 const DiaryContent = styled.textarea`
   color: #333;
   font-weight: 400;
-  font-size: 2.8vmin;
   height: 10vmin;
   background: transparent;
   white-space: pre-wrap;
@@ -232,8 +232,22 @@ const DiaryContent = styled.textarea`
   &:focus {
     outline: 0;
   }
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
   @media (max-width: 768px) {
-    margin-left: 2vmin;
+    margin-left: 1vw;
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
   }
 `;
 
@@ -242,9 +256,25 @@ const ReadDiary = styled.div`
   align-self: flex-end;
   color: #333;
   font-weight: 400;
-  font-size: 2.8vmin;
   min-height: 3vmin;
   white-space: pre-wrap;
-  width: 90%;
+  width: 95%;
   margin: 0;
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    margin-left: 1vw;
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
+  }
 `;

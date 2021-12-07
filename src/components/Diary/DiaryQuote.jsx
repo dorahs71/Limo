@@ -48,25 +48,27 @@ export default function DiaryQuote({ uid, diaryId, diaryQuoteId, diaryQuote }) {
 }
 
 const FunctionDiv = styled.div`
-  display: none;
-  margin-top: 8vmin;
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3vw;
 `;
 
 const EditQuote = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80%;
+  width: 90%;
   &:hover ${FunctionDiv} {
-    display: flex;
+    visibility: visible;
   }
 `;
 
 const Quote = styled.div`
-  margin-top: 6vmin;
+  margin-top: 3vw;
   width: auto;
   padding: 0 0 0px 2px;
-  font-size: 2.5vmin;
   background: transparent;
   resize: none;
   border: 0;
@@ -82,15 +84,28 @@ const Quote = styled.div`
     font-size: 2.8vmin;
     font-weight: 400;
   }
-  @media (max-width: 1280px) {
-    font-size: 3vmin;
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
   }
 `;
 
 const SaveQuoteDiv = styled.div`
-  width: 5vmin;
-  height: 5vmin;
-  margin-left: 3vmin;
+  width: 3vw;
+  height: 3vw;
+  margin-left: 1vw;
 `;
 
 const SaveIcon = styled(Save)`
@@ -109,8 +124,8 @@ const SaveIcon = styled(Save)`
 `;
 
 const DeleteQuoteDiv = styled.div`
-  width: 5vmin;
-  height: 5vmin;
+  width: 3vw;
+  height: 3vw;
 `;
 
 const DeleteIcon = styled(Delete)`

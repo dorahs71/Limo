@@ -69,8 +69,22 @@ const Box = styled.div`
 
 const Poster = styled.img`
   width: 14vw;
-  height: 36vh;
+  height: 20vw;
   object-fit: cover;
+
+  @media (max-width: 1024px) {
+    height: 22vw;
+  }
+
+  @media (max-width: 768px) {
+    width: 20vw;
+    height: 29vw;
+  }
+
+  @media (max-width: 600px) {
+    width: 25vw;
+    height: 35vw;
+  }
 `;
 
 const Overlay = styled.div`
@@ -104,8 +118,22 @@ const Overlay = styled.div`
 const MovieTitle = styled.div`
   width: 70%;
   text-align: center;
-  font-size: 2.8vmin;
+  font-size: 2rem;
   font-weight: 500;
+  @media (max-width: 1280px) {
+    font-size: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const MyLink = styled(Link)`

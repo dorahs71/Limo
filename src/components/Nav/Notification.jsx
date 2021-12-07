@@ -73,35 +73,68 @@ export default function Notification({ currentUserId }) {
 }
 
 const NotificationDiv = styled.div`
-  width: 38vmin;
-  max-height: 60vmin;
+  width: 28vw;
+  max-height: 40vw;
   position: absolute;
   justify-content: center;
   overflow: scroll;
-  right: 30px;
+  right: 3vw;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  top: 64px;
+  top: 4vw;
+  font-size: 1.2rem;
+  @media (max-width: 1280px) {
+    width: 33vw;
+  }
+  @media (max-width: 1024px) {
+    width: 30vw;
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    top: 5vw;
+    width: 35vw;
+    font-size: 0.9rem;
+    max-height: 45vw;
+  }
+  @media (max-width: 600px) {
+    top: 10vw;
+    width: 45vw;
+    font-size: 0.5rem;
+    max-height: 50vw;
+  }
+  @media (max-width: 375px) {
+    width: 50vw;
+  }
 `;
 
 const RemindDot = styled.div`
   background: red;
   border-radius: 50%;
-  width: 1vmin;
-  height: 1vmin;
+  width: 0.8vw;
+  height: 0.8vw;
   align-self: center;
-  margin-right: 1vmin;
-  margin-top: -1vmin;
+  margin-right: 0.8vw;
+  margin-top: -1vw;
   z-index: 5;
-  @media (max-width: 1280px) {
-    width: 1.5vmin;
-    height: 1.5vmin;
+  @media (max-width: 768px) {
+    width: 1.2vw;
+    height: 1.2vw;
+    margin-right: 0.2vw;
+  }
+  @media (max-width: 600px) {
+    width: 1.5vw;
+    height: 1.5vw;
   }
 `;
 
 const BellImg = styled.img`
-  width: 2vw;
-  height: 2vw;
+  width: 1.8vw;
+  height: 1.8vw;
   margin-right: 1.5vw;
+
+  @media (max-width: 1280px) {
+    width: 2vw;
+    height: 2vw;
+  }
 
   @media (max-width: 768px) {
     width: 2.8vw;
@@ -120,9 +153,8 @@ const BellDiv = styled.div`
 `;
 
 const AlertListBlock = styled.div`
-  width: 98%;
-  height: 8vmin;
-  padding: 2vmin 5vmin 3vmin 0vmin;
+  height: 6vw;
+  padding: 1.5vw 2vw 2vw 0vmin;
   display: flex;
   background: #333;
   flex-direction: column;
@@ -132,52 +164,61 @@ const AlertListBlock = styled.div`
   &:hover {
     background: #777;
   }
+  @media (max-width: 768px) {
+    height: 8vw;
+  }
+  @media (max-width: 600px) {
+    height: 12vw;
+  }
+  @media (max-width: 375px) {
+    height: 15vw;
+  }
 `;
 
 const NoAlert = styled.div`
-  width: 80%;
-  height: 2vmin;
+  height: 1.5vw;
   padding: 2vmin;
   display: flex;
+  background: #333;
   text-align: center;
+  align-items: center;
+  @media (max-width: 600px) {
+    height: 2vw;
+  }
 `;
 
 const AlertDiv = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
 `;
 
 const AlertProfile = styled.img`
-  width: 5vmin;
-  height: 5vmin;
-  margin-left: 1vmin;
+  width: 3vw;
+  height: 3vw;
+  margin-left: 1vw;
+  @media (max-width: 768px) {
+    width: 3.5vw;
+    height: 3.5vw;
+  }
+  @media (max-width: 600px) {
+    width: 5vw;
+    height: 5vw;
+  }
 `;
 
 const AlertMessage = styled.div`
-  width: 80%;
   text-align: justify;
   font-weight: 400;
-  margin-left: 1vmin;
-  font-size: 2vmin;
+  margin-left: 1vw;
   color: rgba(255, 255, 255, 0.7);
-  @media (max-width: 1280px) {
-    font-size: 2.2vmin;
-    font-weight: 500;
-  }
 `;
 
 const AlertTime = styled.div`
   margin-top: 0.5vmin;
-  font-size: 1.8vmin;
   font-weight: 400;
   display: flex;
   justify-content: flex-end;
   color: rgba(255, 255, 255, 0.7);
-  @media (max-width: 1280px) {
-    font-size: 2.2vmin;
-    font-weight: 500;
-  }
 `;
 
 const MyLink = styled(Link)`

@@ -37,11 +37,17 @@ export default function MovieIntroduction({ eachMovie, setShowTrailer }) {
 const ChTitle = styled.div`
   width: 100%;
   font-weight: bold;
-  font-size: 5vmin;
+  font-size: 3rem;
+  @media (max-width: 1280px) {
+    font-size: 2.2rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 1.8rem;
+  }
 `;
 
 const EnTitle = styled.div`
-  font-size: 2.2vmin;
+  font-size: 1.5rem;
   font-weight: 500;
   color: #c5cdc0;
 `;
@@ -55,17 +61,20 @@ const ColumnDiv = styled.div`
 
 const ColumnValue = styled.div`
   display: flex;
-  /* flex-direction: column; */
   align-items: center;
-  @media (max-width: 1280px) {
-  }
 `;
 
 const Column = styled.div`
   margin-top: 1vmin;
-  font-size: 2.5vmin;
+  font-size: 1.5rem;
   align-items: center;
   display: flex;
+  @media (max-width: 1280px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const Star = styled(StarRounded)`
@@ -99,8 +108,17 @@ const TrailerButton = styled.div`
 `;
 
 const Trailer = styled.div`
-  font-size: 2.5vmin;
+  font-size: 1.5rem;
   line-height: 5vmin;
+  @media (max-width: 1280px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const TrailerIcon = styled(LiveTv)`
@@ -109,5 +127,8 @@ const TrailerIcon = styled(LiveTv)`
   @media (max-width: 1280px) {
     transform: scale(1.2);
     margin-right: 1vmin;
+  }
+  @media (max-width: 375px) {
+    transform: scale(1);
   }
 `;

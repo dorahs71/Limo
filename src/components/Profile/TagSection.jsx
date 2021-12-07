@@ -76,17 +76,16 @@ export default function TagSection({
 
 const TagDiv = styled.div`
   display: flex;
-  @media (max-width: 1024px) {
+  @media (max-width: 768px) {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
   }
 `;
 
 const Tag = styled.div`
-  width: 15vmin;
-  font-size: 2.5vmin;
-  font-weight: 500;
-  height: 6vmin;
+  width: 6vw;
+  font-weight: 600;
+  height: 3vw;
   opacity: 0.8;
   color: ${(props) => (props.active ? '#fff' : '#666')};
   background: transparent;
@@ -100,5 +99,25 @@ const Tag = styled.div`
   &:hover {
     border-bottom: 5px solid #7fffd4;
     color: #fff;
+  }
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 1024px) {
+    height: 4vw;
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    height: 5vw;
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    width: 7vw;
+    font-size: 0.5rem;
   }
 `;

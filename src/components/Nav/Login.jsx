@@ -89,15 +89,30 @@ const LoginDiv = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 2.5vmin;
-  width: 55vmin;
-  height: 75vh;
+  width: 40vw;
+  height: 40vw;
   padding: 2vmin 20px;
   position: relative;
   background: #343939;
   opacity: 0.8;
   align-items: center;
+  @media (max-width: 1560px) {
+    height: 45vw;
+  }
+  @media (max-width: 1280px) {
+    height: 50vw;
+  }
+
   @media (max-width: 768px) {
-    height: 55vh;
+    height: 55vw;
+  }
+  @media (max-width: 600px) {
+    width: 60vw;
+    height: 75vw;
+  }
+  @media (max-width: 375px) {
+    width: 65vw;
+    height: 85vw;
   }
 `;
 

@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { checkRegister } from '../../utils/firebase';
 import {
   Content,
-  Title,
   InputDiv,
   InputName,
   Input,
@@ -99,6 +98,26 @@ export default function RegisterSection({
   );
 }
 
-const RegisterTitle = styled(Title)`
-  border-bottom: 4px solid #4ac3e0;
+const RegisterTitle = styled.div`
+  border-bottom: 8px solid #4ac3e0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #fff;
+  width: 10vw;
+  margin: 0 auto;
+  text-align: center;
+  @media (max-width: 1024px) {
+    font-size: 1.5rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+    border-bottom: 4px solid #4ac3e0;
+  }
+  @media (max-width: 600px) {
+    width: 17vw;
+    font-size: 1rem;
+  }
+  @media (max-width: 375px) {
+    width: 18vw;
+  }
 `;

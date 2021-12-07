@@ -23,7 +23,7 @@ export default function MovieCommentSection({
   return (
     <SectionDiv>
       <FunctionHead>
-        <Title>網友評論</Title>
+        <Title data-aos="fade-up">網友評論</Title>
       </FunctionHead>
       <Function>
         <FunctionBtn
@@ -74,7 +74,7 @@ const CommentDiv = styled.div`
 
 const ChatIcon = styled(Chat)`
   transform: scale(1.3);
-  margin-right: 0.5vmin;
+  margin-right: 0.5vw;
   @media (max-width: 1280px) {
     transform: scale(0.9);
   }

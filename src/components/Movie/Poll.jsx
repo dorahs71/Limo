@@ -86,17 +86,28 @@ export default function Poll({ trigger, setTrigger, movieId }) {
 }
 
 const Title = styled.div`
-  font-size: 4vmin;
+  font-size: 2rem;
   font-weight: 800;
   color: #fff;
-  width: 35vmin;
+  width: 20vw;
   border-bottom: 4px solid #75e799;
   align-self: center;
   text-align: center;
   margin-top: 8vmin;
+  @media (max-width: 1440px) {
+    width: 18vw;
+    font-size: 1.5rem;
+  }
   @media (max-width: 1024px) {
-    font-size: 3vmin;
-    width: 30vmin;
+    width: 23vw;
+    font-size: 1.5rem;
+  }
+  @media (max-width: 768px) {
+    width: 30vw;
+  }
+  @media (max-width: 600px) {
+    width: 40vw;
+    font-size: 1rem;
   }
 `;
 
@@ -132,9 +143,7 @@ const InputDiv = styled.div`
   padding: 2vmin;
   background: #c5cdc0;
   border-radius: 10px;
-  @media (max-width: 1280px) {
-    /* margin-top: 2vmin; */
-  }
+
   @media (max-width: 600px) {
     margin-top: 3vh;
   }
@@ -151,7 +160,7 @@ const AddQuoteBtn = styled.div`
   width: 10vmin;
   height: 5vmin;
   line-height: 5vmin;
-  font-size: 2vmin;
+  font-size: 1.2rem;
   font-weight: 400;
   background: #898f86;
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
@@ -164,9 +173,13 @@ const AddQuoteBtn = styled.div`
   &:hover {
     background: #75e799;
   }
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     width: 10vw;
-    font-size: 10px;
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    width: 15vw;
+    font-size: 0.5rem;
   }
 `;
 

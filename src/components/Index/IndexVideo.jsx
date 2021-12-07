@@ -47,36 +47,51 @@ const TrailerDiv = styled.div`
   flex-direction: column;
   text-align: justify;
   z-index: 100;
-  margin-left: 6vmin;
+  margin-left: 5vw;
   margin-top: -25vw;
-  max-width: 40vw;
+  max-width: 30vw;
   font-weight: 600;
-  @media (max-width: 850px) {
-    margin-top: -30vmin;
-    max-width: 40vmin;
+  @media (max-width: 1560px) {
+    max-width: 35vw;
   }
-  @media (max-width: 500px) {
+  @media (max-width: 1280px) {
+    max-width: 38vw;
+  }
+  @media (max-width: 1024px) {
+    max-width: 38vw;
+  }
+  @media (max-width: 768px) {
+    max-width: 37vw;
+  }
+  @media (max-width: 600px) {
+    max-width: 40vw;
     margin-top: -35vw;
   }
 `;
 
 const TrailerTitle = styled.div`
-  font-size: 3vw;
-  @media (max-width: 850px) {
-    font-size: 4vmin;
+  font-size: 3rem;
+  @media (max-width: 1024px) {
+    font-size: 2.5rem;
   }
-  @media (max-width: 500px) {
-    font-size: 3vmin;
+  @media (max-width: 768px) {
+    font-size: 1.6rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 1rem;
   }
 `;
 
 const TrailerIntro = styled.div`
-  font-size: 2vw;
-  @media (max-width: 850px) {
-    font-size: 2vmin;
+  font-size: 1.8rem;
+  @media (max-width: 1024px) {
+    font-size: 1.4rem;
   }
-  @media (max-width: 500px) {
-    font-size: 1.5vmin;
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.5rem;
   }
 `;
 
@@ -89,11 +104,11 @@ const TrailerLink = styled(Link)`
 
 const TrailerBtn = styled.div`
   width: 15vw;
-  height: 6vmin;
+  height: 3vw;
   z-index: 10;
   margin-top: 2vmin;
-  font-size: 1.5vw;
-  font-weight: 450;
+  font-size: 1.5rem;
+  font-weight: bold;
   color: #515151;
   background: #62d498;
   padding: 5px 5px;
@@ -113,19 +128,30 @@ const TrailerBtn = styled.div`
     background: #8aefba;
     color: #fff;
   }
-  @media (max-width: 850px) {
-    font-size: 2vmin;
-    width: 18vmin;
-    height: 5vmin;
+  @media (max-width: 1560px) {
+    font-size: 1.4rem;
   }
-  @media (max-width: 500px) {
-    width: 23vmin;
+  @media (max-width: 1024px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.5rem;
+    width: 22vw;
   }
 `;
 
 const InfoIcon = styled(InfoOutlined)`
-  transform: scale(1.4);
-  margin-right: 1vmin;
+  transform: scale(1.6);
+  margin-right: 1vw;
+  @media (max-width: 1560px) {
+    transform: scale(1.4);
+  }
+  @media (max-width: 1024px) {
+    transform: scale(1.2);
+  }
   @media (max-width: 850px) {
     transform: scale(1);
   }

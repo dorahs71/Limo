@@ -12,7 +12,6 @@ export default function UserIntro({
   setShowBuy,
   setLogoutAlert,
   setLoginAlert,
-  history,
   userIntro,
 }) {
   const currentUserId = currentUser.uid;
@@ -89,48 +88,98 @@ export default function UserIntro({
 
 const ProfileSection = styled.div`
   display: flex;
-  padding: 50px;
-  margin-top: 10vmin;
+  padding: 3vw;
+  margin-top: 5vw;
   justify-content: center;
+  @media (max-width: 768px) {
+    padding: 3vw;
+    margin-top: 8vw;
+  }
+  @media (max-width: 600px) {
+    padding: 5vw;
+    margin-top: 10vw;
+  }
 `;
 
 const ChangeImg = styled.img`
-  width: 5vmin;
-  height: 5vmin;
+  width: 3vw;
+  height: 3vw;
+  @media (max-width: 768px) {
+    width: 4vw;
+    height: 4vw;
+  }
+  @media (max-width: 600px) {
+    width: 5vw;
+    height: 5vw;
+  }
 `;
 
 const ChangeWord = styled.div`
-  font-size: 2vmin;
+  font-size: 1.2rem;
+  @media (max-width: 1440px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 0.8rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.5rem;
+  }
 `;
 
 const ProfileImg = styled.img`
-  width: 15vmin;
-  height: 15vmin;
+  width: 6vw;
+  height: 6vw;
   object-fit: contain;
+  @media (max-width: 768px) {
+    width: 8vw;
+    height: 8vw;
+  }
+  @media (max-width: 600px) {
+    width: 15vw;
+    height: 15vw;
+  }
 `;
 
 const ProfileImgDiv = styled.div`
-  width: 20vmin;
-  height: 20vmin;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #c5cdc0;
   border-radius: 50%;
   position: relative;
+  width: 9vw;
+  height: 9vw;
+  @media (max-width: 768px) {
+    width: 12vw;
+    height: 12vw;
+  }
+  @media (max-width: 600px) {
+    width: 20vw;
+    height: 20vw;
+  }
 `;
 
 const ChangeProfileBtn = styled.div`
-  width: 10vmin;
-  height: 10vmin;
+  width: 5vw;
+  height: 3vw;
   display: flex;
-  margin-top: -50%;
+  margin-top: -70%;
   flex-direction: column;
   align-items: center;
   text-align: center;
   cursor: pointer;
-  display: none;
+  visibility: hidden;
   z-index: 1;
+  @media (max-width: 768px) {
+    width: 8vw;
+  }
+  @media (max-width: 600px) {
+    width: 12vw;
+  }
+  @media (max-width: 375px) {
+    width: 15vw;
+  }
 `;
 
 const ProfileWrapper = styled.div`
@@ -139,7 +188,7 @@ const ProfileWrapper = styled.div`
   align-items: center;
   flex-direction: column;
   &:hover ${ChangeProfileBtn} {
-    display: flex;
+    visibility: visible;
   }
 
   &:hover ${ProfileImgDiv} {
@@ -155,16 +204,25 @@ const ProfileContainer = styled.div`
 `;
 
 const FollowIcon = styled(Stars)`
-  transform: scale(1.5);
   color: ${(props) => props.follow};
-  margin-right: 2vmin;
+  margin-right: 1vw;
+  transform: scale(2);
+  border-radius: 50%;
+  @media (max-width: 1280px) {
+    transform: scale(1.5);
+  }
+  @media (max-width: 1024px) {
+    transform: scale(1.2);
+  }
+  @media (max-width: 768px) {
+    transform: scale(1);
+  }
 `;
 
 const FollowBtn = styled.div`
-  margin-top: 3vmin;
-  font-size: 2.5vmin;
+  margin-top: 2vw;
   text-align: center;
-  width: 18vmin;
+  width: 10vw;
   align-items: center;
   justify-content: center;
   display: flex;
@@ -175,12 +233,30 @@ const FollowBtn = styled.div`
     background: #767b73;
     color: #fff;
   }
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    width: 20vw;
+    margin-top: 3vw;
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    width: 22vw;
+    font-size: 0.5rem;
+  }
 `;
 
 const LogoutBtn = styled.div`
-  margin-top: 3vmin;
-  padding: 0.8vmin 1vmin;
-  font-size: 2.5vmin;
+  margin-top: 2vw;
+  padding: 0.5vw 1vw;
   font-weight: 400;
   background: #898f86;
   box-shadow: rgba(20, 20, 20, 0.3) 0px 1px 2px 0px,
@@ -191,6 +267,23 @@ const LogoutBtn = styled.div`
   &:hover {
     background: #cad2c6;
   }
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    margin-top: 4vw;
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
+  }
 `;
 
 const ProfileIntroDiv = styled.div`
@@ -198,7 +291,7 @@ const ProfileIntroDiv = styled.div`
   width: 100%;
   flex-direction: column;
   align-items: center;
-  margin-left: 8vmin;
+  margin-left: 4vw;
 `;
 
 const IntroInfo = styled.div`
@@ -210,36 +303,69 @@ const IntroInfo = styled.div`
 
 const IntroLine = styled.div`
   display: flex;
-  font-size: 3vmin;
-  margin-top: 3vmin;
+  margin-top: 2vw;
+  font-weight: 600;
   align-items: center;
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
+  }
 `;
 
 const NameValue = styled.div`
-  font-size: 5vmin;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 2rem;
+  @media (max-width: 1440px) {
+    font-size: 1.8rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1.5rem;
+  }
   @media (max-width: 768px) {
-    font-size: 4vmin;
+    font-size: 1.2rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 1rem;
   }
 `;
 
 const IntroValue = styled.div`
-  margin-left: 3vmin;
+  margin-left: 2vw;
   display: block;
 `;
 
 const StoreIcon = styled(Storefront)`
-  transform: scale(1.2);
-  margin-right: 1vmin;
+  margin-right: 0.5vw;
+  transform: scale(1.5);
+  @media (max-width: 1280px) {
+    transform: scale(1.2);
+  }
+  @media (max-width: 1024px) {
+    transform: scale(1);
+  }
+  @media (max-width: 768px) {
+    transform: scale(0.8);
+  }
 `;
 
 const StoreBtn = styled.div`
-  margin-top: 3vmin;
+  margin-top: 5vw;
   padding: 1.5vmin 1vmin;
-  width: 14vmin;
-  height: 1vmin;
+  width: 10vw;
+  height: 1vw;
   font-weight: 450;
-  font-size: 2.2vmin;
   border-radius: 10px;
   align-items: center;
   justify-content: center;
@@ -251,6 +377,26 @@ const StoreBtn = styled.div`
     background: #898f86;
     color: #fff;
   }
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    margin-top: 7vw;
+    width: 13vw;
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    margin-top: 15vw;
+    width: 20vw;
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
+  }
 `;
 
 const CoinNum = styled.div`
@@ -258,11 +404,27 @@ const CoinNum = styled.div`
 `;
 
 const CoinImg = styled.img`
-  width: 4vmin;
-  height: 4vmin;
+  width: 2vw;
+  height: 2vw;
+  @media (max-width: 600px) {
+    width: 3vw;
+    height: 3vw;
+  }
+  @media (max-width: 375px) {
+    width: 4vw;
+    height: 4vw;
+  }
 `;
 
 const FansImg = styled.img`
-  width: 4vmin;
-  height: 4vmin;
+  width: 2vw;
+  height: 2vw;
+  @media (max-width: 600px) {
+    width: 3vw;
+    height: 3vw;
+  }
+  @media (max-width: 375px) {
+    width: 4vw;
+    height: 4vw;
+  }
 `;

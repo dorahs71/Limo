@@ -146,10 +146,13 @@ const ListSection = styled.div`
 const ListContainer = styled.div`
   display: flex;
   width: 80%;
-  min-height: 75vh;
   flex-direction: column;
-  @media (max-width: 600px) {
-    min-height: 90vh;
+  min-height: 60vw;
+  @media (max-width: 1560px) {
+    min-height: 65vw;
+  }
+  @media (max-width: 1024px) {
+    min-height: 100vh;
   }
 `;
 
@@ -165,5 +168,5 @@ const ArrangeListDiv = styled.div`
   flex-wrap: wrap;
   align-items: center;
   height: auto;
-  margin-top: 8vh;
+  margin-top: 5vw;
 `;

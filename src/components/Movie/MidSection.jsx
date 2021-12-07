@@ -26,7 +26,7 @@ export default function MidSection({ eachMovie, setShowVote }) {
     <>
       <SectionDiv>
         <Title data-aos="fade-up">劇情簡介</Title>
-        <Story data-aos="fade-up">{eachMovie.story}</Story>
+        <Story>{eachMovie.story}</Story>
       </SectionDiv>
       <SectionDiv>
         <Title data-aos="fade-up">演員列表</Title>
@@ -34,7 +34,7 @@ export default function MidSection({ eachMovie, setShowVote }) {
       </SectionDiv>
       <SectionDiv>
         <FunctionHead>
-          <Title>經典對白</Title>
+          <Title data-aos="fade-up">經典對白</Title>
         </FunctionHead>
         <Function>
           <FunctionBtn onClick={() => setShowVote(true)}>
@@ -48,9 +48,19 @@ export default function MidSection({ eachMovie, setShowVote }) {
 }
 
 const Story = styled.div`
-  font-size: 2.5vmin;
-  margin-top: 5vmin;
+  margin-top: 4vw;
   text-align: justify;
+  font-size: 1.5rem;
+
+  @media screen and (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media screen and (max-width: 768px) {
+    font-size: 1rem;
+  }
+  @media screen and (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const VoteIcon = styled(HowToVote)`

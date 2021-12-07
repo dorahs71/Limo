@@ -166,15 +166,17 @@ const MovieIcon = styled(Theaters)`
   @media (max-width: 1280px) {
     transform: scale(1);
   }
+  @media (max-width: 600px) {
+    transform: scale(0.8);
+  }
 `;
 
 const MovieLinkBtn = styled.div`
-  padding: 1.2vmin 1vmin;
+  padding: 1vw;
   margin-top: 3vmin;
-  width: 25vmin;
-  height: 1vmin;
+  width: 20vw;
+  height: 1vw;
   font-weight: 400;
-  font-size: 2.2vmin;
   border-radius: 10px;
   align-items: center;
   justify-content: center;
@@ -186,7 +188,23 @@ const MovieLinkBtn = styled.div`
     background: #898f86;
     color: #fff;
   }
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
   @media (max-width: 600px) {
-    width: 100%;
+    width: 30vw;
+    height: 2vw;
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    width: 35vw;
+    height: 3vw;
+    font-size: 0.5rem;
   }
 `;

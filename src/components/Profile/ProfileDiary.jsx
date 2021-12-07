@@ -35,11 +35,20 @@ const Close = styled.div`
   position: absolute;
   display: none;
   padding: 5px 5px;
-  right: 2vmin;
-  top: -1vmin;
-  @media (max-width: 1280px) {
-    right: 2vmin;
-    top: -2vmin;
+  right: 2vw;
+  top: -1vw;
+
+  @media (max-width: 1024px) {
+    right: 5vw;
+    top: -2vw;
+    display: block;
+  }
+  @media (max-width: 768px) {
+    right: 3vw;
+  }
+  @media (max-width: 600px) {
+    right: -2vw;
+    top: -4vw;
   }
 `;
 
@@ -54,6 +63,12 @@ const CancelIcon = styled(Cancel)`
   @media (max-width: 1280px) {
     transform: scale(1.1);
   }
+  @media (max-width: 1024px) {
+    transform: scale(1);
+  }
+  @media (max-width: 600px) {
+    transform: scale(0.8);
+  }
 `;
 
 const DiaryDiv = styled.div`
@@ -67,19 +82,41 @@ const DiaryDiv = styled.div`
 `;
 
 const DiaryPoster = styled.img`
-  width: 18vmin;
-  height: 26vmin;
-  /* object-fit: contain; */
-  @media (max-width: 1280px) {
-    width: 20vmin;
-    height: 28vmin;
+  width: 10vw;
+  height: 15vw;
+  @media (max-width: 1024px) {
+    width: 13vw;
+    height: 18vw;
+  }
+  @media (max-width: 768px) {
+    width: 16vw;
+    height: 25vw;
+  }
+  @media (max-width: 600px) {
+    width: 25vw;
+    height: 35vw;
   }
 `;
 
 const DiaryTitle = styled.div`
   margin-top: 2vmin;
-  font-size: 2vmin;
   color: #fff;
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
+  }
 `;
 
 const MyLink = styled(Link)`

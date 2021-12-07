@@ -40,27 +40,26 @@ export default function CardSection() {
 }
 
 const CardSectionDiv = styled.div`
-  margin-top: 5vmin;
+  margin-top: 3vw;
   justify-items: center;
   margin-bottom: 5vmin;
-  margin-bottom: 15vmin;
+  margin-bottom: 5vw;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-gap: 5vmin 3px;
+  grid-gap: 3vw 1vw;
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
   }
-  @media (max-width: 500px) {
-    margin-bottom: 15vmin;
-    grid-gap: 15vmin 3px;
+  @media (max-width: 768px) {
+    margin-top: 2vw;
   }
 `;
 
 const Star = styled(StarRounded)`
   transform: scale(1);
   color: gold;
-  margin-right: 3px;
+
   @media (max-width: 500px) {
     transform: scale(0.6);
   }
@@ -71,29 +70,37 @@ const CardLink = styled(Link)`
   color: #fff;
   margin-top: 3vmin;
   display: flex;
-  width: 25vmin;
-  height: 35vmin;
+  width: 17vw;
+  height: 25vw;
   justify-content: center;
   align-items: center;
   position: relative;
   transition: 1.5s ease-in-out;
   transform-style: preserve-3d;
-
   @media (max-width: 1280px) {
-    width: 25vmin;
-    height: 30vmin;
+    width: 15vw;
+    height: 20vw;
+  }
+
+  @media (max-width: 1024px) {
+    width: 20vw;
+    height: 24vw;
+  }
+
+  @media (max-width: 768px) {
+    width: 24vw;
+    height: 28vw;
   }
   @media (max-width: 600px) {
-    width: 25vmin;
-    height: 30vmin;
+    width: 30vw;
+    height: 38vw;
   }
 `;
 
 const RecentCard = styled.div`
-  margin-top: 3vmin;
   display: flex;
-  width: 25vmin;
-  height: 35vmin;
+  width: 17vw;
+  height: 25vw;
   position: relative;
   transition: 0.7s ease-in-out;
   transform-style: preserve-3d;
@@ -101,12 +108,23 @@ const RecentCard = styled.div`
     transform: rotateY(180deg);
   }
   @media (max-width: 1280px) {
-    width: 30vmin;
-    height: 35vmin;
+    width: 15vw;
+    height: 20vw;
   }
+
+  @media (max-width: 1024px) {
+    width: 20vw;
+    height: 24vw;
+  }
+
+  @media (max-width: 768px) {
+    width: 24vw;
+    height: 28vw;
+  }
+
   @media (max-width: 600px) {
-    width: 25vmin;
-    height: 30vmin;
+    width: 30vw;
+    height: 38vw;
   }
 `;
 
@@ -143,43 +161,67 @@ const BackSide = styled.div`
 const FrontTitle = styled.div`
   transform: translateZ(10px);
   background: rgba(20, 20, 20, 0.9);
-  font-size: 1.2vw;
+  font-size: 1.5rem;
   width: 100%;
-  height: 7vmin;
+  height: 6vw;
   padding: 2vmin;
   word-wrap: break-word;
   font-weight: 400;
   margin-top: 98%;
+  @media (max-width: 1280px) {
+    margin-top: 85%;
+    height: 5vw;
+    font-size: 1.2rem;
+  }
   @media (max-width: 1024px) {
-    font-size: 2vw;
+    margin-top: 75%;
+    height: 6vw;
+  }
+  @media (max-width: 768px) {
+    margin-top: 75%;
+    height: 7vw;
   }
 
   @media (max-width: 600px) {
+    margin-top: 90%;
+    font-size: 0.7rem;
   }
-  @media (max-width: 450px) {
+  @media (max-width: 375px) {
+    margin-top: 93%;
   }
 `;
 
 const BackTitle = styled.div`
-  font-size: 2.5vmin;
+  font-size: 1.5rem;
   font-weight: 450;
   margin-bottom: 1vmin;
   margin-top: 1vmin;
+  @media (max-width: 1280px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const RecentRate = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  @media (max-width: 600px) {
+    margin-top: -5%;
+  }
 `;
 
 const BackIntro = styled.div`
   background: rgba(20, 20, 20, 0.8);
-  font-size: 1.8vmin;
   width: 93.2%;
   height: 95%;
   padding: 1vmin;
   font-weight: 350;
+  @media (max-width: 600px) {
+    width: 94%;
+  }
 `;
 
 const BackWord = styled.p`
@@ -190,5 +232,12 @@ const BackWord = styled.p`
   word-wrap: break-word;
   display: -webkit-box;
   -webkit-line-clamp: 8;
-  font-size: 2vmin;
+  font-size: 1.3rem;
+  @media (max-width: 1280px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.5rem;
+    -webkit-line-clamp: 5;
+  }
 `;

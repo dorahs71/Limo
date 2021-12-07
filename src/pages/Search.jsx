@@ -74,7 +74,10 @@ const SearchSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 10%;
+  margin-top: 10vw;
+  @media (max-width: 600px) {
+    margin-top: 15vw;
+  }
 `;
 
 const SearchMain = styled.div`
@@ -83,13 +86,28 @@ const SearchMain = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 85vh;
+  min-height: 83vh;
+  @media (max-width: 1024px) {
+    min-height: 89vh;
+  }
 `;
 
 const Title = styled.div`
-  font-size: 2.5vw;
+  font-size: 2.5rem;
   text-align: center;
   color: #fff;
+  @media (max-width: 1440px) {
+    font-size: 2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1.5rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 1rem;
+  }
 `;
 
 const ResultDiv = styled.div`
@@ -110,8 +128,16 @@ const NoResult = styled.div`
 `;
 
 const NoFoundImg = styled.img`
-  width: 40vw;
-  height: 40vw;
+  width: 20vw;
+  height: 20vw;
+  @media (max-width: 1024px) {
+    width: 30vw;
+    height: 30vw;
+  }
+  @media (max-width: 768px) {
+    width: 40vw;
+    height: 40vw;
+  }
 `;
 
 const MovieDiv = styled.div`
@@ -132,18 +158,27 @@ const MoviePoster = styled.img`
       rgba(0, 0, 0, 0.23) 0px 6px 6px;
   }
   @media (max-width: 768px) {
-    min-width: 25vw;
-    height: 30vw;
+    min-width: 20vw;
+    height: 25vw;
   }
 `;
 
 const MovieTitle = styled.div`
-  margin-top: 2vw;
-  font-size: 1.8vw;
+  margin-top: 1vw;
+  font-size: 1.5rem;
   text-align: center;
   color: #fff;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
   @media (max-width: 768px) {
-    font-size: 2.5vw;
+    font-size: 1rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.9rem;
   }
 `;
 
