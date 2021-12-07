@@ -108,30 +108,55 @@ const HashtagDiv = styled.div`
 `;
 
 const Hashtag = styled.div`
-  font-size: 28px;
-  margin-left: 2vmin;
-  @media (max-width: 1280px) {
-    font-size: 23px;
-    margin-left: 1vmin;
+  margin-left: 1vw;
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    margin-left: 1vw;
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
   }
 `;
 
 const TagIcon = styled(LocalOffer)`
-  transform: scale(2);
   color: #7fffd4;
+  transform: scale(1.5);
   @media (max-width: 1280px) {
-    transform: scale(1.5);
+    transform: scale(1.2);
+  }
+  @media (max-width: 1024px) {
+    transform: scale(1);
+  }
+  @media (max-width: 600px) {
+    margin-top: -0.5vw;
+    transform: scale(0.8);
   }
 `;
 
 const AddBtn = styled(AddCircle)`
-  transform: scale(1.6);
   margin-left: 3vmin;
   cursor: pointer;
   &:hover {
     color: #75e799;
   }
+  transform: scale(1.5);
   @media (max-width: 1280px) {
     transform: scale(1.2);
+  }
+  @media (max-width: 1024px) {
+    transform: scale(1);
+  }
+  @media (max-width: 600px) {
+    transform: scale(0.8);
   }
 `;

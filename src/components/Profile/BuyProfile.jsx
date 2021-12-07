@@ -185,6 +185,6 @@ const Surplus = styled.div`
 
 const BtnDiv = styled.div`
   display: flex;
-  width: 30%;
+  width: 60%;
   justify-content: space-around;
 `;

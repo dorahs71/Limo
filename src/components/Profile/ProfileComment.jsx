@@ -1,10 +1,24 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { StarRounded, Forum, EmojiEmotions } from '@material-ui/icons';
 import Review from '../Movie/Review';
 import { useState } from 'react';
 import moment from 'moment';
 import { removeSmile, addSmile } from '../../utils/firebase';
+import {
+  CommentContainer,
+  ContentDiv,
+  CommentContent,
+  UserRate,
+  Rate,
+  CommentDate,
+  FunctionDiv,
+  Recomment,
+  RecommentDiv,
+  Smile,
+  SmileDiv,
+  Star,
+  MyLink,
+} from '../Movie/Comment';
 
 export default function ProfileComment({
   commentId,
@@ -65,10 +79,10 @@ export default function ProfileComment({
             </RecommentDiv>
 
             {isUser ? (
-              <UserSmileDiv>
+              <SmileDiv>
                 <Smile />
                 {smileBy?.length || 0}
-              </UserSmileDiv>
+              </SmileDiv>
             ) : (
               <SmileDiv onClick={toggleSmile}>
                 <Smile />
@@ -88,111 +102,6 @@ export default function ProfileComment({
   );
 }
 
-const CommentContainer = styled.div`
-  width: 100%;
-  min-height: 16vmin;
-  font-size: 2.5vmin;
-  text-align: justify;
-  background: #595a59;
-  box-shadow: 5px 5px 10px rgba(28, 28, 28, 1);
-  display: flex;
-  align-items: center;
-  padding: 2vmin 3vmin;
-  margin-top: 3vmin;
-`;
-
-const ContentDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 2vmin;
-  width: 100%;
-`;
-
-const CommentContent = styled.div`
-  margin-top: 5px;
-  align-self: flex-start;
-`;
-
-const UserRate = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const CommentDate = styled.div`
-  margin-left: auto;
-  font-size: 2.2vmin;
-  color: #c5cdc0;
-`;
-
-const FunctionDiv = styled.div`
-  margin-top: 2vmin;
-  display: flex;
-  margin-left: auto;
-`;
-
-const Recomment = styled(Forum)`
-  transform: scale(1.2);
-  margin-right: 0.5vmin;
-  @media (max-width: 1280px) {
-    transform: scale(1);
-  }
-`;
-
-const RecommentDiv = styled.div`
-  font-size: 2.2vmin;
-  margin-right: 5vmin;
-  cursor: pointer;
-  &:hover {
-    color: #75e799;
-  }
-`;
-
-const Smile = styled(EmojiEmotions)`
-  transform: scale(1.2);
-  margin-right: 0.5vmin;
-  @media (max-width: 1280px) {
-    transform: scale(1);
-  }
-`;
-
-const UserSmileDiv = styled.div`
-  font-size: 2.2vmin;
-  color: #fff;
-`;
-
-const SmileDiv = styled.div`
-  font-size: 2.2vmin;
-  cursor: pointer;
-  color: ${(props) => (props.smile ? '#75e799' : '')};
-  &:hover {
-    color: #75e799;
-  }
-`;
-
-const Star = styled(StarRounded)`
-  transform: scale(1.5);
-  color: gold;
-  margin-right: 1vmin;
-  @media (max-width: 1280px) {
-    transform: scale(1);
-  }
-`;
-
-const Rate = styled.div`
-  font-size: 2.5vmin;
-`;
-
-const MyLink = styled(Link)`
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #fff;
-  &:hover {
-    color: #75e799;
-  }
-`;
-
 const MovieDiv = styled.div`
   display: flex;
   justify-content: center;
@@ -210,8 +119,23 @@ const Poster = styled.img`
 const MovieName = styled.div`
   width: 70%;
   text-align: center;
-  font-size: 2.2vmin;
   font-weight: 400;
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
+  }
 `;
 
 const Overlay = styled.div`

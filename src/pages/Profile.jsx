@@ -253,13 +253,14 @@ const ProfileDiv = styled.div`
 
 const MainProfile = styled.div`
   width: 80%;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-
-  @media (max-width: 600px) {
-    min-height: 95vh;
+  min-height: 60vw;
+  @media (max-width: 1560px) {
+    min-height: 65vw;
+  }
+  @media (max-width: 1024px) {
+    min-height: 100vh;
   }
 `;

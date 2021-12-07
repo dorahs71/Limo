@@ -1,19 +1,17 @@
 .slick-slide {
   opacity: 0.5;
   cursor: default;
+  height: 30vw;
 }
 
 img {
   width: 9vw;
-  height: 13vw;
-  object-fit: cover;
+  height: 15vw;
 }
 
 .slick-center {
-  margin-right: -1.5vw;
+  margin-right: -1.8vw;
   z-index: 400;
-  width: 12vw;
-  height: 20vw;
   -webkit-transform: scale(1.5);
   -moz-transform: scale(1.5);
   transform: scale(1.5);
@@ -28,19 +26,15 @@ img {
 }
 
 .introDiv {
-  margin-top: 3.5vw;
+  margin-top: 6vw;
   margin-bottom: 1vmin;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-right: 3vw;
-  font-size: 1vw;
+  margin-right: 6vw;
+  font-size: 1rem;
   z-index: 40;
-}
-
-.title {
-  font-weight: 450;
 }
 
 .slick-slide > div > .introDiv {
@@ -55,31 +49,39 @@ img {
 }
 
 @media screen and (max-width: 1560px) {
+  img {
+    width: 10vw;
+    height: 14vw;
+  }
   .introDiv {
-    margin-right: 5.5vw;
+    margin-right: 5vw;
   }
   .slick-center {
-    margin-right: -3vw;
+    margin-right: -2vw;
   }
 }
 
 @media screen and (max-width: 1280px) {
   .introDiv {
-    margin-right: 5.5vw;
+    margin-right: 4.5vw;
+    font-size: 0.95rem;
   }
   .slick-center {
-    margin-right: -3vw;
+    margin-right: -2.5vw;
   }
 }
 
 @media screen and (max-width: 1024px) {
   img {
-    height: 14vw;
-    object-fit: cover;
+    width: 17vw;
+    height: 24vw;
   }
   .introDiv {
-    margin-top: 4vw;
-    font-size: 1vw;
+    margin-top: 3vw;
+    font-size: 1.2rem;
+    width: 100%;
+    margin-left: 6vw;
+    text-align: center;
   }
   .slick-center {
     margin-right: -2.5vw;
@@ -88,22 +90,22 @@ img {
 
 @media screen and (max-width: 768px) {
   img {
-    width: 17vw;
-    height: 25vw;
-    object-fit: cover;
+    width: 22vw;
+    height: 30vw;
   }
   .introDiv {
     margin-top: 2vw;
-    width: 100%;
-    margin-left: 3vw;
-    text-align: center;
+    font-size: 1.3rem;
   }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 600px) {
   img {
     width: 23vw;
     height: 33vw;
     object-fit: cover;
+  }
+  .introDiv {
+    font-size: 0.8rem;
   }
 }

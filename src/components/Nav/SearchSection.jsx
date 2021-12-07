@@ -50,12 +50,21 @@ const SearchBtn = styled.button`
   border: 0;
   width: 1.8vw;
   height: 1.8vw;
-  font-size: 2vmin;
   background: transparent;
   cursor: pointer;
   border-radius: 50%;
   margin-left: auto;
   margin-top: -0.1vw;
+  @media (max-width: 600px) {
+    margin-top: 1.5vw;
+    width: 3vw;
+    height: 3vw;
+  }
+  @media (max-width: 375px) {
+    margin-top: 1vw;
+    width: 3vw;
+    height: 3vw;
+  }
 `;
 
 const SearchIcon = styled(SearchOutlined)`
@@ -79,17 +88,15 @@ const SearchIcon = styled(SearchOutlined)`
   @media (max-width: 768px) {
     transform: scale(0.8);
     margin-top: -0.7vw;
-    margin-left: -0.8vw;
+    margin-left: -1vw;
   }
   @media (max-width: 600px) {
     transform: scale(0.7);
-    margin-top: -1vw;
+    margin-top: -3vw;
     margin-left: -2vw;
   }
-  @media (max-width: 500px) {
-    transform: scale(0.7);
-    margin-top: -2vw;
-    margin-left: -2vw;
+  @media (max-width: 375px) {
+    margin-left: -3vw;
   }
 `;
 
@@ -98,7 +105,7 @@ const SearchBar = styled.input`
   height: 2vw;
   width: 100%;
   top: 0vw;
-  font-size: 1.2vw;
+  font-size: 1.5rem;
   padding: 0 0.5em;
   border: 0;
   color: #fff;
@@ -106,7 +113,7 @@ const SearchBar = styled.input`
   bottom: 0;
   left: 0;
   opacity: 0;
-  line-height: 1.2vw;
+
   background: transparent;
   &:focus {
     outline: 0;
@@ -115,20 +122,28 @@ const SearchBar = styled.input`
   ::-webkit-input-placeholder {
     color: #a9a9a9;
   }
-  @media (max-width: 1280px) {
+  @media (max-width: 1440px) {
     top: 0.2vw;
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1280px) {
+    top: 0.3vw;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
   }
   @media (max-width: 768px) {
-    font-size: 1.7vw;
-    line-height: 1.7vw;
-    top: 0.3vw;
+    font-size: 0.8rem;
+    top: 0.4vw;
     opacity: 1;
   }
   @media (max-width: 600px) {
-    font-size: 10px;
-    opacity: 1;
-    top: 0.9vw;
-    line-height: 10px;
+    font-size: 0.6rem;
+    top: 1vw;
+    height: 3vw;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
   }
 `;
 
@@ -165,19 +180,28 @@ const SearchDiv = styled.div`
   @media (max-width: 1024px) {
     width: 3vw;
     height: 3vw;
+    &:hover {
+      width: 30vw;
+    }
   }
   @media (max-width: 768px) {
-    width: 25vw;
+    width: 28vw;
     height: 3.5vw;
     &:hover {
-      width: 25vw;
+      width: 28vw;
     }
   }
   @media (max-width: 600px) {
     width: 45vw;
-    height: 5vw;
+    height: 6vw;
     &:hover {
       width: 45vw;
+    }
+    @media (max-width: 375px) {
+    width: 50vw;
+    height: 6vw;
+    &:hover {
+      width: 50vw;
     }
   }
 `;

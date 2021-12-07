@@ -87,6 +87,6 @@ const MyImg = styled.img`
 
 const BtnDiv = styled.div`
   display: flex;
-  width: 30%;
+  width: 60%;
   justify-content: space-around;
 `;

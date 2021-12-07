@@ -87,15 +87,43 @@ const CardSenderDiv = styled.div`
 `;
 
 const SenderImgDiv = styled.img`
-  width: 5vmin;
-  height: 5vmin;
+  width: 4vw;
+  height: 4vw;
+  object-fit: contain;
+  @media (max-width: 600px) {
+    width: 6vw;
+    height: 6vw;
+  }
 `;
 const SenderNameDiv = styled.div`
-  font-size: 2.5vmin;
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
+  }
 `;
 const CardDiv = styled.img`
-  margin-top: 1vmin;
-  width: 20vmin;
-  height: 15vmin;
+  margin-top: 1vw;
+  width: 15vw;
+  height: 10vw;
   border-radius: 10px;
+  @media (max-width: 1024px) {
+    width: 20vw;
+    height: 15vw;
+  }
+  @media (max-width: 600px) {
+    width: 28vw;
+    height: 22vw;
+  }
 `;

@@ -10,7 +10,7 @@ import {
 } from '../../utils/firebase';
 import WarningAlert from '../Common/WarningAlert';
 import AOS from 'aos';
-import { PopupDiv, CancelIcon } from '../Common/Common.style';
+import { PopupDiv, CancelIcon, Title } from '../Common/Common.style';
 
 export default function AddToList({
   trigger,
@@ -130,7 +130,6 @@ export default function AddToList({
 const AddToListDiv = styled.div`
   display: flex;
   flex-direction: column;
-  font-size: 2.5vmin;
   width: 70vmin;
   min-height: 55vmin;
   padding: 20px 20px;
@@ -154,15 +153,25 @@ const Close = styled.div`
 `;
 
 const AddBtn = styled(AddCircle)`
-  transform: scale(1.6);
   margin-left: 3vmin;
   cursor: pointer;
   color: #c5cdc0;
   &:hover {
     color: #75e799;
   }
+  transform: scale(2);
+  border-radius: 50%;
   @media (max-width: 1280px) {
-    transform: scale(1.4);
+    transform: scale(1.8);
+  }
+  @media (max-width: 1024px) {
+    transform: scale(1.5);
+  }
+  @media (max-width: 768px) {
+    transform: scale(1.2);
+  }
+  @media (max-width: 600px) {
+    transform: scale(1);
   }
 `;
 
@@ -178,9 +187,9 @@ const InputDiv = styled.div`
 `;
 
 const Input = styled.textarea`
-  font-size: 2.8vmin;
+  font-size: 1.5rem;
   width: 80%;
-  height: 3vmin;
+  height: 3vw;
   margin-left: 2vmin;
   border-radius: 5px;
   resize: none;
@@ -193,19 +202,15 @@ const Input = styled.textarea`
   &:focus {
     outline: none;
   }
-  @media (max-width: 1280px) {
-    width: 50vmin;
+  @media (max-width: 1024px) {
+    height: 4vw;
   }
-`;
-
-const Title = styled.div`
-  font-size: 4vmin;
-  font-weight: 800;
-  color: #fff;
-  width: 16vmin;
-  border-bottom: 4px solid #75e799;
-  align-self: center;
-  text-align: center;
+  @media (max-width: 768px) {
+    height: 5vw;
+  }
+  @media (max-width: 600px) {
+    font-size: 1rem;
+  }
 `;
 
 const SendBtn = styled.div`
@@ -223,7 +228,7 @@ const SendBtn = styled.div`
 `;
 
 const ListDiv = styled.div`
-  font-size: 3vmin;
+  font-size: 1.5rem;
   border-radius: 5px;
   margin-top: 2vmin;
   padding: 10px;
@@ -236,6 +241,9 @@ const ListDiv = styled.div`
   &:hover {
     color: #fff;
     background: #666;
+  }
+  @media (max-width: 600px) {
+    font-size: 1rem;
   }
 `;
 

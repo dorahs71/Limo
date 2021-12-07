@@ -12,7 +12,7 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import WarningAlert from '../Common/WarningAlert';
 import AOS from 'aos';
-import { PopupDiv, CancelIcon } from '../Common/Common.style';
+import { PopupDiv, CancelIcon, Title } from '../Common/Common.style';
 
 export default function NewComment({
   trigger,
@@ -120,17 +120,6 @@ export default function NewComment({
   );
 }
 
-const Title = styled.div`
-  font-size: 4vmin;
-  font-weight: 800;
-  color: #fff;
-  width: 16vmin;
-  border-bottom: 4px solid #75e799;
-  align-self: center;
-  text-align: center;
-  margin-top: 8vmin;
-`;
-
 const Close = styled.div`
   cursor: pointer;
   position: absolute;
@@ -177,9 +166,6 @@ const Input = styled.textarea`
   &:focus {
     outline: none;
   }
-  /* @media (max-width: 1280px) {
-    width: 50vmin;
-  } */
 `;
 
 const StarSection = styled.div`
@@ -191,7 +177,7 @@ const StarSection = styled.div`
 `;
 
 const StarNum = styled.div`
-  font-size: 10vmin;
+  font-size: 8vw;
   font-weight: 400;
   align-self: center;
 `;
@@ -202,21 +188,30 @@ const StarDiv = styled.div`
   align-items: center;
   padding: 3vmin 0 0 0;
   width: 60%;
-  @media (max-width: 1280px) {
+  @media (max-width: 768px) {
     width: 70%;
+  }
+  @media (max-width: 600px) {
+    width: 90%;
   }
 `;
 
 const Star = styled(StarRounded)`
   margin-left: 4vmin;
   margin-bottom: 3vmin;
-  transform: scale(2.5);
+  transform: scale(3);
   color: ${(props) => props.select};
   margin-right: 1vmin;
   cursor: pointer;
   transition: color 0.5s;
   @media (max-width: 1280px) {
+    transform: scale(2.5);
+  }
+  @media (max-width: 768px) {
     transform: scale(2);
+  }
+  @media (max-width: 600px) {
+    transform: scale(1.5);
   }
 `;
 

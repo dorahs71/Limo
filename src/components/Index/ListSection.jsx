@@ -60,7 +60,7 @@ export default function ListSection() {
 }
 
 const ListSectionDiv = styled.div`
-  margin-top: 5vmin;
+  margin-top: 4vw;
   display: flex;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -85,9 +85,20 @@ const List = styled.div`
   justify-content: space-between;
   background: rgba(223, 223, 223, 0.9);
   box-shadow: 1vmin 1vmin 2vmin rgba(20, 19, 19, 1);
+  @media (max-width: 1560px) {
+    height: 25vw;
+  }
   @media (max-width: 1024px) {
     width: 45vw;
     height: 35vw;
+  }
+  @media (max-width: 768px) {
+    width: 54vw;
+    height: 40vw;
+  }
+  @media (max-width: 600px) {
+    width: 54vw;
+    height: 40vw;
   }
 `;
 
@@ -97,6 +108,9 @@ const TiltDiv = styled(Tilt)`
   margin-bottom: 3vmin;
   @media (max-width: 1024px) {
     width: 45vw;
+  }
+  @media (max-width: 768px) {
+    width: 54vw;
   }
 `;
 
@@ -112,6 +126,10 @@ const ListImg = styled.img`
     width: 15vw;
     height: 20vw;
   }
+  @media (max-width: 768px) {
+    width: 18vw;
+    height: 25vw;
+  }
 `;
 
 const ListIntro = styled.div`
@@ -126,21 +144,27 @@ const ListIntro = styled.div`
 `;
 
 const ListTitle = styled.div`
-  font-size: 2.5vmin;
+  font-size: 1.5rem;
   font-weight: 600;
   align-self: center;
   color: #333;
+
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const CollectNum = styled.div`
   border-left: 2px solid #c5cdc0;
-  font-size: 2vmin;
+  font-size: 1.2rem;
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  @media (max-width: 500px) {
-    font-size: 1.5vmin;
+
+  @media (max-width: 600px) {
+    height: 70%;
+    font-size: 0.5rem;
   }
 `;
 
@@ -167,9 +191,12 @@ const ListProfileImg = styled.img`
 `;
 
 const ListProfileName = styled.div`
-  font-size: 2vmin;
-  @media (max-width: 500px) {
-    font-size: 1.5vmin;
+  font-size: 1.5rem;
+  @media (max-width: 1280px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.5rem;
   }
 `;
 

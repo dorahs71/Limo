@@ -79,25 +79,28 @@ export default function Slick() {
 }
 
 const SlickDiv = styled.div`
-  width: 100%;
-  margin-left: 5vw;
+  width: 120%;
+  margin-left: 9vw;
   overflow: hidden;
-  height: 25vw;
-  margin-top: 5vmin;
+  height: 30vw;
+  margin-top: 3vw;
   @media (max-width: 1560px) {
+    width: 100%;
     margin-left: 8vw;
   }
-  @media (max-width: 1280px) {
-    margin-left: 8vw;
+  @media (max-width: 1440px) {
+    margin-left: 7vw;
   }
+
   @media (max-width: 1024px) {
-    margin-left: 8vw;
-    height: 28vw;
-  }
-  @media (max-width: 768px) {
     overflow: scroll;
     margin-top: 0;
     margin-left: 0;
+    width: 99%;
+    margin-left: 7vw;
+    height: 38vw;
+  }
+  @media (max-width: 768px) {
     height: 45vw;
   }
   @media (max-width: 500px) {
@@ -106,14 +109,14 @@ const SlickDiv = styled.div`
 `;
 
 const DesktopSlider = styled(Slider)`
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     display: none;
   }
 `;
 
 const MobileFlex = styled.div`
   display: none;
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     display: flex;
     align-items: center;
   }
@@ -121,7 +124,7 @@ const MobileFlex = styled.div`
 
 const MobileMovie = styled.div`
   display: none;
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -141,7 +144,7 @@ const Star = styled(StarRounded)`
 `;
 
 const ButtonDiv = styled.div`
-  margin-top: 5vmin;
+  margin-top: 2.5vw;
   display: flex;
   justify-content: center;
   width: 100%;

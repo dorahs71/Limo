@@ -37,7 +37,7 @@ export default function MovieFunction({
 
   const handleSendCard = () => {
     if (currentUser) {
-      if (window.screen.width <= 768) {
+      if (window.screen.width <= 1024) {
         setMobileAlert(true);
       } else {
         setShowCard(true);
@@ -91,7 +91,7 @@ export default function MovieFunction({
 }
 
 const CardInfo = styled.div`
-  font-size: 1.2vw;
+  font-size: 1.5rem;
   width: 150%;
   color: #fff;
   padding: 5px;
@@ -100,10 +100,21 @@ const CardInfo = styled.div`
   background: #292a28;
   margin-right: 2vmin;
   display: none;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+    display: block;
+    font-size: 1rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const ListInfo = styled.div`
-  font-size: 1.2vw;
+  font-size: 1.5rem;
   width: 150%;
   color: #fff;
   padding: 5px;
@@ -112,10 +123,21 @@ const ListInfo = styled.div`
   background: #292a28;
   margin-right: 2vmin;
   display: none;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+    display: block;
+    font-size: 1rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const DiaryInfo = styled.div`
-  font-size: 1.2vw;
+  font-size: 1.5rem;
   width: 150%;
   font-weight: 500;
   color: #fff;
@@ -124,6 +146,17 @@ const DiaryInfo = styled.div`
   background: #292a28;
   margin-right: 2vmin;
   display: none;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+    display: block;
+    font-size: 1rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const DiaryInfoDiv = styled.div`
@@ -159,10 +192,12 @@ const ListInfoDiv = styled.div`
 const AddButtonDiv = styled.div`
   width: 60%;
   display: grid;
-  margin-top: 6.5vmin;
+  margin-top: 5vw;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 0 50px;
+  grid-gap: 0 3vw;
+  margin-right: 1vw;
   @media (max-width: 768px) {
+    margin-bottom: 9vw;
     width: 100%;
   }
 `;
@@ -207,6 +242,14 @@ const AddList = styled.div`
 `;
 
 const IconImg = styled.img`
-  width: 3vmin;
-  height: 3vmin;
+  width: 2vw;
+  height: 2vw;
+  @media (max-width: 1024px) {
+    width: 3vw;
+    height: 3vw;
+  }
+  @media (max-width: 600px) {
+    width: 4vw;
+    height: 4vw;
+  }
 `;

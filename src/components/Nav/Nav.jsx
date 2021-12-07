@@ -62,16 +62,20 @@ export const Footer = () => {
 };
 
 const Logo = styled.img`
-  margin-left: 1.5vw;
+  margin: 0.5vw 0 0 1.5vw;
   width: 2.5vw;
   height: 2.5vw;
-  @media (max-width: 768px) {
+  @media (max-width: 1560px) {
     width: 3vw;
     height: 3vw;
   }
+  @media (max-width: 768px) {
+    width: 3.5vw;
+    height: 3.5vw;
+  }
   @media (max-width: 600px) {
-    width: 5vw;
-    height: 5vw;
+    width: 6.5vw;
+    height: 6.5vw;
   }
 `;
 
@@ -96,8 +100,8 @@ const ProfilePic = styled.img`
     height: 3vw;
   }
   @media (max-width: 600px) {
-    width: 4.5vw;
-    height: 4.5vw;
+    width: 4vw;
+    height: 4vw;
   }
 `;
 
@@ -109,11 +113,27 @@ const ProfileDiv = styled.div`
 
 const LoginDiv = styled.div`
   cursor: pointer;
-  font-size: 2vmin;
+  font-size: 1.5rem;
   font-weight: bold;
   margin-right: 1.5vw;
   &:hover {
     color: #75e799;
+  }
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
   }
 `;
 

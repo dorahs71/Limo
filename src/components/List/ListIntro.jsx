@@ -77,8 +77,8 @@ const ListIntroDiv = styled.div`
   width: 70%;
   flex-direction: column;
   align-items: center;
-  margin-left: 8vmin;
-  @media (max-width: 1280px) {
+  @media (max-width: 600px) {
+    margin-left: 3vw;
   }
 `;
 
@@ -105,13 +105,13 @@ const EditIcon = styled(Edit)`
 `;
 
 const TitleSaveDiv = styled.div`
-  width: 5vmin;
-  height: 5vmin;
+  width: 3vw;
+  height: 3vw;
   align-self: flex-end;
-  margin-top: -5%;
+  margin-top: -3%;
   color: #898f86;
   cursor: pointer;
-  display: none;
+  visibility: hidden;
 `;
 
 const EditTitle = styled.div`
@@ -121,7 +121,7 @@ const EditTitle = styled.div`
   justify-content: center;
   align-items: center;
   &:hover ${TitleSaveDiv} {
-    display: block;
+    visibility: visible;
   }
 `;
 
@@ -131,10 +131,8 @@ const ListTitle = styled.input`
   max-width: 100%;
   border: 0;
   cursor: ${(props) => (props.isAuthor ? 'text' : 'default')};
-  border-bottom: 8px solid #61d498;
+  border-bottom: 4px solid #61d498;
   text-align: center;
-  font-size: 5vmin;
-  font-weight: 700;
   resize: none;
   ::placeholder {
     color: #555;
@@ -142,11 +140,25 @@ const ListTitle = styled.input`
   &:focus {
     outline: 0;
   }
+  font-weight: 600;
+  font-size: 2rem;
+  @media (max-width: 1440px) {
+    font-size: 1.8rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1.5rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 1rem;
+  }
 `;
 
 const EditListIntro = styled.textarea`
-  margin-top: 4vmin;
-  padding-top: 2vmin;
+  margin-top: 2vw;
+  padding-top: 1vw;
   background: transparent;
   width: 100%;
   color: #fff;
@@ -154,7 +166,6 @@ const EditListIntro = styled.textarea`
   white-space: pre-wrap;
   text-align: center;
   border-radius: 5px;
-  font-size: 2.8vmin;
   border: 2px #222 solid;
   resize: none;
   ::placeholder {
@@ -167,21 +178,34 @@ const EditListIntro = styled.textarea`
 `;
 
 const ReadIntro = styled.div`
-  font-size: 2.5vmin;
-  margin-top: 4vmin;
-  padding-top: 2vmin;
+  margin-top: 3vw;
+  padding-top: 1vw;
   background: transparent;
   width: 100%;
   text-align: center;
   white-space: pre-wrap;
   color: #fff;
-  min-height: 16vmin;
+  min-height: 16vh;
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    width: 7vw;
+    font-size: 0.5rem;
+  }
 `;
 
 const IntroSaveDiv = styled.div`
-  width: 4vmin;
-  height: 4vmin;
-  margin-left: 2vmin;
+  width: 3vw;
+  height: 3vw;
+  margin-left: 1vw;
   cursor: pointer;
   color: #2b2929;
 `;
@@ -198,7 +222,17 @@ const EditIntro = styled.div`
 `;
 
 const CollectNum = styled.div`
-  font-size: 2.3vmin;
   margin-top: 1vmin;
   color: #898f86;
+  font-size: 1.2rem;
+  @media (max-width: 1440px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 0.8rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.5rem;
+  }
 `;

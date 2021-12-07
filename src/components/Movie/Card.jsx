@@ -135,16 +135,16 @@ const CardDiv = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 2.5vmin;
-  max-width: 1200px;
-  height: 87%;
-  padding: 20px 20px;
+  max-width: 85vw;
+  height: 40vw;
+  padding: 1vw 1vw;
   position: relative;
-  margin-top: -10vh;
+  margin-top: 5vw;
   align-items: center;
-  @media (max-width: 1280px) {
-    top: 15vmin;
-    max-width: 900px;
-    height: 80%;
+  @media (max-width: 1560px) {
+    margin-top: 6vw;
+    max-width: 80vw;
+    height: 35vw;
   }
 `;
 
@@ -153,8 +153,8 @@ const Close = styled.div`
   position: absolute;
   display: block;
   padding: 5px 5px;
-  right: -1vmin;
-  top: -6vmin;
+  right: -1vw;
+  top: -6vw;
   z-index: 300;
   color: #c5cdc0;
   &:hover {
@@ -167,18 +167,19 @@ const GalleryDiv = styled.div`
   flex-direction: column;
   height: 100%;
   overflow: scroll;
-  padding: -3vmin 5vmin -3vmin 5vmin;
+  padding: -3vw 8vw -3vw 8vw;
+  margin-left: 2vw;
 `;
 
 const PictureDiv = styled.div`
   width: 100%;
-  margin-bottom: 5vmin;
+  margin-bottom: 2vw;
   cursor: pointer;
 `;
 
 const Picture = styled.img`
-  width: 22vmin;
-  height: 18vmin;
+  width: 13vw;
+  height: 10vw;
   object-fit: contain;
 `;
 
@@ -195,11 +196,22 @@ const SendDiv = styled.div`
   color: #fff;
   display: flex;
   align-items: center;
-  margin-top: 1vmin;
+  margin-top: 1vw;
+  @media (max-width: 1440px) {
+    margin-top: 3vw;
+    margin-left: 3vw;
+  }
+  @media (max-width: 1280px) {
+    margin-top: 5vw;
+  }
 `;
 
 const SendButton = styled(SendBtn)`
-  @media (max-width: 1280px) {
-    margin-left: 8vmin;
+  margin-left: 1vw;
+  @media (max-width: 1560px) {
+    margin-left: 2.5vw;
+  }
+  @media (max-width: 1440px) {
+    margin-left: 3vw;
   }
 `;

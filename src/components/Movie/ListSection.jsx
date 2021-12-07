@@ -59,7 +59,7 @@ export default function ListSection({ eachMovie }) {
 
   return (
     <SectionDiv>
-      <Title>相關片單</Title>
+      <Title data-aos="fade-up">相關片單</Title>
       {newList.length === 0 ? (
         <ListContainer>
           <Space>
@@ -126,14 +126,38 @@ const OneList = styled.div`
     width: 30vmin;
     height: 35vmin;
   }
+  @media (max-width: 600px) {
+    margin-left: 5vw;
+  }
+  @media (max-width: 375px) {
+    margin-left: 9vw;
+  }
 `;
 
 const ListIntro = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 7vh 5vmin 0 0;
+  width: 75%;
+  margin: 5vw 10vw 0 0;
+  @media (max-width: 1440px) {
+    margin-top: 6vw;
+  }
+  @media (max-width: 1280px) {
+    width: 120%;
+    margin-right: 0vw;
+  }
+  @media (max-width: 1024px) {
+    margin-top: 8vw;
+  }
+  @media (max-width: 768px) {
+    width: 90%;
+    margin-right: 20vw;
+  }
   @media (max-width: 600px) {
-    margin: 5vh 5vmin 0 0;
+    width: 80%;
+  }
+  @media (max-width: 375px) {
+    width: 70%;
   }
 `;
 
@@ -167,20 +191,20 @@ const ListContainer = styled.div`
 `;
 
 const ListWrapper = styled.div`
-  margin-top: 5vmin;
+  margin-top: 4vw;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 3vmin 3vmin;
+  grid-gap: 3vw 3vw;
   justify-items: center;
   margin-left: 8vmin;
   align-items: center;
   @media (max-width: 1024px) {
     grid-template-columns: repeat(2, 1fr);
-    grid-gap: 3vmin 3vmin;
+    margin-left: 2vw;
   }
   @media (max-width: 600px) {
     grid-template-columns: repeat(1, 1fr);
-    grid-gap: 3vh 3vw;
+    grid-gap: 3vw 3vw;
   }
 `;

@@ -11,21 +11,38 @@ export const SectionDiv = styled.div`
 `;
 
 export const Title = styled.div`
-  margin-top: 10vmin;
-  font-size: 3vw;
+  margin-top: 5vw;
+  font-size: 2rem;
   font-weight: 700;
-  width: 15vw;
+  width: 7vw;
   text-align: center;
   border-bottom: 8px solid #61d498;
+  @media screen and (max-width: 1560px) {
+    width: 9vw;
+  }
+  @media screen and (max-width: 1280px) {
+    width: 11vw;
+  }
+  @media screen and (max-width: 1024px) {
+    width: 13vw;
+  }
+  @media screen and (max-width: 768px) {
+    border-bottom: 4px solid #61d498;
+    width: 18vw;
+  }
+  @media screen and (max-width: 600px) {
+    font-size: 1.2rem;
+    width: 22vw;
+  }
 `;
 
 export const FunctionBtn = styled.div`
-  padding: 1.2vmin 1vmin;
-  margin-top: -3vmin;
-  width: 13vmin;
-  height: 1vmin;
+  padding: 1vw 1vw;
+  margin-top: -3vw;
+  width: 8vw;
+  height: 1vw;
+  line-height: 1vw;
   font-weight: 450;
-  font-size: 2.2vmin;
   border-radius: 10px;
   align-items: center;
   justify-content: center;
@@ -37,9 +54,29 @@ export const FunctionBtn = styled.div`
   &:hover {
     color: #75e799;
   }
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1280px) {
+    width: 9vw;
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    width: 11vw;
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
   @media (max-width: 600px) {
+    width: 13vw;
     flex-direction: column;
     padding: 1vh 1vw;
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
   }
 `;
 
@@ -57,7 +94,8 @@ export const Function = styled.div`
 
 export const Space = styled.div`
   width: 100%;
-  height: 20vmin;
+  height: 15vw;
+  margin-top: 3vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -65,18 +103,31 @@ export const Space = styled.div`
 `;
 
 export const SpaceImg = styled.img`
-  width: 12vmin;
-  height: 11vmin;
+  width: 7vw;
+  height: 8vw;
   object-fit: contain;
-  @media (max-width: 1280px) {
-    width: 15vmin;
-    height: 12vmin;
+  @media screen and (max-width: 600px) {
+    width: 10vw;
+    height: 12vw;
   }
 `;
 
 export const SpaceWord = styled.div`
   margin-top: 3vmin;
-  font-size: 2.5vmin;
+  font-size: 1.5rem;
+
+  @media screen and (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media screen and (max-width: 768px) {
+    font-size: 1rem;
+  }
+  @media screen and (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media screen and (max-width: 375px) {
+    font-size: 0.5rem;
+  }
 `;
 
 export const PopupDiv = styled.div`
@@ -95,8 +146,12 @@ export const PopupDiv = styled.div`
 export const CancelIcon = styled(Cancel)`
   transform: scale(1.5);
   border-radius: 50%;
+
+  @media (max-width: 1024px) {
+    transform: scale(1.2);
+  }
   @media (max-width: 600px) {
-    transform: scale(0.8);
+    transform: scale(1);
   }
 `;
 
@@ -109,17 +164,47 @@ export const AlertWindow = styled.div`
   justify-content: space-around;
   position: relative;
   box-shadow: rgb(0, 0, 0) 0px 20px 30px -10px;
-  width: 30vmin;
-  height: 40vmin;
+  width: 15vw;
+  height: 22vw;
   margin: 0 auto;
   background: #cad2c6;
+  @media (max-width: 1560px) {
+    width: 18vw;
+    height: 25vw;
+  }
+  @media (max-width: 1280px) {
+    width: 20vw;
+    height: 30vw;
+  }
+  @media (max-width: 1024px) {
+    width: 25vw;
+    height: 35vw;
+  }
+  @media (max-width: 768px) {
+    width: 30vw;
+    height: 40vw;
+  }
+  @media (max-width: 600px) {
+    width: 40vw;
+    height: 50vw;
+  }
+  @media (max-width: 375px) {
+    width: 45vw;
+    height: 55vw;
+  }
 `;
 
 export const AlertWord = styled.div`
-  font-size: 2.5vmin;
+  font-size: 1.5rem;
   color: #333;
   font-weight: 400;
   text-align: center;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 1rem;
+  }
 `;
 
 export const AlertImg = styled.img`
@@ -129,7 +214,7 @@ export const AlertImg = styled.img`
 
 export const BtnDiv = styled.div`
   display: flex;
-  width: 60%;
+  width: 80%;
   justify-content: space-around;
 `;
 

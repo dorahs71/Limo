@@ -108,12 +108,21 @@ const ReviewSection = styled.div`
 `;
 
 const SendIcon = styled(Telegram)`
-  transform: scale(2);
   color: #75e799;
   cursor: pointer;
   margin-left: 2vmin;
+  transform: scale(2);
   @media (max-width: 1280px) {
+    transform: scale(1.8);
+  }
+  @media (max-width: 1024px) {
     transform: scale(1.5);
+  }
+  @media (max-width: 768px) {
+    transform: scale(1.2);
+  }
+  @media (max-width: 600px) {
+    transform: scale(1);
   }
 `;
 
@@ -127,9 +136,9 @@ const InputDiv = styled.div`
 `;
 
 const Input = styled.textarea`
-  font-size: 2.5vmin;
+  font-size: 2rem;
   width: 90%;
-  height: 3vmin;
+  height: 2.5vw;
   margin-left: 2vmin;
   background: #444;
   border-radius: 5px;
@@ -146,6 +155,26 @@ const Input = styled.textarea`
 
   &:focus {
     outline: none;
+  }
+  @media (max-width: 1560px) {
+    height: 3vw;
+  }
+  @media (max-width: 1440px) {
+    font-size: 1.8rem;
+  }
+  @media (max-width: 1280px) {
+    font-size: 1.8rem;
+    height: 3.5vw;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1.5rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+    height: 5vw;
   }
 `;
 

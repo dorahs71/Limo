@@ -35,20 +35,23 @@ export default function TrailerPopup({ trigger, setTrigger, trailerKey }) {
 const Close = styled.div`
   cursor: pointer;
   position: absolute;
-  display: none;
   padding: 5px 5px;
-  right: -10px;
-  top: -10px;
+  right: -3vw;
+  top: -2vw;
   z-index: 300;
   color: #c5cdc0;
   &:hover {
     color: #75e799;
   }
+  @media screen and (max-width: 600px) {
+    right: -5vw;
+    top: -5vw;
+  }
 `;
 
 const TrailerContainer = styled.div`
-  width: 100vmin;
-  height: 65vmin;
+  width: 70vw;
+  height: 40vw;
   position: relative;
   &:hover ${Close} {
     display: block;
@@ -58,6 +61,4 @@ const TrailerContainer = styled.div`
 const TrailerDiv = styled.iframe`
   width: 100%;
   height: 100%;
-  @media (max-width: 1280px) {
-  }
 `;
