@@ -39,7 +39,7 @@ export const Title = styled.div`
 export const FunctionBtn = styled.div`
   padding: 1vw 1vw;
   margin-top: -3vw;
-  width: 8vw;
+  width: 9vw;
   height: 1vw;
   line-height: 1vw;
   font-weight: 450;
@@ -59,7 +59,6 @@ export const FunctionBtn = styled.div`
     font-size: 1.2rem;
   }
   @media (max-width: 1280px) {
-    width: 9vw;
     font-size: 1.2rem;
   }
   @media (max-width: 1024px) {

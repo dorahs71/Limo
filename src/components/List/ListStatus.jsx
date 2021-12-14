@@ -27,7 +27,6 @@ export default function ListStatus({
       setListStatus(false);
       setListShareStatus(listId, false);
       handleCoinNum(authorId, -300);
-
       reduceCoin(true);
     } else {
       setListStatus(true);
@@ -38,11 +37,9 @@ export default function ListStatus({
           notifyList(item, authorId, listId, currentUser, listTitle);
           return item;
         });
-
-        handleCoinNum(authorId, 300);
-
-        showCoin(true);
       }
+      handleCoinNum(authorId, 300);
+      showCoin(true);
     }
   };
 

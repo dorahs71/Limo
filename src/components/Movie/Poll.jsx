@@ -42,16 +42,16 @@ export default function Poll({ trigger, setTrigger, movieId }) {
     addVote(movieId, movieQuoteId);
   };
 
+  const removeStatus = () => {
+    setTrigger(false);
+    setInput('');
+  };
+
   return (
     trigger && (
       <PopupDiv data-aos="zoom-in">
         <PollDiv>
-          <Close
-            onClick={() => {
-              setTrigger(false);
-              setInput('');
-            }}
-          >
+          <Close onClick={removeStatus}>
             <CancelIcon />
           </Close>
 
@@ -157,7 +157,7 @@ const PollContainer = styled.div`
 `;
 
 const AddQuoteBtn = styled.div`
-  width: 10vmin;
+  width: 5vw;
   height: 5vmin;
   line-height: 5vmin;
   font-size: 1.2rem;
@@ -173,12 +173,17 @@ const AddQuoteBtn = styled.div`
   &:hover {
     background: #75e799;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 1560px) {
+    width: 7vw;
+  }
+  @media (max-width: 1280px) {
     width: 10vw;
+  }
+  @media (max-width: 768px) {
     font-size: 0.8rem;
   }
   @media (max-width: 600px) {
-    width: 15vw;
+    width: 17vw;
     font-size: 0.5rem;
   }
 `;

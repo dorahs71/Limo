@@ -37,7 +37,7 @@ export default function CoinAlert({ trigger, setTrigger, type, coin }) {
               flickerSpeed={'normal'}
             />
             <AlertImg src={coinImg} alt="" />
-            <CoinNum>X {coin}</CoinNum>
+            <CoinNum>+ {coin}</CoinNum>
           </CoinDiv>
           <SendBtn onClick={() => setTrigger(false)}>確認</SendBtn>
         </AlertWindow>

@@ -31,6 +31,10 @@ export const Close = styled.div`
   &:hover {
     color: #75e799;
   }
+  @media (max-width: 1280px) {
+    right: -1vw;
+    top: -1vw;
+  }
   @media (max-width: 1024px) {
     display: block;
   }
@@ -106,7 +110,7 @@ export const ListTitle = styled.div`
     font-size: 1.2rem;
   }
   @media (max-width: 1280px) {
-    margin-top: 16vw;
+    margin-top: 14vw;
   }
 
   @media (max-width: 1024px) {

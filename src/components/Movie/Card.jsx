@@ -29,13 +29,20 @@ export default function Card({
     setAddOverlay(true);
   }, [trigger]);
 
-  const initCanvas = () =>
+  // let initCanvas = () => new fabric.Canvas('canvas');
+
+  let initCanvas = () =>
     new fabric.Canvas('canvas', {
       width: 600,
       height: 420,
     });
 
-  if (addOverlay && canvas !== '' && imgURL === '' && selectFriend === '') {
+  if (
+    addOverlay &&
+    canvas !== undefined &&
+    imgURL === '' &&
+    selectFriend === ''
+  ) {
     let overlayRect = new fabric.Rect({
       width: canvas.get('width'),
       height: canvas.get('height'),
@@ -63,6 +70,18 @@ export default function Card({
     fabric.Image.fromURL(
       imgURL,
       function (img) {
+        // if (img.height > 600) {
+        //   canvas.setHeight(img.height * 0.6);
+        //   canvas.setWidth(img.width);
+        // } else if (img.height > 420) {
+        //   canvas.setHeight(img.height * 0.8);
+        //   canvas.setWidth(img.width);
+        // }
+
+        // canvas.setBackgroundImage(img, function () {
+        //   canvas.renderAll();
+        // });
+
         canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
           scaleX: canvas.width / img.width,
           scaleY: canvas.height / img.height,
@@ -84,16 +103,16 @@ export default function Card({
     }
   };
 
+  const removeStatus = () => {
+    setTrigger(false);
+    setSelectFriend('');
+  };
+
   return (
     trigger && (
       <PopupDiv>
         <CardDiv>
-          <Close
-            onClick={() => {
-              setTrigger(false);
-              setSelectFriend('');
-            }}
-          >
+          <Close onClick={removeStatus}>
             <CancelIcon />
           </Close>
           <EditDiv>

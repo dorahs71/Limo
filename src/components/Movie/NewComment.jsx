@@ -72,17 +72,17 @@ export default function NewComment({
     }
   };
 
+  const removeStatus = () => {
+    setTrigger(false);
+    setComment('');
+    setSelectedStar(5);
+  };
+
   return (
     trigger && (
       <PopupDiv data-aos="zoom-in">
         <NewCommentDiv>
-          <Close
-            onClick={() => {
-              setTrigger(false);
-              setComment('');
-              setSelectedStar(5);
-            }}
-          >
+          <Close onClick={removeStatus}>
             <CancelIcon />
           </Close>
           <Title>我要評論</Title>
@@ -187,9 +187,21 @@ const StarDiv = styled.div`
   flex-wrap: wrap;
   align-items: center;
   padding: 3vmin 0 0 0;
-  width: 60%;
+  width: 23vw;
+  @media (max-width: 1560px) {
+    width: 25vw;
+  }
+  @media (max-width: 1440px) {
+    width: 28vw;
+  }
+  @media (max-width: 1280px) {
+    width: 31vw;
+  }
+  @media (max-width: 1024px) {
+    width: 37vw;
+  }
   @media (max-width: 768px) {
-    width: 70%;
+    width: 45vw;
   }
   @media (max-width: 600px) {
     width: 90%;

@@ -39,6 +39,15 @@ export default function RegisterSection({
     );
   };
 
+  const removeStatus = () => {
+    setActiveItem('login');
+    setEmail('test@limo.com');
+    setPassword('test123');
+    setConfirm('');
+    setUserName('');
+    setShowError('');
+  };
+
   return (
     <Content>
       <RegisterTitle>新人註冊</RegisterTitle>
@@ -82,16 +91,7 @@ export default function RegisterSection({
       </InputDiv>
       <Button onClick={onSubmit}>註冊LIMO</Button>
       {showError && <ErrorText>{showError}</ErrorText>}
-      <ChangeBtn
-        onClick={() => {
-          setActiveItem('login');
-          setEmail('');
-          setPassword('');
-          setConfirm('');
-          setUserName('');
-          setShowError('');
-        }}
-      >
+      <ChangeBtn onClick={removeStatus}>
         已經是LIMO會員了嗎？歡迎登入!
       </ChangeBtn>
     </Content>

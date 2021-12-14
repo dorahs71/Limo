@@ -63,18 +63,18 @@ export const Footer = () => {
 
 const Logo = styled.img`
   margin: 0.5vw 0 0 1.5vw;
-  width: 2.5vw;
+  width: 3vw;
   height: 2.5vw;
   @media (max-width: 1560px) {
-    width: 3vw;
+    width: 3.5vw;
     height: 3vw;
   }
   @media (max-width: 768px) {
-    width: 3.5vw;
+    width: 4vw;
     height: 3.5vw;
   }
   @media (max-width: 600px) {
-    width: 6.5vw;
+    width: 7vw;
     height: 6.5vw;
   }
 `;

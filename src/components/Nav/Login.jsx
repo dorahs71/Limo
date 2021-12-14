@@ -5,46 +5,44 @@ import { PopupDiv, CancelIcon } from '../Common/Common.style';
 import LoginSection from './LoginSection';
 import RegisterSection from './RegisterSection';
 import { getProfileImg } from '../../utils/firebase';
-import AOS from 'aos';
 
 export default function Login({ trigger, setTrigger }) {
   const [activeItem, setActiveItem] = useState('login');
   const [userName, setUserName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('test@limo.com');
+  const [password, setPassword] = useState('test123');
   const [confirm, setConfirm] = useState('');
   const [showError, setShowError] = useState('');
   const [profileArr, setProfileArr] = useState('');
   const history = useHistory();
 
   useEffect(() => {
-    AOS.init({ duration: 300 });
-  }, []);
-
-  useEffect(() => {
     getProfileImg(setProfileArr);
-  }, []);
+    setActiveItem('login');
+    setEmail('test@limo.com');
+    setPassword('test123');
+  }, [trigger]);
 
-  function getRandom(x) {
+  const getRandom = (x) => {
     return Math.floor(Math.random() * x);
-  }
+  };
   let num = getRandom(9);
   const imgUrl = profileArr[num]?.imgUrl;
 
+  const removeStatus = () => {
+    setTrigger(false);
+    setUserName('');
+    setEmail('');
+    setPassword('');
+    setConfirm('');
+    setShowError('');
+  };
+
   return (
     trigger && (
-      <PopupDiv data-aos="zoom-in">
+      <PopupDiv>
         <LoginDiv>
-          <Close
-            onClick={() => {
-              setTrigger(false);
-              setUserName('');
-              setEmail('');
-              setPassword('');
-              setConfirm('');
-              setShowError('');
-            }}
-          >
+          <Close onClick={removeStatus}>
             <CancelIcon />
           </Close>
           {activeItem === 'login' && (

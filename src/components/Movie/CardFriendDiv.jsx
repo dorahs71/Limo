@@ -10,7 +10,7 @@ export default function CardFriendDiv({
   const allUser = useSelector((state) => state.allUser);
 
   let friendData = [];
-  if (trigger && currentUser !== undefined) {
+  if (trigger && currentUser.follow !== undefined) {
     const friendList = currentUser.follow.filter((element) =>
       currentUser.followBy?.includes(element)
     );

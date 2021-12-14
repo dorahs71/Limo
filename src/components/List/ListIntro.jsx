@@ -83,24 +83,36 @@ const ListIntroDiv = styled.div`
 `;
 
 const SaveIcon = styled(Save)`
-  transform: scale(1.5);
   cursor: pointer;
   &:hover {
     color: #99cfff;
   }
+  transform: scale(1.5);
   @media (max-width: 1280px) {
     transform: scale(1.2);
+  }
+  @media (max-width: 1024px) {
+    transform: scale(1);
+  }
+  @media (max-width: 768px) {
+    transform: scale(0.8);
   }
 `;
 
 const EditIcon = styled(Edit)`
-  transform: scale(1.5);
   cursor: pointer;
   &:hover {
     color: #99cfff;
   }
+  transform: scale(1.5);
   @media (max-width: 1280px) {
     transform: scale(1.2);
+  }
+  @media (max-width: 1024px) {
+    transform: scale(1);
+  }
+  @media (max-width: 768px) {
+    transform: scale(0.8);
   }
 `;
 
@@ -175,6 +187,19 @@ const EditListIntro = styled.textarea`
     outline: 0;
     border: 1px solid rgba(127, 255, 212, 0.7);
   }
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
+  }
 `;
 
 const ReadIntro = styled.div`
@@ -197,7 +222,6 @@ const ReadIntro = styled.div`
     font-size: 0.6rem;
   }
   @media (max-width: 375px) {
-    width: 7vw;
     font-size: 0.5rem;
   }
 `;

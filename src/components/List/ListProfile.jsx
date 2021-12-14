@@ -171,8 +171,21 @@ const CollectWord = styled.div`
 `;
 
 const Status = styled.div`
-  font-size: 2.5vmin;
+  font-size: 1.5rem;
+  @media (max-width: 1440px) {
+    font-size: 1.2rem;
+  }
+  @media (max-width: 1024px) {
+    font-size: 1rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
   @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
+  @media (max-width: 375px) {
+    font-size: 0.5rem;
   }
 `;
 

@@ -70,16 +70,17 @@ export default function AddToList({
     }
   };
 
+  const removeStatus = () => {
+    setTrigger(false);
+    setSelectListId('');
+    setNewList('');
+  };
+
   return (
     trigger && (
       <PopupDiv data-aos="zoom-in">
         <AddToListDiv>
-          <Close
-            onClick={() => {
-              setTrigger(false);
-              setSelectListId('');
-            }}
-          >
+          <Close onClick={removeStatus}>
             <CancelIcon />
           </Close>
           <Title>加入片單</Title>

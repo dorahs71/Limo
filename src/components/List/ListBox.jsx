@@ -33,27 +33,38 @@ export default function ListBox({ isAuthor, movieId, poster, listId, title }) {
 }
 
 const DeleteDiv = styled.div`
-  height: 3vmin;
+  width: 2vw;
+  height: 2vw;
   position: absolute;
   display: none;
-  width: 3vmin;
   z-index: 12;
   cursor: pointer;
-  bottom: 5vmin;
+  bottom: 3vw;
+  @media (max-width: 600px) {
+    width: 5vw;
+    height: 5vw;
+    bottom: 5vw;
+  }
 `;
 
 const DeleteIcon = styled(DeleteOutline)`
   background: rgba(255, 255, 255, 0.4);
   border-radius: 50%;
-  transform: scale(1.5);
   color: #333;
   z-index: 20;
   &:hover {
     background: #edabab;
     color: #fff;
   }
+  transform: scale(1.5);
   @media (max-width: 1280px) {
     transform: scale(1.2);
+  }
+  @media (max-width: 1024px) {
+    transform: scale(1);
+  }
+  @media (max-width: 768px) {
+    transform: scale(0.8);
   }
 `;
 
@@ -118,21 +129,21 @@ const Overlay = styled.div`
 const MovieTitle = styled.div`
   width: 70%;
   text-align: center;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 500;
   @media (max-width: 1280px) {
-    font-size: 1.5rem;
-  }
-
-  @media (max-width: 768px) {
     font-size: 1.2rem;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     font-size: 1rem;
   }
+
+  @media (max-width: 600px) {
+    font-size: 0.6rem;
+  }
   @media (max-width: 375px) {
-    font-size: 0.8rem;
+    font-size: 0.5rem;
   }
 `;
 
