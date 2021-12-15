@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 import { fabric } from 'fabric';
+import { useState } from 'react';
 import { DeleteOutlined, TextFields, FormatBold } from '@material-ui/icons';
 
 export default function EditCardText({ trigger, canvas }) {
+  const [color, setColor] = useState('#000');
+
   function addText() {
     const editText = new fabric.IText('點我編輯', {
       top: 200,
@@ -20,12 +23,11 @@ export default function EditCardText({ trigger, canvas }) {
     }
   }
 
-  let color = '#000';
-
   const handleTextColor = (e) => {
     if (trigger && e.target !== null) {
-      color = e.target.value;
-      canvas.getActiveObject()?.set('fill', color);
+      let newColor = e.target.value;
+      setColor(newColor);
+      canvas.getActiveObject()?.set('fill', newColor);
       canvas.renderAll();
     }
   };

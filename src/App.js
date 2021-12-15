@@ -29,15 +29,9 @@ export default function App() {
   return (
     <MainDiv>
       <BrowserRouter>
-        {isScrolled ? (
-          <NavDiv>
-            <Nav />
-          </NavDiv>
-        ) : (
-          <StartNav>
-            <Nav />
-          </StartNav>
-        )}
+        <NavDiv isScrolled={isScrolled}>
+          <Nav />
+        </NavDiv>
         <ScrollToTop />
         <Switch>
           <Route path="/" exact>
@@ -87,30 +81,15 @@ const NavDiv = styled.div`
   height: 4vw;
   color: #fff;
   z-index: 1000;
-  background: #1b1919;
+  background: ${(props) =>
+    props.isScrolled
+      ? '#1b1919'
+      : 'linear-gradient(to top, transparent 0%, rgb(34, 32, 32, 0.3) 50%)'};
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 1px 4px 5px -1px rgba(27, 25, 25, 0.56);
-  @media (max-width: 768px) {
-    height: 5vw;
-  }
-  @media (max-width: 600px) {
-    height: 10vw;
-  }
-`;
-
-const StartNav = styled.div`
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 4vw;
-  color: #fff;
-  z-index: 1000;
-  background: linear-gradient(to top, transparent 0%, rgb(34, 32, 32, 0.3) 50%);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  box-shadow: ${(props) =>
+    props.isScrolled ? '1px 4px 5px - 1px rgba(27, 25, 25, 0.56)' : 'none'};
   @media (max-width: 768px) {
     height: 5vw;
   }

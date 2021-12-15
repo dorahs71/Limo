@@ -194,9 +194,7 @@ const StarDiv = styled.div`
   @media (max-width: 1440px) {
     width: 28vw;
   }
-  @media (max-width: 1280px) {
-    width: 31vw;
-  }
+
   @media (max-width: 1024px) {
     width: 37vw;
   }
