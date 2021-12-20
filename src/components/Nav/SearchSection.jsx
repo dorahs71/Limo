@@ -62,8 +62,6 @@ const SearchBtn = styled.button`
   }
   @media (max-width: 375px) {
     margin-top: 1vw;
-    width: 3vw;
-    height: 3vw;
   }
 `;
 
@@ -92,8 +90,7 @@ const SearchIcon = styled(SearchOutlined)`
   }
   @media (max-width: 600px) {
     transform: scale(0.7);
-    margin-top: -3vw;
-    margin-left: -2vw;
+    margin-top: -2.3vw;
   }
   @media (max-width: 375px) {
     margin-left: -3vw;

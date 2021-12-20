@@ -49,8 +49,8 @@ const FriendDiv = styled.div`
 `;
 
 const ImgWrapper = styled.div`
-  width: 10vmin;
-  height: 10.5vmin;
+  width: 5vw;
+  height: 5vw;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,8 +73,8 @@ const FollowDiv = styled.div`
 `;
 
 const FollowImg = styled.img`
-  width: 8vmin;
-  height: 8vmin;
+  width: 4vw;
+  height: 4vw;
   object-fit: contain;
 `;
 

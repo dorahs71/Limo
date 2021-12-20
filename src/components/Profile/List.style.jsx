@@ -26,7 +26,6 @@ export const Close = styled.div`
   padding: 5px 5px;
   right: -0.5vw;
   top: -1.5vw;
-  z-index: 300;
   color: #c5cdc0;
   &:hover {
     color: #75e799;

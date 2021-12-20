@@ -117,6 +117,7 @@ const CardDiv = styled.img`
   margin-top: 1vw;
   width: 15vw;
   height: 10vw;
+  object-fit: cover;
   border-radius: 10px;
   @media (max-width: 1024px) {
     width: 20vw;

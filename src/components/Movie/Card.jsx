@@ -29,8 +29,6 @@ export default function Card({
     setAddOverlay(true);
   }, [trigger]);
 
-  // let initCanvas = () => new fabric.Canvas('canvas');
-
   let initCanvas = () =>
     new fabric.Canvas('canvas', {
       width: 600,
@@ -43,49 +41,66 @@ export default function Card({
     imgURL === '' &&
     selectFriend === ''
   ) {
-    let overlayRect = new fabric.Rect({
-      width: canvas.get('width'),
-      height: canvas.get('height'),
-      selectable: false,
-      fill: 'rgb(255, 255, 255, 0.3)',
-    });
-    canvas.add(overlayRect);
-
     imgURL = poster;
     fabric.Image.fromURL(
       imgURL,
       function (img) {
-        canvas.setBackgroundImage(img, canvas.renderAll?.bind(canvas), {
-          scaleX: canvas.width / img.width,
+        let ratio = (600 / img.width) * 0.47;
+        canvas.setHeight(img.height * ratio);
+        canvas.setWidth(img.width * ratio);
+
+        let overlayRect = new fabric.Rect({
+          width: canvas.get('width'),
+          height: canvas.get('height'),
+          selectable: false,
+          fill: 'rgb(255, 255, 255, 0.3)',
+        });
+        canvas.add(overlayRect);
+
+        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+          scaleX: canvas.height / img.height,
           scaleY: canvas.height / img.height,
         });
       },
+
       { crossOrigin: 'anonymous' }
     );
     setAddOverlay(false);
   }
 
   function backchange(e) {
+    let lastOverlay = canvas.getObjects()[0];
+    canvas.remove(lastOverlay);
+
     imgURL = e.target.src;
     fabric.Image.fromURL(
       imgURL,
       function (img) {
-        // if (img.height > 600) {
-        //   canvas.setHeight(img.height * 0.6);
-        //   canvas.setWidth(img.width);
-        // } else if (img.height > 420) {
-        //   canvas.setHeight(img.height * 0.8);
-        //   canvas.setWidth(img.width);
-        // }
+        if (img.height > img.width) {
+          let ratio = (600 / img.width) * 0.47;
+          canvas.setHeight(img.height * ratio);
+          canvas.setWidth(img.width * ratio);
+          canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+            scaleX: canvas.height / img.height,
+            scaleY: canvas.height / img.height,
+          });
+        } else {
+          let ratio = (600 / img.width) * 0.8;
+          canvas.setHeight(img.height * ratio);
+          canvas.setWidth(img.width * ratio);
+          canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+            scaleX: canvas.width / img.width,
+            scaleY: canvas.width / img.width,
+          });
+        }
 
-        // canvas.setBackgroundImage(img, function () {
-        //   canvas.renderAll();
-        // });
-
-        canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-          scaleX: canvas.width / img.width,
-          scaleY: canvas.height / img.height,
+        let overlayRect = new fabric.Rect({
+          width: canvas.get('width'),
+          height: canvas.get('height'),
+          selectable: false,
+          fill: 'rgb(255, 255, 255, 0.3)',
         });
+        canvas.add(overlayRect);
       },
       { crossOrigin: 'anonymous' }
     );
@@ -222,15 +237,20 @@ const SendDiv = styled.div`
   }
   @media (max-width: 1280px) {
     margin-top: 5vw;
+    margin-left: 0;
   }
 `;
 
 const SendButton = styled(SendBtn)`
-  margin-left: 1vw;
+  width: 15%;
+
   @media (max-width: 1560px) {
     margin-left: 2.5vw;
   }
   @media (max-width: 1440px) {
     margin-left: 3vw;
+  }
+  @media (max-width: 1280px) {
+    margin-right: 2vw;
   }
 `;

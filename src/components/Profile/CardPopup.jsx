@@ -1,16 +1,33 @@
 import styled from 'styled-components';
 import { PopupDiv, CancelIcon } from '../Common/Common.style';
 
+export default function CardPopup({ trigger, setTrigger, cardImg }) {
+  return (
+    trigger && (
+      <PopupDiv>
+        <Close
+          onClick={() => {
+            setTrigger(false);
+          }}
+        >
+          <CancelIcon />
+        </Close>
+        <CardImg src={cardImg} alt="" />
+      </PopupDiv>
+    )
+  );
+}
+
 const CardImg = styled.img`
   width: 50%;
-  height: 70%;
-  background: #333;
+  height: 50%;
+  object-fit: contain;
   top: 30vmin;
   border-radius: 20px;
   box-shadow: rgb(0, 0, 0) 0px 20px 30px -10px;
   @media (max-width: 1024px) {
-    width: 90%;
-    height: 50%;
+    width: 70%;
+    height: 70%;
   }
 `;
 
@@ -19,8 +36,8 @@ const Close = styled.div`
   position: absolute;
   display: block;
   padding: 5px 5px;
-  right: 25vmin;
-  top: 10vmin;
+  right: 15vw;
+  top: 10vw;
   z-index: 300;
   color: #c5cdc0;
   &:hover {
@@ -35,20 +52,3 @@ const Close = styled.div`
     top: 28vmin;
   }
 `;
-
-export default function CardPopup({ trigger, setTrigger, cardImg }) {
-  return trigger ? (
-    <PopupDiv>
-      <Close
-        onClick={() => {
-          setTrigger(false);
-        }}
-      >
-        <CancelIcon />
-      </Close>
-      <CardImg src={cardImg} alt="" />
-    </PopupDiv>
-  ) : (
-    ''
-  );
-}

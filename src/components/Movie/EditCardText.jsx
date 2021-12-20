@@ -7,10 +7,11 @@ export default function EditCardText({ trigger, canvas }) {
   const [color, setColor] = useState('#000');
 
   function addText() {
+    console.log(canvas);
     const editText = new fabric.IText('點我編輯', {
-      top: 200,
-      left: 300,
-      fontSize: 50,
+      top: 100,
+      left: 100,
+      fontSize: 25,
     });
     canvas.add(editText);
   }
@@ -64,7 +65,7 @@ const TextFunction = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-left: 5vmin;
+  margin-left: 5vw;
 `;
 
 const AddText = styled(TextFields)`
