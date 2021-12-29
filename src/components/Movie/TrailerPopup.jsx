@@ -6,7 +6,13 @@ import { PopupDiv, CancelIcon } from '../Common/Common.style';
 export default function TrailerPopup({ trigger, setTrigger, trailerKey }) {
   useEffect(() => {
     AOS.init({ duration: 400 });
-  }, []);
+    if (trigger) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }
+  }, [trigger]);
 
   return (
     trigger && (

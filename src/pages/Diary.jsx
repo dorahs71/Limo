@@ -36,12 +36,6 @@ export default function Diary() {
     });
   }, [uid, diaryId]);
 
-  // if (eachMovie === undefined) {
-  //   history.push('/404');
-  // }
-
-  console.log(eachMovie);
-
   return eachMovie && getDiary ? (
     <DiaryContainer>
       <MovieMain>

@@ -18,6 +18,14 @@ import {
   CancelBtn,
 } from './Common.style';
 
+const noScroll = (trigger) => {
+  if (trigger) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = 'unset';
+  }
+};
+
 export function RemoveArrayDataAlert({
   trigger,
   setTrigger,
@@ -29,6 +37,9 @@ export function RemoveArrayDataAlert({
   useEffect(() => {
     AOS.init({ duration: 250 });
   }, []);
+
+  noScroll(trigger);
+
   return (
     trigger && (
       <PopupDiv>
@@ -62,6 +73,9 @@ export function RemoveDocAlert({
   useEffect(() => {
     AOS.init({ duration: 250 });
   }, []);
+
+  noScroll(trigger);
+
   return (
     trigger && (
       <PopupDiv>
@@ -97,6 +111,9 @@ export function RemoveDiaryDataAlert({
   useEffect(() => {
     AOS.init({ duration: 250 });
   }, []);
+
+  noScroll(trigger);
+
   return (
     trigger && (
       <PopupDiv>
@@ -131,6 +148,8 @@ export function RemoveListMovieAlert({
   useEffect(() => {
     AOS.init({ duration: 250 });
   }, []);
+
+  noScroll(trigger);
 
   const handleDeleteMovie = () => {
     removeListMovie(listId, movieId);
@@ -173,6 +192,8 @@ export function TagDeleteAlert({
   useEffect(() => {
     AOS.init({ duration: 300 });
   }, []);
+
+  noScroll(trigger);
 
   const removeTag = () => {
     removeMovieTag(eachMovie, tag);

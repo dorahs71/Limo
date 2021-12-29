@@ -30,7 +30,13 @@ export default function NewComment({
 
   useEffect(() => {
     AOS.init({ duration: 300 });
-  }, []);
+    if (trigger) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [trigger]);
 
   const currentUser = useSelector((state) => state.currentUser);
 

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { getChangeImages, handleChangeProfile } from '../../utils/firebase';
+import AOS from 'aos';
 import { useSelector } from 'react-redux';
 import coin from '../../images/limocoin.png';
 import WarningAlert from '../Common/WarningAlert';
@@ -15,8 +16,15 @@ export default function BuyProfile({ trigger, setTrigger }) {
   const [overPriceAlert, setOverPriceAlert] = useState(false);
 
   useEffect(() => {
+    AOS.init({ duration: 300 });
     getChangeImages(setChangeImg);
-  }, []);
+    if (trigger) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [trigger]);
 
   const buyProfile = () => {
     if (currentUser.changeImg.includes(selectBuyImg)) {
@@ -32,7 +40,7 @@ export default function BuyProfile({ trigger, setTrigger }) {
 
   return (
     trigger && (
-      <PopupDiv>
+      <PopupDiv data-aos="zoom-in">
         <BuyProfileDiv>
           <ProfileGallery>
             {changeImg.map((item) => (
@@ -185,6 +193,6 @@ const Surplus = styled.div`
 
 const BtnDiv = styled.div`
   display: flex;
-  width: 60%;
+  width: 20vw;
   justify-content: space-around;
 `;

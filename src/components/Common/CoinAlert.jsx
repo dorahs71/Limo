@@ -14,7 +14,13 @@ import {
 export default function CoinAlert({ trigger, setTrigger, type, coin }) {
   useEffect(() => {
     AOS.init({ duration: 300 });
-  }, []);
+    if (trigger) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [trigger]);
 
   return (
     trigger && (

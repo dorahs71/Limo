@@ -53,7 +53,7 @@ const Close = styled.div`
   padding: 5px 5px;
   right: 5px;
   top: -3px;
-  z-index: 300;
+  z-index: 100;
 `;
 
 const CancelIcon = styled(Cancel)`

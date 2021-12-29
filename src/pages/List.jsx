@@ -18,7 +18,7 @@ import ListIntro from '../components/List/ListIntro';
 import Loading from '../components/Common/Loading';
 
 export default function List() {
-  const [updateList, setUpdateList] = useState('');
+  const [updateList, setUpdateList] = useState([]);
   const [getAuthor, setGetAuthor] = useState('');
   const { listId } = useParams();
   const [listData, setListData] = useState('');

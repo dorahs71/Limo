@@ -30,7 +30,13 @@ export default function AddToList({
 
   useEffect(() => {
     AOS.init({ duration: 300 });
-  }, []);
+    if (trigger) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [trigger]);
 
   const addList = () => {
     if (newList) {
@@ -144,8 +150,8 @@ const Close = styled.div`
   position: absolute;
   display: block;
   padding: 5px 5px;
-  right: 2vmin;
-  top: -1vmin;
+  right: -4vw;
+  top: 2vw;
   z-index: 300;
   color: #c5cdc0;
   &:hover {

@@ -1,12 +1,23 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { changeProfile } from '../../utils/firebase';
 import { useSelector } from 'react-redux';
+import AOS from 'aos';
 import { PopupDiv, SendBtn, CancelBtn } from '../Common/Common.style';
 
 export default function ChangeProfile({ trigger, setTrigger }) {
   const currentUser = useSelector((state) => state.currentUser);
   const [selectChangeImg, setSelectChangeImg] = useState('');
+
+  useEffect(() => {
+    AOS.init({ duration: 300 });
+    if (trigger) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [trigger]);
 
   const handleChangeProfile = () => {
     changeProfile(currentUser, selectChangeImg);
@@ -15,7 +26,7 @@ export default function ChangeProfile({ trigger, setTrigger }) {
 
   return (
     trigger && (
-      <PopupDiv>
+      <PopupDiv data-aos="zoom-in">
         <ChangeProfileDiv>
           <OwnProfile>
             {currentUser.changeImg.map((item) => (
@@ -87,6 +98,6 @@ const MyImg = styled.img`
 
 const BtnDiv = styled.div`
   display: flex;
-  width: 60%;
+  width: 20vw;
   justify-content: space-around;
 `;

@@ -13,7 +13,13 @@ export default function Poll({ trigger, setTrigger, movieId }) {
 
   useEffect(() => {
     AOS.init({ duration: 300 });
-  }, []);
+    if (trigger) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [trigger]);
 
   const addQuote = () => {
     if (input) {

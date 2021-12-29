@@ -4,6 +4,7 @@ import { handleSendCard } from '../../utils/firebase';
 import { fabric } from 'fabric';
 import { useSelector } from 'react-redux';
 import { PopupDiv, CancelIcon, SendBtn } from '../Common/Common.style';
+import AOS from 'aos';
 import CardFriendDiv from './CardFriendDiv';
 import EditCardText from './EditCardText';
 import WarningAlert from '../Common/WarningAlert';
@@ -25,8 +26,15 @@ export default function Card({
   let imgURL = '';
 
   useEffect(() => {
+    AOS.init({ duration: 300 });
     setCanvas(initCanvas());
     setAddOverlay(true);
+    if (trigger) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [trigger]);
 
   let initCanvas = () =>
@@ -125,7 +133,7 @@ export default function Card({
 
   return (
     trigger && (
-      <PopupDiv>
+      <PopupDiv data-aos="zoom-in">
         <CardDiv>
           <Close onClick={removeStatus}>
             <CancelIcon />
@@ -187,8 +195,8 @@ const Close = styled.div`
   position: absolute;
   display: block;
   padding: 5px 5px;
-  right: -1vw;
-  top: -6vw;
+  right: -5vw;
+  top: -4vw;
   z-index: 300;
   color: #c5cdc0;
   &:hover {

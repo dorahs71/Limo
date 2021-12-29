@@ -49,7 +49,7 @@ export default function MovieFunction({
 
   const handleShowAddToList = () => {
     if (currentUser) {
-      setShowAddToList(true);
+      setShowAddToList((prev) => !prev);
       const unsubscribe = getOrderedData(
         'Lists',
         'authorId',

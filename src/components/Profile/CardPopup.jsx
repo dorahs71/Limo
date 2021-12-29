@@ -1,10 +1,21 @@
 import styled from 'styled-components';
+import { useEffect } from 'react';
+import AOS from 'aos';
 import { PopupDiv, CancelIcon } from '../Common/Common.style';
 
 export default function CardPopup({ trigger, setTrigger, cardImg }) {
+  useEffect(() => {
+    AOS.init({ duration: 300 });
+    if (trigger) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [trigger]);
   return (
     trigger && (
-      <PopupDiv>
+      <PopupDiv data-aos="zoom-in">
         <Close
           onClick={() => {
             setTrigger(false);

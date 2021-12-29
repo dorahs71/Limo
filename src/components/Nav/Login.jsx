@@ -38,6 +38,12 @@ export default function Login({ trigger, setTrigger }) {
     setShowError('');
   };
 
+  if (trigger) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = 'unset';
+  }
+
   return (
     trigger && (
       <PopupDiv>
